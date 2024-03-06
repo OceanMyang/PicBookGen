@@ -25,5 +25,3 @@
 //     reader.readAsText(chosenfile);
 //   }
 // });
-
-console.log("Hello!")
