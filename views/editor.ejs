@@ -1,5 +1,7 @@
-<% include('header') %>
+<%- include('header') %>
     <button id="save-file">Save File</button>
 	<input type="file" id="open-file">
-	<div id="editor"></div>
-<% include('footer') %>
+	<div id="editor">
+		<%- file %>
+	</div>
+<%- include('footer', {scirpt : script}) %>
