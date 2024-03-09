@@ -1,7 +1,11 @@
 <%- include('header') %>
-    <button id="save-file">Save File</button>
-	<input type="file" id="open-file">
-	<div id="editor">
-		<%- file %>
-	</div>
-<%- include('footer', {scirpt : script}) %>
+	<body>
+		<button id="save-file">Save File</button>
+		<button id="open-file">Open File</button>
+		<div id="editor">	<% file.split('\n').forEach(line => {%>
+			<%- line -%>
+		<% })%>
+		</div>
+	</body>
+	<script src="../../src/editor.js"></script>
+<%- include('footer') %>

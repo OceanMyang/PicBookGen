@@ -1,6 +1,13 @@
 <%- include('header') %>
-	<% filenames.forEach(filename => { %>
-		<img src="" alt="">
-		<a href="/<%= filename %>"><%= filename %></a>
-	<% })  %>
+	<body>
+		<% filenames.forEach(filename => { %>
+			<a class="card" style="width: 10rem;" href="/edit/<%= filename %>/">
+				<img class="card-img-top" src="./src/file.ico" alt="File">
+				<div class="card-body">
+					<h3 class="card-title"><%= filename %></h3>=
+				</div>
+			</a>
+		<% })  %>
+	</body>
+	<script src="./src/index.js"></script>
 <%- include('footer') %>
