@@ -4,9 +4,8 @@ const fsp = require('fs').promises;
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 3000;
-const PATH_INDEX = path.join(__dirname, 'src', 'views', 'index.html');
-const PATH_FILES = path.join(__dirname, 'public', 'files')
-const PATH_SRC = path.join(__dirname, 'public', 'src');
+const files_path = path.join(__dirname, 'public', 'files')
+const src_path = path.join(__dirname, 'public', 'src');
 
 const readdirAsync = (path) => {
     let files = [];
@@ -29,7 +28,6 @@ const readFileAsync = (path) => {
 module.exports = {
     hostname,
     port,
-    PATH_INDEX,
-    PATH_FILES,
-    PATH_SRC
+    files_path,
+    src_path
 }

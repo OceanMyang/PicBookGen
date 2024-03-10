@@ -1,0 +1,27 @@
+<%- include('header', { title: filename }) %>
+	<body>
+		<button class="btn btn-light">
+			<h1 id="file-name"><%= filename %></h1>
+		</button>
+		<nav class="navbar navbar-expand">
+			<div id="tool-bar">
+				<span class="dropdown">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					  New File
+					</button>
+					<ul class="dropdown-menu">
+					  <li><a id="new-file" class="dropdown-item" href="#">Create a New File</a></li>
+					  <li><a id="upload-file" class="dropdown-item" href="#">Upload Files from Local</a></li>
+					</ul>
+			</span>
+				<button id="save-file" type="button" class="btn btn-primary">Save File</button>
+				<a id="open-file" type="button" class="btn btn-primary" href="../../">Open File</a>
+			</div>
+		</nav>
+		<div id="editor">	<% file.split('\n').forEach( async line => {%>
+			<%- line -%>
+		<% })%>
+		</div>
+	</body>
+	<script src="../../src/editor.js"></script>
+<%- include('footer') %>

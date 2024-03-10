@@ -16,7 +16,7 @@ $("#editor").on("mouseup", () => {
   }
 });
 
-$("#open-file-local").on("click", () => {
+$("#upload-file").on("click", () => {
   const input = $('<input/>', {
     type: 'file',
     style: 'display: none;'
@@ -36,15 +36,17 @@ $("#open-file-local").on("click", () => {
 });
 
 $("#save-file").on("click", async () => {
-  // const filename = $("#file-name").text();
-  // const file = $("#editor").html();
-  // const response = await fetch('/', {
-  //   method: "POST",
-  //   mode: "same-origin",
-  //   body: {
-  //     filename: filename,
-  //     file: JSON.stringify(file),
-  //   },
-  // })
-  // console.log(response);
+  const pathname = window.location.pathname;
+  const file = $("#editor").html();
+  const response = await fetch(pathname, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    mode: "same-origin",
+    body: {
+      file: file
+    }
+  })
+  console.log(response);
 })
