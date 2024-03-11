@@ -6,10 +6,11 @@ const fs = require("fs");
 const fsp = require("fs").promises;
 const path = require("path"); 
 const ejs = require('ejs');
+const bodyParser = require('body-parser');
 
 app.set("views", path.join(__dirname, 'public', 'views'));
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.route('/')
   .get(async (req, res) => {
@@ -47,19 +48,18 @@ app.route('/edit/:filename')
     console.log("get");
   })
   .put(async (req, res) => {
-    console.log(req)
     try {
-      const file = req.body.file;
+      const file = req.body.file.replace(/\t/g, '').replace(/\n/g, '');
       console.log(file);
-      if (file) {
-        await fsp.writeFile(path.join(files_path, oldname));
-        console.log("Write File Completed");
-        res.send("Saved");
-      }
-
       const oldname = req.params.filename;
       const newname = req.body.filename;
       console.log(newname);
+      
+      if (file) {
+        await fsp.writeFile(path.join(files_path, oldname, 'index.html'), file);
+        console.log("Write File Completed");
+        res.send("Saved");
+      }
       if (newname) {
         fs.rename(path.join(files_path, oldname), path.join(files_path, newname));
         console.log("Rename Completed");

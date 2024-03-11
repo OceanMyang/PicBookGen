@@ -1,4 +1,28 @@
 $("#editor").on("mouseup", () => {
+  addLink();
+});
+
+$("#upload-file").on("click", () => {
+  callInput();
+});
+
+$("#save-file").on("click", async () => {
+  const pathname = window.location.pathname;
+  const file = $("#editor").html();
+  const response = await fetch(pathname, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    mode: "same-origin",
+    body: JSON.stringify({
+      file: file
+    })
+  })
+  console.log(response);
+})
+
+const addLink = () => {
   const selection = window.getSelection();
   const selectedText = selection.toString();
   if (selectedText) {
@@ -14,9 +38,8 @@ $("#editor").on("mouseup", () => {
       range.insertNode($(anchor)[0]);
     }
   }
-});
-
-$("#upload-file").on("click", () => {
+}
+const callInput = () => {
   const input = $('<input/>', {
     type: 'file',
     style: 'display: none;'
@@ -33,20 +56,4 @@ $("#upload-file").on("click", () => {
     }
   });
   input.trigger('click');
-});
-
-$("#save-file").on("click", async () => {
-  const pathname = window.location.pathname;
-  const file = $("#editor").html();
-  const response = await fetch(pathname, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    mode: "same-origin",
-    body: {
-      file: file
-    }
-  })
-  console.log(response);
-})
+}
