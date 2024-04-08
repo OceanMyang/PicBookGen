@@ -1,0 +1,34 @@
+header {
+    position: relative;
+}
+
+.body {
+    text-align: center;
+}
+
+.bicontainer {
+    display: flex;
+}
+
+.bicontainer div {
+    width: 50%;
+}
+
+#editor {
+    border-right: solid black 1px;
+    height: 84vh;
+    overflow-y: auto;
+}
+
+#image-viewer {
+    max-width: 100%;
+    height: auto;
+}
+
+nav {
+    border: solid black 1px;
+}
+
+.btn {
+    display: inline-block;
+}
