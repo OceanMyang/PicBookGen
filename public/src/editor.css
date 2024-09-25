@@ -32,3 +32,8 @@ nav {
 .btn {
     display: inline-block;
 }
+
+.btn-light {
+    background-color: white;
+    border-color: white;
+}

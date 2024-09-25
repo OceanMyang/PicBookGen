@@ -1,0 +1,11 @@
+# Sep 24
+
+Delegate Error Message to the Client
+
+Client side:
+Add modal as a way to show message to the client.
+Limit the allowable file type to only txt
+
+Server side:
+Add clientErrMsg function: handle internal error by sending error.ejs to the client
+Now get('\*') catches 404 error and all other errors

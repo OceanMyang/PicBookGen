@@ -4,94 +4,125 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const fsp = require("fs").promises;
-const path = require("path"); 
-const ejs = require('ejs');
-const bodyParser = require('body-parser');
+const { join } = require("path");
 
-app.set("views", path.join(__dirname, 'public', 'views'));
+app.set("views", join(__dirname, "public", "views"));
 app.set("view engine", "ejs");
 app.use(express.json());
 
-app.route('/')
-  .get(async (req, res) => {
-    try {
-      app.use('/src', express.static(src_path));
-      const files = await fsp.readdir(files_path, "utf8");
+app.use("/src", express.static(src_path));
+app.route("/").get(async (req, res) => {
+  try {
+    const filenames = await fsp.readdir(files_path, "utf8");
 
-      const exists = files.length !== 0;
-      const header = exists ? "index" : "empty";
-      let locals = {};
-      locals.filenames = exists ? files : null;
-    
-      res.render(header, locals);
-    } catch (err) {
-      console.error(err);
-      res.status(500).end('Can not read Files');
-    }
-  })
+    const exists = filenames.length !== 0;
+    const header = exists ? "index" : "empty";
+    let locals = {};
+    locals.filenames = exists ? filenames : null;
 
-app.route('/edit/:filename')
+    res.render(header, locals);
+  } catch (err) {
+    console.error(err);
+    res.status(500).end("Cannot get all files from server");
+  }
+});
+
+app
+  .route("/edit/:filename")
   .get(async (req, res) => {
     const filename = req.params.filename;
+    if (!filename) {
+      res.status(400).end("Filename is required in request");
+    }
     try {
-      app.use(`/edit/${filename}`, express.static(path.join(files_path, filename)));
-      app.use('/src', express.static(src_path));
-      const file = await fsp.readFile(path.join(files_path, filename, 'index.html'), "utf-8");
-      res.render('editor', {
+      app.use(`/edit/${filename}`, express.static(join(files_path, filename)));
+      const file = await fsp.readFile(
+        join(files_path, filename, "index.html"),
+        "utf-8"
+      );
+      res.render("editor", {
         filename: filename,
-        file: file
+        file: file,
       });
     } catch (err) {
       console.error(err);
-      res.status(404).end('File Not Found');
+      clientErrPage(res, 404, "File Not Found");
     }
-    console.log("get");
+  })
+  .post(async (req, res) => {
+    let filename = req.body.filename;
+    const file = req.body.file ? req.body.file : "";
+
+    if (!filename) {
+      res.status(400).end("No FileName");
+    }
+
+    const filenames = await fsp.readdir(files_path, "utf8");
+    while (filenames.includes(filename)) {
+      filename += "_1";
+    }
+
+    try {
+      await fsp.mkdir(join(files_path, filename));
+      await fsp.writeFile(join(files_path, filename, "index.html"), file);
+      await fsp.mkdir(join(files_path, filename, "images"));
+      console.log(`File ${filename} Created.`);
+      res.redirect("/");
+    } catch (err) {
+      console.error(err);
+      res.status(500).end("Create File Error");
+    }
   })
   .put(async (req, res) => {
+    if (!req.body || req.body == {}) {
+      res.status(400).end("Put request doesn't have a body");
+    }
+
+    const c_file = req.body.file.replace(/\t/g, "").replace(/\n/g, "");
+    const oldname = req.params.filename;
+    const newname = req.body.filename;
+
     try {
-      const file = req.body.file.replace(/\t/g, '').replace(/\n/g, '');
-      console.log(file);
-      const oldname = req.params.filename;
-      const newname = req.body.filename;
-      console.log(newname);
-      
-      if (file) {
-        await fsp.writeFile(path.join(files_path, oldname, 'index.html'), file);
-        console.log("Write File Completed");
+      if (c_file) {
+        await fsp.writeFile(join(files_path, oldname, "index.html"), c_file);
+        console.log("Write File Completed. File Content:", c_file);
         res.send("Saved");
       }
       if (newname) {
-        fs.rename(path.join(files_path, oldname), path.join(files_path, newname));
-        console.log("Rename Completed");
-        res.send("Renamed");
-      }
-
-      if (!file && !newname) {
-        res.status(400).end('Bad Request');
+        await fsp.rename(join(files_path, oldname), join(files_path, newname));
+        console.log(
+          `Rename Completed. Old Name: ${oldname} New Name: ${newname}`
+        );
+        res.send("Renamed").redirect(`/edit/${newname}`);
       }
     } catch (err) {
       console.error(err);
-      res.status(500).end('Unexpected Error in File Operations');
+      res.status(500).end("Error in File Operations");
     }
-  })
+  });
 
 // app.post('/edit/:name', async (req, res) => {
 //   const filename = req.body.filename;
 //   const file = req.body.file;
 //   if (file) {
-//     fsp.mkdir(path.join(__dirname, 'public', 'files'))
+//     fsp.mkdir(join(__dirname, 'public', 'files'))
 //   }
 // })
 
-// app.get('*', async (req, res)=>{
-//   res.render('error', (err, html)=>{
-//     if (err) {
-//       console.error(err);
-//       res.status(500).end('Error Template Not Found');
-//     }
-//     res.send(html);
-//   })
-// })
+app.get("*", async (req, res) => {
+  console.error("Page Not Found");
+  clientErrPage(res, 404, "Page Not Found");
+});
+
+const clientErrPage = (res, errCode, errMsg) => {
+  res.status(errCode).render("error", (err, html) => {
+    if (err) {
+      console.error(err);
+      res.status(500).end("Error Template Not Found");
+    }
+    res.send(html);
+  });
+};
 
 process.on("uncaughtException", (err) => {
   console.error(err);
