@@ -1,24 +1,26 @@
-const { hostname, port, files_path, src_path } = require("./config");
+const { join } = require("path");
+const hostName = "127.0.0.1";
+const port = process.env.PORT || 3000;
+const _file = join(__dirname, "files");
+const _public = join(__dirname, "public");
 
 const express = require("express");
 const app = express();
 const fs = require("fs");
 const fsp = require("fs").promises;
-const { join } = require("path");
 
-app.set("views", join(__dirname, "public", "views"));
+app.set("views", join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.json());
 
-app.use("/src", express.static(src_path));
+app.use("/", express.static(_public));
 app.route("/").get(async (req, res) => {
   try {
-    const filenames = await fsp.readdir(files_path, "utf8");
+    const fileNames = await fsp.readdir(_file, "utf8");
 
-    const exists = filenames.length !== 0;
-    const header = exists ? "index" : "empty";
+    const header = fileNames.length !== 0 ? "index" : "empty";
     let locals = {};
-    locals.filenames = exists ? filenames : null;
+    locals.fileNames = fileNames.length !== 0 ? fileNames : null;
 
     res.render(header, locals);
   } catch (err) {
@@ -28,20 +30,22 @@ app.route("/").get(async (req, res) => {
 });
 
 app
-  .route("/edit/:filename")
+  .route("/edit/:fileName")
   .get(async (req, res) => {
-    const filename = req.params.filename;
-    if (!filename) {
-      res.status(400).end("Filename is required in request");
+    const fileName = req.params.fileName;
+    if (!fileName) {
+      res.status(400).end("fileName is required in request");
     }
+
+    app.use(`/edit/${fileName}`, express.static(join(_file, fileName)));
+
     try {
-      app.use(`/edit/${filename}`, express.static(join(files_path, filename)));
       const file = await fsp.readFile(
-        join(files_path, filename, "index.html"),
+        join(_file, fileName, "index.html"),
         "utf-8"
       );
       res.render("editor", {
-        filename: filename,
+        fileName: fileName,
         file: file,
       });
     } catch (err) {
@@ -50,23 +54,23 @@ app
     }
   })
   .post(async (req, res) => {
-    let filename = req.body.filename;
+    let fileName = req.body.fileName;
     const file = req.body.file ? req.body.file : "";
 
-    if (!filename) {
-      res.status(400).end("No FileName");
+    if (!fileName) {
+      res.status(400).end("No fileName");
     }
 
-    const filenames = await fsp.readdir(files_path, "utf8");
-    while (filenames.includes(filename)) {
-      filename += "_1";
+    const fileNames = await fsp.readdir(_file, "utf8");
+    while (fileNames.includes(fileName)) {
+      fileName += "_1";
     }
 
     try {
-      await fsp.mkdir(join(files_path, filename));
-      await fsp.writeFile(join(files_path, filename, "index.html"), file);
-      await fsp.mkdir(join(files_path, filename, "images"));
-      console.log(`File ${filename} Created.`);
+      await fsp.mkdir(join(_file, fileName));
+      await fsp.writeFile(join(_file, fileName, "index.html"), file);
+      await fsp.mkdir(join(_file, fileName, "images"));
+      console.log(`File ${fileName} Created.`);
       res.redirect("/");
     } catch (err) {
       console.error(err);
@@ -79,21 +83,21 @@ app
     }
 
     const c_file = req.body.file.replace(/\t/g, "").replace(/\n/g, "");
-    const oldname = req.params.filename;
-    const newname = req.body.filename;
+    const oldName = req.params.fileName;
+    const newName = req.body.fileName;
 
     try {
       if (c_file) {
-        await fsp.writeFile(join(files_path, oldname, "index.html"), c_file);
+        await fsp.writeFile(join(_file, oldName, "index.html"), c_file);
         console.log("Write File Completed. File Content:", c_file);
         res.send("Saved");
       }
-      if (newname) {
-        await fsp.rename(join(files_path, oldname), join(files_path, newname));
+      if (newName) {
+        await fsp.rename(join(_file, oldName), join(_file, newName));
         console.log(
-          `Rename Completed. Old Name: ${oldname} New Name: ${newname}`
+          `Rename Completed. Old Name: ${oldName} New Name: ${newName}`
         );
-        res.send("Renamed").redirect(`/edit/${newname}`);
+        res.send("Renamed").redirect(`/edit/${newName}`);
       }
     } catch (err) {
       console.error(err);
@@ -101,27 +105,25 @@ app
     }
   });
 
-// app.post('/edit/:name', async (req, res) => {
-//   const filename = req.body.filename;
-//   const file = req.body.file;
-//   if (file) {
-//     fsp.mkdir(join(__dirname, 'public', 'files'))
-//   }
-// })
-
 app.get("*", async (req, res) => {
   console.error("Page Not Found");
   clientErrPage(res, 404, "Page Not Found");
 });
 
 const clientErrPage = (res, errCode, errMsg) => {
-  res.status(errCode).render("error", (err, html) => {
-    if (err) {
-      console.error(err);
-      res.status(500).end("Error Template Not Found");
+  res.status(errCode).render(
+    "error",
+    {
+      message: errMsg,
+    },
+    (err, html) => {
+      if (err) {
+        console.error(err);
+        res.status(500).end("Error Page Not Found");
+      }
+      res.send(html);
     }
-    res.send(html);
-  });
+  );
 };
 
 process.on("uncaughtException", (err) => {
@@ -129,5 +131,5 @@ process.on("uncaughtException", (err) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(`Server running at http://${hostName}:${port}/`);
 });

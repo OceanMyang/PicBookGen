@@ -19,7 +19,7 @@ $("#new-file").on("click", async () => {
     },
     mode: "same-origin",
     body: JSON.stringify({
-      filename: "test",
+      fileName: "test",
       file: "",
     }),
   });
@@ -74,7 +74,7 @@ $("#add-link").on("click", async () => {
     if (range.startContainer === range.endContainer) {
       const anchor = $("<a/>", {
         class: "view",
-        href: "../../src/loading-sm.gif",
+        href: "../../res/loading-sm.gif",
       })
         .css({
           display: "inline-block",
@@ -117,6 +117,8 @@ const sendMessage = (title, message) => {
   console.log(message);
 };
 
-$("#message").find(".close").on("click", () => {
-  $("#message").modal("hide");
-});
+$("#message")
+  .find(".close")
+  .on("click", () => {
+    $("#message").modal("hide");
+  });
