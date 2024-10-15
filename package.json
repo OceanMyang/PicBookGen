@@ -7,6 +7,7 @@
     "jquery": "^3.7.1",
     "mime-type": "^4.0.0",
     "mustache": "^4.2.0",
+    "mysql2": "^3.11.3",
     "node.js": "^0.0.1-security",
     "nodemon": "^3.1.0",
     "react": "^18.2.0",

@@ -25,7 +25,7 @@ app.route("/").get(async (req, res) => {
     res.render(header, locals);
   } catch (err) {
     console.error(err);
-    res.status(500).end("Cannot get all files from server");
+    clientErrPage(res, 500, "Cannot get all files from server");
   }
 });
 
@@ -34,7 +34,7 @@ app
   .get(async (req, res) => {
     const fileName = req.params.fileName;
     if (!fileName) {
-      res.status(400).end("fileName is required in request");
+      clientErrPage(res, 400, "fileName is required in request");
     }
 
     app.use(`/edit/${fileName}`, express.static(join(_file, fileName)));
@@ -126,7 +126,7 @@ const clientErrPage = (res, errCode, errMsg) => {
   );
 };
 
-process.on("uncaughtException", (err) => {
+process.on("UncaughtException", (err) => {
   console.error(err);
 });
 
