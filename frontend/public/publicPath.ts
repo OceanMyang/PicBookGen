@@ -1,0 +1,1 @@
+export const publicPath = import.meta.dirname;

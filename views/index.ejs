@@ -2,12 +2,12 @@
 
 	<body>
 		<h1>Index</h1>
-		<% fileNames.forEach(fileName=> { -%>
-			<a class="card d-inline-block" style="width: 10rem;" href="/edit/<%= fileName %>/">
+		<% files.forEach(file=> { -%>
+			<a class="card d-inline-block" style="width: 10rem;" href="/edit/<%= file['fileID'] %>/">
 				<img class="card-img-top img-thumbnail" src="/res/file.ico" alt="File">
 				<span class="card-body">
 					<h3 class="card-title text-center">
-						<%= fileName %>
+						<%= file['name'] %>
 					</h3>
 				</span>
 			</a>
