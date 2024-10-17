@@ -1,3 +1,45 @@
+$("#file-name")
+  .on("click", (e) => {
+    const fileName = $("#file-name").text();
+    if (fileName === "Untitled") {
+      window.getSelection().selectAllChildren(e.target);
+    }
+  })
+  .on("input", (e) => {
+    const fileName = $("#file-name").text();
+    if (!fileName) {
+      $("#file-name").text("Untitled");
+    }
+  })
+  .on("keypress", (e) => {
+    if (e.which === 13) {
+      e.preventDefault();
+    }
+    if (e.which === 32) {
+      e.preventDefault();
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0); // Get current caret position
+
+      // Insert a space character at the caret position
+      const spaceNode = document.createTextNode(" ");
+      range.insertNode(spaceNode);
+
+      // Move the caret to the right of the inserted space
+      range.setStartAfter(spaceNode);
+      range.collapse(true); // Collapse to the new caret position
+
+      // Update the selection to the new caret position
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  })
+  .on("paste", async (e) => {
+    e.preventDefault();
+    const rawText = await navigator.clipboard.readText();
+    const newFileName = rawText.trim().replace(/(\r\n|\n|\r)/gm, " ");
+    $("#file-name").text(newFileName);
+  });
+
 $("#editor").on("mouseover", (e) => {
   if (e.target.tagName === "A") {
     const href = e.target.href;
@@ -52,15 +94,17 @@ $("#upload-file").on("click", () => {
 
 $("#save-file").on("click", async () => {
   const pathname = window.location.pathname;
-  const file = $("#editor").html();
+  const fileName = $("#file-name").text();
+  const fileBody = $("#editor").html();
   const response = await fetch(pathname, {
-    method: "PUT",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     mode: "same-origin",
     body: JSON.stringify({
-      file: file,
+      fileName: fileName,
+      fileBody: fileBody,
     }),
   });
   console.log(response);

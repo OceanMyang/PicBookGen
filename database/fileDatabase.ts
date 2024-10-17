@@ -1,5 +1,6 @@
 import mysql, { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { v4 as uuid } from 'uuid';
+import { DataNotFoundException, DeletedException, InternalServerException } from '../utils/error.utils';
 
 const con = await mysql.createConnection({
   host: 'localhost',
@@ -18,9 +19,18 @@ PRIMARY KEY(fileID)\n
 );\n`;
 
 export default class FileDatabase {
+  /**
+   * Initializes the database by creating the "files" table if it does not already exist.
+   * 
+   * This method executes an SQL query to create the "files" table. If the table already exists,
+   * it logs a message indicating that the table already exists. If the table is created successfully,
+   * it logs a message indicating that the table was created. If there is an error during the execution
+   * of the query, it logs the error.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the initialization is complete.
+   */
   static async init() {
-    // Create table files if not exists
-    con.query<ResultSetHeader>(createFilesTable)
+    await con.query<ResultSetHeader>(createFilesTable)
       .then(([results, fields]) => {
         if (results.affectedRows === 0) {
           console.log("Table files already exists.");
@@ -30,12 +40,21 @@ export default class FileDatabase {
       })
       .catch((err) => {
         console.log(err);
+        throw new InternalServerException("initializing the database");
       })
   }
 
-  // List all files (uuid) in the database
+  /**
+   * Retrieves a list of file IDs from the "files" table where the files have not been marked as deleted.
+   * 
+   * This method executes an SQL query to select the file IDs from the "files" table where the `deletedAt` 
+   * column is null. It returns a promise that resolves to an array of file IDs. If there is an error 
+   * during the execution of the query, it logs the error and returns an empty array.
+   * 
+   * @returns {Promise<string[]>} A promise that resolves to an array of file IDs.
+   */
   static async listFiles(): Promise<string[]> {
-    return con.query<RowDataPacket[]>("select fileID from files where deletedAt is null")
+    return await con.query<RowDataPacket[]>("select fileID from files where deletedAt is null")
       .then(([results, fields]) => {
         return results.map((row) => row['fileID']);
       })
@@ -45,9 +64,17 @@ export default class FileDatabase {
       })
   }
 
-  // List all files (uuid) and names in the database
+  /**
+   * Retrieves a list of file IDs and names from the "files" table where the files have not been marked as deleted.
+   * 
+   * This method executes an SQL query to select the file IDs and names from the "files" table where the `deletedAt` 
+   * column is null. It returns a promise that resolves to an array of JSON objects representing the file IDs and names.
+   * If there is an error during the execution of the query, it logs the error and returns an empty array.
+   * 
+   * @returns {Promise<JSON[]>} A promise that resolves to an array of JSON objects containing file IDs and names.
+   */
   static async listFilesAndNames(): Promise<JSON[]> {
-    return con.query<mysql.RowDataPacket[]>("select fileID, name from files where deletedAt is null")
+    return await con.query<mysql.RowDataPacket[]>("select fileID, name from files where deletedAt is null")
       .then(([results, fields]) => {
         return JSON.parse(JSON.stringify(results));
       })
@@ -57,83 +84,157 @@ export default class FileDatabase {
       })
   }
 
-  // Register a new file into the database and returns the file
+  /**
+   * Registers a new file into the database and returns the file data.
+   * 
+   * This method generates a unique file ID and inserts a new record into the "files" table with the provided
+   * name and author. After inserting the record, it retrieves the file data using the `findFileAdmin` method
+   * and returns it as a JSON object. If there is an error during the execution of the query, it logs the error
+   * and throws an `InternalServerException`.
+   * 
+   * @param {string} name - The name of the file to be registered.
+   * @param {string} author - The author of the file to be registered.
+   * @returns {Promise<JSON>} A promise that resolves to a JSON object containing the file data.
+   * @throws {InternalServerException} If an unexpected error occurs while registering the new file.
+   */
   static async regisFile(
     name: string,
     author: string
   ): Promise<JSON> {
     var fileID: string = uuid();
-    return con.query("insert into files (fileID, name, author) values (?, ?, ?)", [fileID, name, author])
+
+    return await con.query("insert into files (fileID, name, author) values (?, ?, ?)", [fileID, name, author])
       .then(async () => {
-        var fileStats = await this.getFile(fileID);
-        return JSON.parse(JSON.stringify(fileStats));
+        var fileData = await this.findFileAdmin(fileID);
+        return JSON.parse(JSON.stringify(fileData));
       })
       .catch((err) => {
         console.log(err);
-        return null;
+        throw new InternalServerException("registering a new file");
       })
   }
 
-  // Find the file information for the client
+  /**
+   * Finds a file in the database by its file ID.
+   * 
+   * This method executes an SQL query to select all columns from the "files" table where the `fileID` matches
+   * the provided file ID and the `deletedAt` column is null. It returns a promise that resolves to a JSON object
+   * containing the file data. If the file is not found or has been marked as deleted, it throws appropriate exceptions.
+   * If there is an error during the execution of the query, it logs the error and throws an `InternalServerException`.
+   * 
+   * @param {string} fileID - The ID of the file to be found.
+   * @returns {Promise<JSON>} A promise that resolves to a JSON object containing the file data.
+   * @throws {DataNotFoundException} If the file is not found.
+   * @throws {DeletedException} If the file has been marked as deleted.
+   * @throws {InternalServerException} If an unexpected error occurs while searching for the file.
+   */
   static async findFile(fileID: string): Promise<JSON> {
-    return con.query<mysql.RowDataPacket[]>("select * from files where fileID = ? and deletedAt is null", [fileID])
-      .then(([results, fields]) => {
-        if (results.length === 0) {
-          console.log(`File ${fileID} is not found.`);
-          return null;
-        }
-        return JSON.parse(JSON.stringify(results[0]));
-      })
-      .catch((err) => {
-        console.log(err);
-        return null;
-      })
+    var fileData = await this.findFileAdmin(fileID);
+
+    if (!fileData) {
+      throw new DataNotFoundException("File", fileID);
+    }
+
+    if (fileData['deletedAt']) {
+      throw new DeletedException("File", fileID);
+    }
+
+    return fileData;
   }
 
-  // Rename a file and returns the renamed file
+  /**
+   * Renames a file in the database by its file ID.
+   * 
+   * This method first checks if the file exists and is not marked as deleted by calling the `findFileAdmin` method.
+   * If the file is not found or is marked as deleted, it throws appropriate exceptions. It then executes an SQL query 
+   * to update the name of the file in the "files" table where the `fileID` matches the provided file ID. After renaming 
+   * the file, it retrieves the updated file data using the `findFileAdmin` method and returns it as a JSON object. If 
+   * there is an error during the execution of the query, it logs the error and throws an `InternalServerException`.
+   * 
+   * @param {string} fileID - The ID of the file to be renamed.
+   * @param {string} name - The new name for the file.
+   * @returns {Promise<JSON | null>} A promise that resolves to a JSON object containing the updated file data, or null if the file is not found.
+   * @throws {DataNotFoundException} If the file is not found.
+   * @throws {DeletedException} If the file has been marked as deleted.
+   * @throws {InternalServerException} If an unexpected error occurs while renaming the file.
+   */
   static async renameFile(
     fileID: string,
     name: string,
   ): Promise<JSON | null> {
-    if (await this.findFile(fileID)) {
-      return con.query("update files set name = ? where fileID = ? and deletedAt is null", [name, fileID])
-        .then(() => {
-          console.log(`File ${fileID} renamed to ${name}.`);
-          var fileStats = this.getFile(fileID);
-          return JSON.parse(JSON.stringify(fileStats));
-        })
-        .catch((err) => {
-          console.log(err);
-          return null;
-        })
-    } else {
-      console.log(`File ${fileID} is not found.`);
-      return null;
+    var fileData = await this.findFileAdmin(fileID);
+
+    if (!fileData) {
+      throw new DataNotFoundException("File", fileID);
     }
+
+    if (fileData['deletedAt']) {
+      throw new DeletedException("File", fileID);
+    }
+
+    return await con.query("update files set name = ? where fileID = ?", [name, fileID])
+      .then(async () => {
+        console.log(`File ${fileID} renamed to ${name}.`);
+        fileData = await this.findFileAdmin(fileID);
+        return JSON.parse(JSON.stringify(fileData));
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new InternalServerException("renaming the file");
+      })
   }
 
-  // Delete a file and returns the deleted file
+  /**
+   * Marks a file as deleted in the database by its file ID.
+   * 
+   * This method first checks if the file exists and is not already marked as deleted by calling the `findFileAdmin` method.
+   * If the file is not found or is marked as deleted, it throws appropriate exceptions. It then executes an SQL query 
+   * to update the `deletedAt` column of the file in the "files" table to the current timestamp. After marking the file 
+   * as deleted, it retrieves the updated file data using the `findFileAdmin` method and returns it as a JSON object. 
+   * If there is an error during the execution of the query, it logs the error and throws an `InternalServerException`.
+   * 
+   * @param {string} fileID - The ID of the file to be marked as deleted.
+   * @returns {Promise<JSON | null>} A promise that resolves to a JSON object containing the updated file data, or null if the file is not found.
+   * @throws {DataNotFoundException} If the file is not found.
+   * @throws {DeletedException} If the file has been marked as deleted.
+   * @throws {InternalServerException} If an unexpected error occurs while deleting the file.
+   */
   static async deleteFile(fileID: string): Promise<JSON | null> {
-    if (await this.findFile(fileID)) {
-      return con.query("update files set deletedAt = CURRENT_TIMESTAMP where fileID = ? and deletedAt is null", [fileID])
-        .then(async () => {
-          console.log(`File ${fileID} deleted.`);
-          var fileStats = await this.getFile(fileID);
-          return JSON.parse(JSON.stringify(fileStats));
-        })
-        .catch((err) => {
-          console.log(err);
-          return null;
-        })
-    } else {
-      console.log(`File ${fileID} is not found.`);
-      return null;
+    var fileData = await this.findFileAdmin(fileID);
+
+    if (!fileData) {
+      throw new DataNotFoundException("File", fileID);
     }
+
+    if (fileData['deletedAt']) {
+      throw new DeletedException("File", fileID);
+    }
+
+    return await con.query("update files set deletedAt = CURRENT_TIMESTAMP where fileID = ?", [fileID])
+      .then(async () => {
+        console.log(`File ${fileID} deleted.`);
+        fileData = await this.findFileAdmin(fileID);
+        return JSON.parse(JSON.stringify(fileData));
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new InternalServerException("deleting the file");
+      })
   }
 
-  // Get the file information even if it is deleted
-  private static async getFile(fileID: string): Promise<JSON> {
-    return con.query<mysql.RowDataPacket[]>("select * from files where fileID = ?", [fileID])
+  /**
+   * Finds a file in the database by its file ID, including deleted files.
+   * 
+   * This method executes an SQL query to select all columns from the "files" table where the `fileID` matches
+   * the provided file ID. It returns a promise that resolves to a JSON object containing the file data. If the 
+   * file is not found, it logs a message and returns null. If there is an error during the execution of the query, 
+   * it logs the error and returns null.
+   * 
+   * @param {string} fileID - The ID of the file to be found.
+   * @returns {Promise<JSON | null>} A promise that resolves to a JSON object containing the file data, or null if the file is not found.
+   */
+  private static async findFileAdmin(fileID: string): Promise<JSON> {
+    return await con.query<mysql.RowDataPacket[]>("select * from files where fileID = ?", [fileID])
       .then(([results, fields]) => {
         if (results.length === 0) {
           console.log(`File ${fileID} is not found.`);

@@ -6,12 +6,12 @@ header {
     text-align: center;
 }
 
-.bicontainer {
-    display: flex;
+.bicontainer > div {
+    width: 50%;
 }
 
-.bicontainer div {
-    width: 50%;
+#file-name {
+    font-size: xx-large;
 }
 
 #editor {
