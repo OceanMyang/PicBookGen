@@ -6,27 +6,31 @@ header {
     text-align: center;
 }
 
-.bicontainer > div {
-    width: 50%;
+nav {
+    border-bottom: solid black 1px;
 }
 
-#file-name {
+#index-button {
     font-size: xx-large;
 }
 
-#editor {
+#title-container {
+    font-size: xx-large;
+}
+
+.split-view > div {
+    width: 50%;
+}
+
+#text-viewer {
     border-right: solid black 1px;
-    height: 84vh;
     overflow-y: auto;
+    height: 85vh;
 }
 
 #image-viewer {
     max-width: 100%;
     height: auto;
-}
-
-nav {
-    border: solid black 1px;
 }
 
 .btn {
@@ -36,4 +40,17 @@ nav {
 .btn-light {
     background-color: white;
     border-color: white;
+}
+
+.full {
+    height: 100%;
+    width: 100%;
+}
+
+img {
+    border: gainsboro 1px solid;
+}
+
+iframe {
+    border: gainsboro 1px solid;
 }

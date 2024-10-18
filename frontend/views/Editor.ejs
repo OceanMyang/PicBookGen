@@ -1,20 +1,25 @@
 <%- include('header', { title: fileName }) %>
 
 	<body>
-		<div id="file-name" class="btn-light" contenteditable="plaintext-only"><%= fileName %></div>
-		<nav class="bicontainer navbar navbar-expand">
-			<div id="file-menu">
-				<a id="open-file" type="button" class="btn btn-outline-primary" href="../../">Back</a>
-				<button id="save-file" type="button" class="btn btn-primary">Save</button>
-				<button id="new-file" class="btn btn-primary" href="#">New</button>
-				<button id="upload-file" class="btn btn-primary">Upload</button>
-			</div>
-			<div id="action-menu">
-				<button id="add-link" type="button" class="btn btn-primary">Add Image</button>
+		<nav class="navbar navbar-expand">
+			<a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
+				<img style="height: 2em; border: none; " src="/res/file.ico" alt="Back">
+			</a>
+			<div id="title-container" class="btn-light" contenteditable="plaintext-only"><%- fileName -%>
 			</div>
 		</nav>
-		<div class="bicontainer">
-			<div id="editor" contenteditable="plaintext-only"><%- fileHTML -%></div>
+		<nav class="split-view navbar navbar-expand">
+			<div id="file-menu">
+				<button id="save-button" type="button" class="btn btn-primary">Save</button>
+				<button id="new-button" class="btn btn-primary" href="#">New</button>
+				<button id="upload-button" class="btn btn-primary">Upload</button>
+			</div>
+			<div id="image-menu">
+				<button id="image-button" type="button" class="btn btn-primary">Image</button>
+			</div>
+		</nav>
+		<div class="split-view">
+			<div id="text-viewer" contenteditable="plaintext-only"><%- fileContent -%></div>
 			<div>
 				<img id="image-viewer" src="" alt="">
 			</div>
@@ -40,6 +45,5 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 		crossorigin="anonymous"></script>
-	<link rel="stylesheet" href="../../src/editor.css">
-	<script src="../../src/editor.js"></script>
+	<link rel="stylesheet" href="/css/style.css">
 	<%- include('footer') %>

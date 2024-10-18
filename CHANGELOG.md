@@ -28,7 +28,7 @@ Add MySQL database to the server.
 
 # Oct 16
 
-## Change 1
+## 1
 
 Add GET, POST methods to the server router:
 
@@ -38,8 +38,14 @@ POST: insert file data into database and write file content from system
 
 _I'm considering change the POST to PUT. PUT is more accurate here._
 
-## Change 2
+## 2
 
-Now the file-name div is content-editable. I used the script to make sure that the filename can't have line breaks.
+Now the title-container div is content-editable. I used the script to make sure that the filename can't have line breaks.
 
 I also changed the editor to plaintext-only so that user is unable to add html contents to it and break the style.
+
+## 3
+
+_Next step is to separate the script for each component into different files to make it more organized_.
+
+_Then compile all the scripts together when rendering the html_

@@ -1,0 +1,1 @@
+export const resPath = import.meta.dirname;

@@ -1,0 +1,16 @@
+<%- include('header', { title: fileName }) %>
+    <nav class="navbar navbar-expand">
+        <a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
+            <img style="height: 2em; border: none; " src="/res/file.ico" alt="Back">
+        </a>
+        <div id="title-container" class="btn-light"><%- fileName -%>
+        </div>
+    </nav>
+    <div class="split-view">
+        <div id="text-viewer"><%- fileContent -%></div>
+        <div>
+            <img id="image-viewer" src="" alt="">
+        </div>
+    </div>
+    <link rel="stylesheet" href="/css/style.css">
+    <%- include('footer') %>

@@ -1,11 +1,12 @@
-<%- include('header', { title: "Index" }) %>
+<%- include('header', { title: "PicBookGen" }) %>
 
 	<body>
 		<h1>Index</h1>
 		<% files.forEach(file=> { -%>
 			<a class="card d-inline-block" style="width: 10rem;" href="/edit/<%= file['fileID'] %>/">
-				<img class="card-img-top img-thumbnail" src="/res/file.ico" alt="File">
-				<span class="card-body">
+				<!-- <img class="full" src="/res/file.ico" alt="<%= file['name'] %>"> -->
+				<iframe class="full" src="/preview/<%= file['fileID'] %>" title="<%= file['name'] %>"></iframe>
+				<span class="card-body text-center">
 					<h3 class="card-title text-center">
 						<%= file['name'] %>
 					</h3>
@@ -13,4 +14,5 @@
 			</a>
 			<% }) %>
 	</body>
+	<link rel="stylesheet" href="/css/style.css">
 	<%- include('footer') %>
