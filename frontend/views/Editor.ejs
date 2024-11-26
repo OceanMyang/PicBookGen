@@ -1,3 +1,5 @@
+<!-- Require { fileName: string, fileContent: string, scripts: string[] } -->
+
 <%- include('header', { title: fileName }) %>
 
 	<body>
@@ -5,14 +7,14 @@
 			<a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
 				<img style="height: 2em; border: none; " src="/res/file.ico" alt="Back">
 			</a>
-			<div id="title-container" class="btn-light" contenteditable="plaintext-only"><%- fileName -%>
-			</div>
+			<div id="title-container" class="btn-light" contenteditable="plaintext-only"><%- fileName -%></div>
 		</nav>
 		<nav class="split-view navbar navbar-expand">
 			<div id="file-menu">
-				<button id="save-button" type="button" class="btn btn-primary">Save</button>
+				<button id="save-button" class="btn btn-primary">Save</button>
 				<button id="new-button" class="btn btn-primary" href="#">New</button>
 				<button id="upload-button" class="btn btn-primary">Upload</button>
+				<button id="delete-button" class="btn btn-primary">Delete</button>
 			</div>
 			<div id="image-menu">
 				<button id="image-button" type="button" class="btn btn-primary">Image</button>
@@ -46,4 +48,7 @@
 		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 		crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="/css/style.css">
-	<%- include('footer') %>
+	<% scripts.forEach(script=> { -%>
+		<script src="/js/<%= script %>"></script>
+		<% }) %>
+			<%- include('footer') %>

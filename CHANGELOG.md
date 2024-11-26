@@ -49,3 +49,20 @@ I also changed the editor to plaintext-only so that user is unable to add html c
 _Next step is to separate the script for each component into different files to make it more organized_.
 
 _Then compile all the scripts together when rendering the html_
+
+# Oct 18
+
+* Reorganized the frontend file structure.
+
+  * Removed the public directory
+  * Add css and js directories
+* Separated different components' codes into different files
+
+  * For example: $("#image-viewer").on ... -> imageViewer.js
+* Renamed html components
+
+  * file-name -> title-container
+  * editor / reader -> text-viewer
+  * new-file / save-file / add-link -> new-button save-button image-button
+  * back -> index-button
+* Align the index-button with the file title

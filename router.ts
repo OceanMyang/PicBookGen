@@ -1,14 +1,15 @@
 import express, { json, Response, Request, ErrorRequestHandler, NextFunction } from "express";
-import { join } from "path";
+import { join, parse } from "path";
 import { validate } from "uuid";
 import FileDatabase from "./database/fileDatabase";
-import FileSystem from "./files/fileStorage";
+import FileManager from "./files/fileManager";
 import { BadRequestException, DataNotFoundException, HttpException, NotFoundException } from "./utils/error.utils";
 import { resPath } from "./frontend/res/res.path";
 import { viewPath } from "./frontend/views/view.path";
 import { filesPath } from "./files/files.path";
 import { cssPath } from "./frontend/css/css.path";
 import { jsPath } from "./frontend/js/js.path";
+import { required } from "./frontend/js/js.required";
 
 const router = express();
 const port = process.env.PORT || 3000;
@@ -17,16 +18,18 @@ const handlerError = "Error in ErrorHandler";
 router.set("views", viewPath);
 router.set("view engine", "ejs");
 router.use(json());
-router.use("/js", express.static(jsPath));
 router.use("/css", express.static(cssPath));
 router.use("/res", express.static(resPath));
 
 router.route("/").get(async (req, res) => {
   var files = await FileDatabase.listFilesAndNames();
+
+  var scripts = required["Index"];
+
   if (files.length === 0) {
     res.render("EmptyIndex");
   } else {
-    res.render("Index", { files: files });
+    res.render("Index", { files: files, scripts: scripts });
   }
 });
 
@@ -44,15 +47,17 @@ router
         throw new DataNotFoundException("File", fileID);
       }
 
+      router.use(`/edit/${fileID}`, express.static(join(filesPath, fileID)));
+
       var fileData = await FileDatabase.findFile(fileID);
 
-      var fileBuffer = await FileSystem.readFile(fileID);
+      var fileBuffer = await FileManager.readFile(fileID);
 
       var fileContent = fileBuffer.toString('utf-8');
 
-      router.use(`/edit/${fileID}`, express.static(join(filesPath, fileID)));
+      var scripts = required["Editor"];
 
-      res.render("Editor", { fileName: fileData['name'], fileContent: fileContent });
+      res.render("Editor", { fileName: fileData['name'], fileContent: fileContent, scripts: scripts });
     }
     catch (err) {
       errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
@@ -71,35 +76,78 @@ router
         throw new DataNotFoundException("File", fileID);
       }
 
-      if (!fileBody) {
+      if (fileBody === undefined) {
         throw new BadRequestException("fileBody");
       }
 
-      if (!fileName) {
+      if (fileName === undefined) {
         throw new BadRequestException("fileName");
       }
 
       var fileData = await FileDatabase.findFile(fileID);
 
-      if (fileName !== fileData['name']) {
+      if (fileName != fileData['name']) {
         await FileDatabase.renameFile(fileID, fileName);
       }
 
-      await FileSystem.writeFile(fileID, fileBody);
+      await FileManager.writeFile(fileID, fileBody);
 
-      var fileBuffer = await FileSystem.readFile(fileID);
-
-      var fileContent = fileBuffer.toString('utf-8');
-
-      res.render("Editor", { fileName: fileName, fileContent: fileContent });
+      res.redirect(`/edit/${fileID}`);
     }
     catch (err) {
       errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
     }
-  });
+  })
+  .delete(async (req, res) => {
+    try {
+      const { fileID } = req.params;
+
+      if (!fileID) {
+        throw new BadRequestException("fileID");
+      }
+
+      if (!validate(fileID)) {
+        throw new DataNotFoundException("File", fileID);
+      }
+
+      await FileDatabase.archiveFile(fileID);
+
+      res.redirect("/");
+    }
+    catch (err) {
+      errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    }
+  })
 
 router.get("/edit", (req, res) => {
   res.redirect("/");
+});
+
+router.post("/new", async (req, res) => {
+  try {
+    var { fileName, fileBody } = req.body;
+
+    if (!fileName) {
+      fileName = "Untitled";
+    }
+
+    fileName = parse(fileName).name;
+
+    var fileData = await FileDatabase.enterFile(fileName);
+
+    var fileID = fileData['fileID'];
+
+    await FileManager.createFile(fileID);
+
+    if (fileBody) {
+      await FileManager.writeFile(fileID, fileBody);
+    }
+
+    res.redirect(`/edit/${fileID}`);
+  }
+  catch (err) {
+    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+  }
 });
 
 router.get("/read/:fileID", async (req, res) => {
@@ -116,7 +164,7 @@ router.get("/read/:fileID", async (req, res) => {
 
     var fileData = await FileDatabase.findFile(fileID);
 
-    var fileBuffer = await FileSystem.readFile(fileID);
+    var fileBuffer = await FileManager.readFile(fileID);
 
     var fileContent = fileBuffer.toString('utf-8');
 
@@ -141,13 +189,28 @@ router.get("/preview/:fileID", async (req, res) => {
       throw new DataNotFoundException("File", fileID);
     }
 
-    await FileDatabase.findFile(fileID);
+    var fileData = await FileDatabase.findFile(fileID);
 
-    var fileBuffer = await FileSystem.readFile(fileID);
+    var fileBuffer = await FileManager.readFile(fileID);
 
     var fileContent = fileBuffer.toString('utf-8');
 
-    res.render("Preview", { fileContent: fileContent });
+    res.render("Preview", { fileName: fileData['name'], fileContent: fileContent });
+  }
+  catch (err) {
+    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+  }
+});
+
+
+router.get("/js/:scriptName", async (req, res) => {
+  try {
+    const { scriptName } = req.params;
+
+    if (!scriptName) {
+      throw new BadRequestException("scriptName");
+    }
+    res.sendFile(join(jsPath, "public", scriptName));
   }
   catch (err) {
     errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
@@ -179,10 +242,10 @@ const errorHandler: ErrorRequestHandler = (
   }
 
   if (error instanceof HttpException) {
-    console.log(error);
+    // console.log(error);
     res.status(error.status).render("Error", { message: error.message });
   } else {
-    console.log(error);
+    // console.log(error);
     res.status(500).render("Error", { message: "Internal Server Error" });
   }
 };

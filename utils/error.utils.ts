@@ -54,4 +54,4 @@ export class AccessDeniedException extends HttpException {
   }
 }
 
-export type ExceptionObjectNames = "Page" | "File" | "Image";
+export type ExceptionObjectNames = "Page" | "File" | "Image" | "Script";

@@ -4,7 +4,8 @@ import { DataNotFoundException, DeletedException, InternalServerException } from
 
 const con = await mysql.createConnection({
   host: 'localhost',
-  user: 'root',
+  user: 'user',
+  password: 'gl4572d2z',
   database: 'files',
 });
 
@@ -29,7 +30,7 @@ export default class FileDatabase {
    * 
    * @returns {Promise<void>} A promise that resolves when the initialization is complete.
    */
-  static async init() {
+  static async createTable(): Promise<void> {
     await con.query<ResultSetHeader>(createFilesTable)
       .then(([results, fields]) => {
         if (results.affectedRows === 0) {
@@ -97,15 +98,16 @@ export default class FileDatabase {
    * @returns {Promise<JSON>} A promise that resolves to a JSON object containing the file data.
    * @throws {InternalServerException} If an unexpected error occurs while registering the new file.
    */
-  static async regisFile(
+  static async enterFile(
     name: string,
-    author: string
+    author: string | null = null
   ): Promise<JSON> {
     var fileID: string = uuid();
 
     return await con.query("insert into files (fileID, name, author) values (?, ?, ?)", [fileID, name, author])
       .then(async () => {
-        var fileData = await this.findFileAdmin(fileID);
+        console.log(`File ${fileID} created in database.`);
+        var fileData = await this.getFile(fileID);
         return JSON.parse(JSON.stringify(fileData));
       })
       .catch((err) => {
@@ -129,7 +131,7 @@ export default class FileDatabase {
    * @throws {InternalServerException} If an unexpected error occurs while searching for the file.
    */
   static async findFile(fileID: string): Promise<JSON> {
-    var fileData = await this.findFileAdmin(fileID);
+    var fileData = await this.getFile(fileID);
 
     if (!fileData) {
       throw new DataNotFoundException("File", fileID);
@@ -162,7 +164,7 @@ export default class FileDatabase {
     fileID: string,
     name: string,
   ): Promise<JSON | null> {
-    var fileData = await this.findFileAdmin(fileID);
+    var fileData = await this.getFile(fileID);
 
     if (!fileData) {
       throw new DataNotFoundException("File", fileID);
@@ -174,8 +176,8 @@ export default class FileDatabase {
 
     return await con.query("update files set name = ? where fileID = ?", [name, fileID])
       .then(async () => {
-        console.log(`File ${fileID} renamed to ${name}.`);
-        fileData = await this.findFileAdmin(fileID);
+        console.log(`File ${fileID} (name: ${fileData['name']}) renamed to ${name} in database.`);
+        fileData = await this.getFile(fileID);
         return JSON.parse(JSON.stringify(fileData));
       })
       .catch((err) => {
@@ -199,8 +201,8 @@ export default class FileDatabase {
    * @throws {DeletedException} If the file has been marked as deleted.
    * @throws {InternalServerException} If an unexpected error occurs while deleting the file.
    */
-  static async deleteFile(fileID: string): Promise<JSON | null> {
-    var fileData = await this.findFileAdmin(fileID);
+  static async archiveFile(fileID: string): Promise<JSON | null> {
+    var fileData = await this.getFile(fileID);
 
     if (!fileData) {
       throw new DataNotFoundException("File", fileID);
@@ -212,8 +214,26 @@ export default class FileDatabase {
 
     return await con.query("update files set deletedAt = CURRENT_TIMESTAMP where fileID = ?", [fileID])
       .then(async () => {
-        console.log(`File ${fileID} deleted.`);
-        fileData = await this.findFileAdmin(fileID);
+        console.log(`File ${fileID} archived in database.`);
+        fileData = await this.getFile(fileID);
+        return JSON.parse(JSON.stringify(fileData));
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new InternalServerException("deleting the file");
+      })
+  }
+
+  static async deleteFile(fileID: string): Promise<JSON | null> {
+    var fileData = await this.getFile(fileID);
+
+    if (!fileData) {
+      throw new DataNotFoundException("File", fileID);
+    }
+
+    return await con.query("delete from files where fileID = ?", [fileID])
+      .then(async () => {
+        console.log(`File ${fileID} deleted from the database by admin.`);
         return JSON.parse(JSON.stringify(fileData));
       })
       .catch((err) => {
@@ -233,11 +253,11 @@ export default class FileDatabase {
    * @param {string} fileID - The ID of the file to be found.
    * @returns {Promise<JSON | null>} A promise that resolves to a JSON object containing the file data, or null if the file is not found.
    */
-  private static async findFileAdmin(fileID: string): Promise<JSON> {
+  private static async getFile(fileID: string): Promise<JSON> {
     return await con.query<mysql.RowDataPacket[]>("select * from files where fileID = ?", [fileID])
       .then(([results, fields]) => {
         if (results.length === 0) {
-          console.log(`File ${fileID} is not found.`);
+          console.log(`File ${fileID} does not exist in database.`);
           return null;
         }
         return JSON.parse(JSON.stringify(results[0]));

@@ -7,6 +7,7 @@
     "jquery": "^3.7.1",
     "mime-type": "^4.0.0",
     "mustache": "^4.2.0",
+    "mysql": "^2.18.1",
     "mysql2": "^3.11.3",
     "node.js": "^0.0.1-security",
     "tsx": "^4.19.1",
@@ -22,6 +23,7 @@
   "scripts": {
     "start": "npx tsx router.ts",
     "test": "npx tsx test.ts",
-    "dev": "npx tsx watch router.ts"
+    "dev": "npx tsx watch router.ts",
+    "del": "npx tsx delete.ts"
   }
 }
