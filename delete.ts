@@ -15,7 +15,7 @@ else if (!args[2]) {
 try {
     var fileID = args[2];
     await FileDatabase.deleteFile(fileID);
-    await FileManager.deleteFile(fileID);
+    // await FileManager.deleteFile(fileID);
     process.exit(0);
 } catch (err) {
     console.log(err);

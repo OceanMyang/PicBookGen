@@ -1,6 +1,6 @@
 import express, { json, Response, Request, ErrorRequestHandler, NextFunction } from "express";
 import { join, parse } from "path";
-import { validate } from "uuid";
+import { v4, validate } from "uuid";
 import FileDatabase from "./database/fileDatabase";
 import FileManager from "./files/fileManager";
 import { BadRequestException, DataNotFoundException, HttpException, NotFoundException } from "./utils/error.utils";
@@ -22,7 +22,7 @@ router.use("/css", express.static(cssPath));
 router.use("/res", express.static(resPath));
 
 router.route("/").get(async (req, res) => {
-  var files = await FileDatabase.listFilesAndNames();
+  var files = await FileDatabase.listFiles();
 
   var scripts = required["Index"];
 
@@ -131,11 +131,11 @@ router.post("/new", async (req, res) => {
       fileName = "Untitled";
     }
 
+    var fileID = v4();
+
     fileName = parse(fileName).name;
 
-    var fileData = await FileDatabase.enterFile(fileName);
-
-    var fileID = fileData['fileID'];
+    await FileDatabase.enterFile(fileID, fileName);
 
     await FileManager.createFile(fileID);
 

@@ -10,6 +10,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.11.3",
     "node.js": "^0.0.1-security",
+    "pg": "^8.13.1",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3",
     "uuid": "^10.0.0"
@@ -22,8 +23,9 @@
   },
   "scripts": {
     "start": "npx tsx router.ts",
-    "test": "npx tsx test.ts",
+    "test": "jest",
     "dev": "npx tsx watch router.ts",
-    "del": "npx tsx delete.ts"
+    "del": "npx tsx delete.ts",
+    "exp": "npx tsx exp.ts"
   }
 }
