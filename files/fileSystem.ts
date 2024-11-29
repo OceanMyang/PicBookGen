@@ -4,7 +4,7 @@ import { Stream } from "stream";
 import { filesPath } from "./files.path";
 import { AccessDeniedException, ConflictException, FileNotFoundException, InternalServerException } from "../utils/error.utils";
 
-export default class FileManager {
+export default class FileSystem {
 	static async readDir(): Promise<string[]> {
 		try {
 			var dirEnts = await fsp.readdir(filesPath, { withFileTypes: true });

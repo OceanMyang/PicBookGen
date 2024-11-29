@@ -1,6 +1,6 @@
-<!-- Require (files: JSON, scripts: string[]) -->
+<!-- Require (IDs: string[], names: string[], scripts: string[]) -->
 
-<%- include('header', { title: "PicBookGen" }) %>
+<%- include('header') %>
 
 	<body>
 		<nav class="navbar navbar-expand">
@@ -10,21 +10,28 @@
 			<div>
 				<button id="new-button" class="btn btn-primary" href="#">New</button>
 				<button id="upload-button" class="btn btn-primary">Upload</button>
+				<a href="/trash" class="btn btn-primary">Trash Can</a>
 			</div>
 		</nav>
-		<% files.forEach(file=> { -%>
-			<a class="card d-inline-block" style="width: 10rem;" href="/edit/<%= file['fileID'] %>/">
-				<!-- <img class="full" src="/res/file.ico" alt="<%= file['name'] %>"> -->
-				<iframe class="full" src="/preview/<%= file['fileID'] %>" title="<%= file['name'] %>"></iframe>
+		<% for (let i=0; i < IDs.length; i++) {-%>
+			<a class="card d-inline-flex" href="/edit/<%= IDs[i] %>/">
+				<iframe class="full" src="/<%= IDs[i] %>" title="<%= names[i] %>"></iframe>
 				<span class="card-body text-center">
-					<h3 class="card-title text-center">
-						<%= file['name'] %>
+					<h3 class="card-title text-center d-inline-flex">
+						<%= names[i] %>
 					</h3>
+					<form action="/delete/<%= IDs[i] %>/" method="post">
+						<button type="submit" class="border-0 btn-link">
+							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
+						</button>
+					</form>
 				</span>
 			</a>
-			<% }) %>
+			<% } %>
+				<% if (IDs.length===0) {-%>
+					<div> Click Add Files to add more files! </div>
+					<% } %>
 	</body>
-	<link rel="stylesheet" href="/css/style.css">
 	<% scripts.forEach(script=> { -%>
 		<script src="/js/<%= script %>"></script>
 		<% }) %>

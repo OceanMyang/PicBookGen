@@ -1,12 +1,14 @@
-$("#delete-button").on('click', () => {
-    $.ajax({
-        url: window.location.pathname,
-        type: 'DELETE',
-        success: function(result) {
-            window.location.href = '/';
-        },
-        error: function(xhr, status, error) {
-            console.error('Error: ' + error);
-        }
+$(".delete-button").each((index, button) => {
+  var id = $(button).data("id");
+  $(button).on("click", async () => {
+    console.log(id);
+    var response = await fetch(`/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "text/html",
+      },
     });
+    console.log(response);
+    window.location.href = response.url;
+  });
 });

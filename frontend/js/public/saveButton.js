@@ -1,8 +1,8 @@
 $("#save-button").on("click", async () => {
-  const pathname = window.location.pathname;
-  const fileName = $("#title-container").text();
-  const fileBody = $("#text-viewer").html();
-  const response = await fetch(pathname, {
+  var pathname = window.location.pathname;
+  var fileName = $("#title-container").text();
+  var fileBody = $("#text-viewer").html();
+  var response = await fetch(pathname, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

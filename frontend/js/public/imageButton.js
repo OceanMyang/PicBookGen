@@ -1,10 +1,10 @@
 $("#image-button").on("click", async () => {
-  const selection = window.getSelection();
-  const selectedText = selection.toString();
+  var selection = window.getSelection();
+  var selectedText = selection.toString();
   if (selectedText && !/^\s+$/.test(selectedText)) {
-    const range = selection.getRangeAt(0);
+    var range = selection.getRangeAt(0);
     if (range.startContainer === range.endContainer) {
-      const anchor = $("<a/>", {
+      var anchor = $("<a/>", {
         class: "view",
         href: "../../res/loading-sm.gif",
       })
@@ -17,15 +17,15 @@ $("#image-button").on("click", async () => {
       range.deleteContents();
       range.insertNode(anchor[0]);
 
-      const temp = await postImage(selectedText);
+      var temp = await postImage(selectedText);
 
       anchor.attr("href", temp.output_url);
     }
   }
 });
 
-const postImage = async (text) => {
-  const resp = await fetch("https://api.deepai.org/api/text2img", {
+var postImage = async (text) => {
+  var response = await fetch("https://api.deepai.org/api/text2img", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -36,7 +36,7 @@ const postImage = async (text) => {
     }),
   });
 
-  const data = await resp.json();
+  var data = await response.json();
   console.log(data);
   return data;
 };

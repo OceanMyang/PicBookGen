@@ -1,9 +1,10 @@
 $("#new-button").on("click", async () => {
-  const response = await fetch("/new", {
+  var response = await fetch("/new", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "text/html",
     },
   });
   console.log(response);
+  window.location.href = response.url;
 });

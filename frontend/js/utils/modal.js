@@ -1,15 +1,15 @@
 const sendMessage = (title, message) => {
-  var modal = $("#message");
+  var modal = $("#modal");
   modal.find(".modal-title").text(title);
   modal.find(".modal-body").text(message);
   modal.modal("show");
   console.log(message);
 };
 
-$("#message")
+$("#modal")
   .find(".close")
   .on("click", () => {
-    $("#message").modal("hide");
+    $("#modal").modal("hide");
   });
 
 module.exports = sendMessage;

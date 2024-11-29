@@ -1,14 +1,14 @@
 $("#title-container")
   .on("click", (e) => {
-    const fileName = $("#title-container").text();
-    if (fileName === "Untitled") {
+    var fileName = $("#title-container").text();
+    if (fileName === "New File") {
       window.getSelection().selectAllChildren(e.target);
     }
   })
   .on("input", (e) => {
-    const fileName = $("#title-container").text();
+    var fileName = $("#title-container").text();
     if (!fileName) {
-      $("#title-container").text("Untitled");
+      $("#title-container").text("New File");
     }
   })
   .on("keypress", (e) => {
@@ -17,11 +17,11 @@ $("#title-container")
     }
     if (e.which === 32) {
       e.preventDefault();
-      const selection = window.getSelection();
-      const range = selection.getRangeAt(0); // Get current caret position
+      var selection = window.getSelection();
+      var range = selection.getRangeAt(0); // Get current caret position
 
       // Insert a space character at the caret position
-      const spaceNode = document.createTextNode(" ");
+      var spaceNode = document.createTextNode(" ");
       range.insertNode(spaceNode);
 
       // Move the caret to the right of the inserted space
@@ -35,7 +35,7 @@ $("#title-container")
   })
   .on("paste", async (e) => {
     e.preventDefault();
-    const rawText = await navigator.clipboard.readText();
-    const newFileName = rawText.trim().replace(/(\r\n|\n|\r)/gm, " ");
+    var rawText = await navigator.clipboard.readText();
+    var newFileName = rawText.trim().replace(/(\r\n|\n|\r)/gm, " ");
     $("#title-container").text(newFileName);
   });

@@ -13,8 +13,17 @@ console.log("Connected to database");
 
 export default class FileDatabase {
   static async listFiles(): Promise<JSON[]> {
-    return await pool.query("select fileID, name from files where deletedAt is null;")
-      .then(results => results.rows)
+    return await pool.query("select * from files where deletedAt is null;")
+      .then(({ rows }) => rows)
+      .catch((err) => {
+        console.log(err);
+        return [];
+      })
+  }
+
+  static async listArchivedFiles(): Promise<JSON[]> {
+    return await pool.query("select * from files where deletedAt is not null;")
+      .then(({ rows }) => rows)
       .catch((err) => {
         console.log(err);
         return [];
@@ -112,6 +121,10 @@ export default class FileDatabase {
   }
 
   static async deleteFile(fileID: string): Promise<JSON | null> {
+    if (!validate(fileID)) {
+      throw new DataNotFoundException("File", fileID);
+    }
+
     var fileData = await this.getFile(fileID);
 
     if (!fileData) {

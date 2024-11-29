@@ -7,6 +7,7 @@ export const required = {
         "newButton.js",
         "saveButton.js",
         "uploadButton.js",
+        "deleteButton.js",
         "imageButton.js",
         "textViewer.js",
         "titleContainer.js"
