@@ -14,17 +14,21 @@
 			</div>
 		</nav>
 		<% for (let i=0; i < IDs.length; i++) {-%>
-			<a class="card d-inline-flex" href="/edit/<%= IDs[i] %>/">
+			<div id="<%= IDs[i] %>" class="card d-inline-flex">
 				<iframe class="full" src="/<%= IDs[i] %>" title="<%= names[i] %>"></iframe>
 				<span class="card-body text-center">
-					<h3 class="card-title text-center d-inline-flex">
-						<%= names[i] %>
-					</h3>
-					<button data-id="<%= IDs[i] %>" class="dump-button border-0 btn-link">
-						<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-					</button>
+					<a href="/edit/<%= IDs[i] %>/">
+						<h3 class="card-title text-center d-inline-flex">
+							<%= names[i] %>
+						</h3>
+					</a>
+					<div>
+						<button data-id="<%= IDs[i] %>" class="dump-button border-0 btn-link">
+							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
+						</button>
+					</div>
 				</span>
-			</a>
+			</div>
 			<% } %>
 				<% if (IDs.length===0) {-%>
 					<div> Click <button class="btn btn-primary">New</button> to add more files! </div>

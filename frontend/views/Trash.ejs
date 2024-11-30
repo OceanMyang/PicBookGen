@@ -10,12 +10,14 @@
 			<h1 class="d-inline-block">Trash Can</h1>
 		</nav>
 		<% for (let i=0; i < IDs.length; i++) {-%>
-			<a id="<%= IDs[i] %>" class="card d-inline-flex" href="#">
+			<div id="<%= IDs[i] %>" class="card d-inline-flex" href="#">
 				<iframe class="full" src="/res/file.png"></iframe>
 				<span class="card-body text-center">
-					<h3 class="card-title text-center d-inline-flex">
-						<%= names[i] %>
-					</h3>
+					<a href="#">
+						<h3 class="card-title text-center d-inline-flex">
+							<%= names[i] %>
+						</h3>
+					</a>
 					<div>
 						<button data-id="<%= IDs[i] %>" class="delete-button border-0 btn-link">
 							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
@@ -25,7 +27,7 @@
 						</button>
 					</div>
 				</span>
-			</a>
+			</div>
 			<% } %>
 	</body>
 	<div>

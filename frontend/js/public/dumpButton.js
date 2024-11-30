@@ -1,7 +1,9 @@
 const dump = async (path) => {
-  console.log(path);
   var response = await fetch(path, { method: "POST" });
   console.log(response);
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
 };
 
 $("#dump-button").on("click", async () => {
@@ -12,6 +14,7 @@ $("#dump-button").on("click", async () => {
 
 $(".dump-button").each((index, button) => {
   var id = $(button).data("id");
-  $(button).on("click", async () => await dump(`/delete/${id}`));
-  if (response.ok) $(`#${id}`).remove();
+  $(button).on("click", async () =>
+    dump(`/delete/${id}`).then(() => $(`#${id}`).remove())
+  );
 });
