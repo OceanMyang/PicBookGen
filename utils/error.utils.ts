@@ -31,8 +31,8 @@ export class NotFoundException extends HttpException {
 }
 
 export class DeletedException extends NotFoundException {
-  constructor(name: ExceptionObjectNames, id: number | string) {
-    super(name, id, "has already been deleted!");
+  constructor(name: ExceptionObjectNames, id: number | string, deleted: boolean = true) {
+    super(name, id, "has already been " + (deleted ? "deleted." : "restored."));
   }
 }
 

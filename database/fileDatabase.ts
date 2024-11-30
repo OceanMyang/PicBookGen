@@ -13,7 +13,7 @@ console.log("Connected to database");
 
 export default class FileDatabase {
   static async listFiles(): Promise<JSON[]> {
-    return await pool.query("select * from files where deletedAt is null;")
+    return await pool.query("select * from files where deletedat is null;")
       .then(({ rows }) => rows)
       .catch((err) => {
         console.log(err);
@@ -22,7 +22,7 @@ export default class FileDatabase {
   }
 
   static async listArchivedFiles(): Promise<JSON[]> {
-    return await pool.query("select * from files where deletedAt is not null;")
+    return await pool.query("select * from files where deletedat is not null;")
       .then(({ rows }) => rows)
       .catch((err) => {
         console.log(err);
@@ -59,7 +59,7 @@ export default class FileDatabase {
       throw new DataNotFoundException("File", fileID);
     }
 
-    if (fileData['deletedAt']) {
+    if (fileData['deletedat']) {
       throw new DeletedException("File", fileID);
     }
 
@@ -69,14 +69,14 @@ export default class FileDatabase {
   static async renameFile(
     fileID: string,
     name: string,
-  ): Promise<JSON | null> {
+  ): Promise<JSON> {
     var oldData = await this.getFile(fileID);
 
     if (!oldData) {
       throw new DataNotFoundException("File", fileID);
     }
 
-    if (oldData['deletedAt']) {
+    if (oldData['deletedat']) {
       throw new DeletedException("File", fileID);
     }
 
@@ -95,21 +95,21 @@ export default class FileDatabase {
       })
   }
 
-  static async archiveFile(fileID: string): Promise<JSON | null> {
+  static async archiveFile(fileID: string): Promise<JSON> {
     var oldData = await this.getFile(fileID);
 
     if (!oldData) {
       throw new DataNotFoundException("File", fileID);
     }
 
-    if (oldData['deletedAt']) {
+    if (oldData['deletedat']) {
       throw new DeletedException("File", fileID);
     }
 
-    return await pool.query("update files set deletedAt = CURRENT_TIMESTAMP where fileID::text = $1 returning *;", [fileID])
+    return await pool.query("update files set deletedat = CURRENT_TIMESTAMP where fileID::text = $1 returning *;", [fileID])
       .then(async ({ rows }) => {
         if (rows.length === 0) {
-          throw new InternalServerException("archiving the file");
+          throw new InternalServerException("deleting the file");
         }
         console.log(`File ${fileID} archived in database.`);
         return rows[0];
@@ -120,7 +120,32 @@ export default class FileDatabase {
       })
   }
 
-  static async deleteFile(fileID: string): Promise<JSON | null> {
+  static async restoreFile(fileID: string): Promise<JSON> {
+    var oldData = await this.getFile(fileID);
+
+    if (!oldData) {
+      throw new DataNotFoundException("File", fileID);
+    }
+
+    if (!oldData['deletedat']) {
+      throw new DeletedException("File", fileID, false);
+    }
+
+    return await pool.query("update files set deletedat = null where fileID::text = $1 returning *;", [fileID])
+      .then(async ({ rows }) => {
+        if (rows.length === 0) {
+          throw new InternalServerException("restoring the file");
+        }
+        console.log(`File ${fileID} restored in database.`);
+        return rows[0];
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new InternalServerException("restoring the file");
+      })
+  }
+
+  static async deleteFile(fileID: string): Promise<JSON> {
     if (!validate(fileID)) {
       throw new DataNotFoundException("File", fileID);
     }
@@ -131,9 +156,13 @@ export default class FileDatabase {
       throw new DataNotFoundException("File", fileID);
     }
 
+    if (!fileData['deletedat']) {
+      throw new DeletedException("File", fileID, false);
+    }
+
     return await pool.query("delete from files where fileID::text = $1;", [fileID])
       .then(async () => {
-        console.log(`File ${fileID} deleted from the database by admin.`);
+        console.log(`File ${fileID} deleted from the database permanently.`);
         return fileData;
       })
       .catch((err) => {
@@ -147,7 +176,7 @@ export default class FileDatabase {
       .then(async ({ rows }) => {
         if (rows.length === 0) {
           console.log(`File ${fileID} does not exist in database.`);
-          return null;
+          return {};
         }
         return rows[0];
       })

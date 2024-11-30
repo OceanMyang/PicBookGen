@@ -5,23 +5,32 @@
 	<body>
 		<nav class="navbar navbar-expand">
 			<a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
-				<img style="height: 2em; border: none; " src="/res/file.ico" alt="Back">
+				<img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
 			</a>
 			<h1 class="d-inline-block">Trash Can</h1>
 		</nav>
 		<% for (let i=0; i < IDs.length; i++) {-%>
-		<a class="card d-inline-flex" href="#">
-			<iframe class="full" src="/<%= IDs[i] %>" title="<%= names[i] %>"></iframe>
-			<span class="card-body text-center">
-				<h3 class="card-title text-center d-inline-flex">
-					<%= names[i] %>
-				</h3>
-				<button data-id="<%= IDs[i] %>" class="delete-button border-0 btn-link">
-					<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-				</button>
-			</span>
-		</a>
-		<% } %>
+			<a id="<%= IDs[i] %>" class="card d-inline-flex" href="#">
+				<iframe class="full" src="/res/file.png"></iframe>
+				<span class="card-body text-center">
+					<h3 class="card-title text-center d-inline-flex">
+						<%= names[i] %>
+					</h3>
+					<div>
+						<button data-id="<%= IDs[i] %>" class="delete-button border-0 btn-link">
+							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
+						</button>
+						<button data-id="<%= IDs[i] %>" class="restore-button border-0 btn-link">
+							<img class="border-0" src="/res/restore.ico" alt="restore" style="height: 2em;">
+						</button>
+					</div>
+				</span>
+			</a>
+			<% } %>
 	</body>
-	<script src="/js/deleteButton.js"></script>
+	<div>
+		<% scripts.forEach(script=> { -%>
+			<script src="/js/<%= script %>"></script>
+			<% }) %>
+	</div>
 	<%- include('footer') %>

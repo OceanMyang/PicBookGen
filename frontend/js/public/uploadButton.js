@@ -7,7 +7,7 @@ $("#upload-button").on("click", () => {
   var chosenfile = input.files ? input.files[0] : null;
   if (chosenfile) {
     if (!chosenfile.name.endsWith(".txt")) {
-      alert("Please select a .txt file!");
+      alert("Please select a valid file!");
     }
     var response = fetch("/new", {
       method: "POST",
@@ -16,5 +16,8 @@ $("#upload-button").on("click", () => {
       },
     });
     console.log(response);
+    if (!response.ok) {
+      alert("Please select a valid file!");
+    }
   }
 });

@@ -24,7 +24,7 @@ export default class FileSystem {
 			await fsp.mkdir(join(filesPath, fileID));
 			await fsp.writeFile(join(filesPath, fileID, "index.html"), "");
 			await fsp.mkdir(join(filesPath, fileID, "images"));
-			console.log(`Created file ${fileID}`);
+			console.log(`File ${fileID} created on server.`);
 		} catch (err) {
 			console.log(err);
 			switch (err.code) {
@@ -65,7 +65,7 @@ export default class FileSystem {
 
 		try {
 			await fsp.writeFile(join(filesPath, fileID, "index.html"), data);
-			console.log(`Wrote file ${fileID}`);
+			console.log(`File ${fileID} updated on server.`);
 		} catch (err) {
 			console.log(err);
 			switch (err.code) {
@@ -86,7 +86,7 @@ export default class FileSystem {
 
 		try {
 			await fsp.rm(join(filesPath, fileID), { recursive: true });
-			console.log(`Deleted file ${fileID}`);
+			console.log(`File ${fileID} deleted from server permanently.`);
 		} catch (err) {
 			console.log(err);
 			switch (err.code) {

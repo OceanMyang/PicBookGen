@@ -20,19 +20,19 @@
 					<h3 class="card-title text-center d-inline-flex">
 						<%= names[i] %>
 					</h3>
-					<form action="/delete/<%= IDs[i] %>/" method="post">
-						<button type="submit" class="border-0 btn-link">
-							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-						</button>
-					</form>
+					<button data-id="<%= IDs[i] %>" class="dump-button border-0 btn-link">
+						<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
+					</button>
 				</span>
 			</a>
 			<% } %>
 				<% if (IDs.length===0) {-%>
-					<div> Click Add Files to add more files! </div>
+					<div> Click <button class="btn btn-primary">New</button> to add more files! </div>
 					<% } %>
 	</body>
-	<% scripts.forEach(script=> { -%>
-		<script src="/js/<%= script %>"></script>
-		<% }) %>
-			<%- include('footer') %>
+	<div>
+		<% scripts.forEach(script=> { -%>
+			<script src="/js/<%= script %>"></script>
+			<% }) %>
+	</div>
+	<%- include('footer') %>

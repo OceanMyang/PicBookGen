@@ -36,7 +36,7 @@ var postImage = async (text) => {
     }),
   });
 
-  var data = await response.json();
+  var json = await response.json();
   console.log(data);
   return data;
 };

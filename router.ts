@@ -1,4 +1,5 @@
 import express, { json, Response, Request, ErrorRequestHandler, NextFunction } from "express";
+import bodyParser from "body-parser";
 import { join, parse } from "path";
 import { v4, validate } from "uuid";
 import FileDatabase from "./database/fileDatabase";
@@ -14,13 +15,15 @@ const router = express();
 const port = process.env.PORT || 3000;
 const handlerError = "Error in ErrorHandler";
 
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
 router.set("views", viewPath);
 router.set("view engine", "ejs");
-router.use(json());
 router.use("/css", express.static(cssPath));
 router.use("/res", express.static(resPath));
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  console.log(err);
   if (res.headersSent) {
     res.status(500).send("Internal Server Error");
     return;
@@ -154,22 +157,10 @@ router.get("/trash", async (req, res) => {
   try {
     var files = await FileDatabase.listArchivedFiles();
 
-    if (files.length === 0) {
-      res.render("Trash", { IDs: [], names: [] });
-      return;
-    }
-
-    if (!files[0]['fileid']) {
-      throw new InternalServerException("showing file id on the trash page");
-    }
-
-    if (!files[0]['name']) {
-      throw new InternalServerException("showing file names on the trash page");
-    }
-
     var IDs = files.map((file) => file['fileid']);
     var names = files.map((file) => file['name']);
-    res.render("Trash", { IDs: IDs, names: names });
+    var scripts = required["Trash"];
+    res.render("Trash", { IDs: IDs, names: names, scripts: scripts });
   } catch (err) {
     errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
   }
@@ -232,15 +223,38 @@ router
         throw new DataNotFoundException("File", fileID);
       }
 
-      await FileDatabase.deleteFile(fileID);
+      var fileData = await FileDatabase.deleteFile(fileID);
       await FileSystem.deleteFile(fileID);
 
-      res.redirect("/trash");
+      res.status(200).send(fileData);
     }
     catch (err) {
       errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
     }
   });
+
+router.post("/restore/:fileID", async (req, res) => {
+  try {
+    console.log("Restoring file");
+    
+    var { fileID } = req.params;
+
+    if (!fileID) {
+      throw new BadRequestException("fileID");
+    }
+
+    if (!validate(fileID)) {
+      throw new DataNotFoundException("File", fileID);
+    }
+
+    await FileDatabase.restoreFile(fileID);
+
+    res.redirect("/trash");
+  }
+  catch (err) {
+    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+  }
+});
 
 router.get("/js/:scriptName", async (req, res) => {
   try {
@@ -279,10 +293,8 @@ router.get("/:fileID", async (req, res, next) => {
 });
 
 router.get("*", (req, res) => {
-  errorHandler(
-    new NotFoundException("Page", req.url), req, res, () => {
-      res.status(500).send(handlerError);
-    });
+  errorHandler(new NotFoundException("Page", req.url),
+    req, res, () => res.status(500).send(handlerError));
 });
 
 router.listen(port, () => {

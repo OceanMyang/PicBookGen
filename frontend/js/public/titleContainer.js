@@ -5,7 +5,7 @@ $("#title-container")
       window.getSelection().selectAllChildren(e.target);
     }
   })
-  .on("input", (e) => {
+  .on("input", () => {
     var fileName = $("#title-container").text();
     if (!fileName) {
       $("#title-container").text("New File");
