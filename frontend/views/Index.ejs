@@ -8,8 +8,11 @@
 		</nav>
 		<nav class="navbar navbar-expand">
 			<div>
-				<button id="new-button" class="btn btn-primary" href="#">New</button>
+				<button id="new-button" class="btn btn-primary">New</button>
 				<button id="upload-button" class="btn btn-primary">Upload</button>
+				<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
+					<input id="input" type="file" accept=".txt" name="file" class="d-none">
+				</form>
 				<a href="/trash" class="btn btn-primary">Trash Can</a>
 			</div>
 		</nav>

@@ -1,0 +1,1 @@
+export const uploadPath = import.meta.dirname;

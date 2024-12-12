@@ -1,13 +1,13 @@
 $("#title-container")
   .on("click", (e) => {
-    var fileName = $("#title-container").text();
-    if (fileName === "New File") {
+    var filename = $("#title-container").text();
+    if (filename === "New File") {
       window.getSelection().selectAllChildren(e.target);
     }
   })
   .on("input", () => {
-    var fileName = $("#title-container").text();
-    if (!fileName) {
+    var filename = $("#title-container").text();
+    if (!filename) {
       $("#title-container").text("New File");
     }
   })

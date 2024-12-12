@@ -3,6 +3,7 @@ import { join } from "path";
 import { Stream } from "stream";
 import { filesPath } from "./files.path";
 import { AccessDeniedException, ConflictException, FileNotFoundException, InternalServerException } from "../utils/error.utils";
+import { uploadPath } from "../uploads/upload.path";
 
 export default class FileSystem {
 	static async readDir(): Promise<string[]> {
@@ -22,8 +23,9 @@ export default class FileSystem {
 
 		try {
 			await fsp.mkdir(join(filesPath, fileID));
-			await fsp.writeFile(join(filesPath, fileID, "index.html"), "");
 			await fsp.mkdir(join(filesPath, fileID, "images"));
+			var fd = await fsp.open(join(filesPath, fileID, "index.html"), fsp.constants.O_CREAT, 'w');
+			fd.close();
 			console.log(`File ${fileID} created on server.`);
 		} catch (err) {
 			console.log(err);
@@ -96,6 +98,50 @@ export default class FileSystem {
 					throw new AccessDeniedException(`no permission to delete file ${fileID} on server`);
 				default:
 					throw new InternalServerException("deleting the file");
+			}
+		}
+	}
+
+	static async deleteUpload(filename: string) {
+		if (filename.includes(".")) {
+			throw new FileNotFoundException("File", filename);
+		}
+
+		try {
+			await fsp.rm(join(uploadPath, filename));
+			console.log(`File ${filename} deleted from server permanently.`);
+		} catch (err) {
+			console.log(err);
+			switch (err.code) {
+				case "ENOENT":
+					throw new FileNotFoundException("File", filename);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to delete file ${filename} on server`);
+				default:
+					throw new InternalServerException("deleting the file");
+			}
+		}
+	}
+
+	static async uploadFile(fileID: string) {
+		if (fileID.includes(".")) {
+			throw new ConflictException("File", fileID);
+		}
+
+		try {
+			await fsp.mkdir(join(filesPath, fileID));
+			await fsp.mkdir(join(filesPath, fileID, "images"));
+			await fsp.rename(join(uploadPath, fileID), join(filesPath, fileID, "index.html"));
+			console.log(`File ${fileID} uploaded to server.`);
+		} catch (err) {
+			console.log(err);
+			switch (err.code) {
+				case "EEXIST":
+					throw new ConflictException("File", fileID);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to upload file ${fileID} on server`);
+				default:
+					throw new InternalServerException("uploading the file");
 			}
 		}
 	}

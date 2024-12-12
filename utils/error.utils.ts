@@ -13,8 +13,8 @@ export class InternalServerException extends HttpException {
 }
 
 export class BadRequestException extends HttpException {
-  constructor(name: string) {
-    super(400, `Bad Request: ${name} is missing in the request.`);
+  constructor(message: string) {
+    super(400, message);
   }
 }
 

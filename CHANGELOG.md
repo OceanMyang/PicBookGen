@@ -66,3 +66,12 @@ _Then compile all the scripts together when rendering the html_
   * new-file / save-file / add-link -> new-button save-button image-button
   * back -> index-button
 * Align the index-button with the file title
+
+# December 12
+## 1
+Add /upload endpoint to the router
+Only support upload txt file
+Temporarily store the file in the uploads/ folder
+Check if the file is a text-plain file
+If not, remove the file from the tmp folder
+mv the file from the uploads to the actual file storage

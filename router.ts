@@ -1,6 +1,7 @@
-import express, { json, Response, Request, ErrorRequestHandler, NextFunction } from "express";
+import express, { ErrorRequestHandler } from "express";
+import multer, { DiskStorageOptions } from "multer";
 import bodyParser from "body-parser";
-import { join, parse } from "path";
+import { join } from "path";
 import { v4, validate } from "uuid";
 import FileDatabase from "./database/fileDatabase";
 import FileSystem from "./files/fileSystem";
@@ -10,10 +11,22 @@ import { viewPath } from "./frontend/views/view.path";
 import { cssPath } from "./frontend/css/css.path";
 import { jsPath } from "./frontend/js/js.path";
 import { required } from "./frontend/js/js.required";
+import { filesPath } from "./files/files.path";
+import { uploadPath } from "./uploads/upload.path";
 
 const router = express();
 const port = process.env.PORT || 3000;
 const handlerError = "Error in ErrorHandler";
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    var fileID = v4();
+    cb(null, fileID);
+  }
+});
+const upload = multer({ storage: storage });
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
@@ -56,14 +69,6 @@ router
     try {
       var { fileID } = req.params;
 
-      if (!fileID) {
-        throw new BadRequestException("fileID");
-      }
-
-      if (!validate(fileID)) {
-        throw new DataNotFoundException("File", fileID);
-      }
-
       var fileData = await FileDatabase.findFile(fileID);
 
       var fileBuffer = await FileSystem.readFile(fileID);
@@ -72,7 +77,7 @@ router
 
       var scripts = required["Editor"];
 
-      res.render("Editor", { fileName: fileData['name'], fileContent: fileContent, scripts: scripts });
+      res.render("Editor", { filename: fileData['name'], fileContent: fileContent, scripts: scripts });
     }
     catch (err) {
       errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
@@ -81,21 +86,13 @@ router
   .post(async (req, res) => {
     try {
       var { fileID } = req.params;
-      var { fileName, fileBody } = req.body;
+      var { filename, fileBody } = req.body;
 
-      if (!fileID) {
-        throw new BadRequestException("fileID");
-      }
-
-      if (!validate(fileID)) {
-        throw new DataNotFoundException("File", fileID);
-      }
-
-      if (fileName) {
+      if (filename) {
         var fileData = await FileDatabase.findFile(fileID);
 
-        if (fileName != fileData['name'])
-          await FileDatabase.renameFile(fileID, fileName);
+        if (filename != fileData['name'])
+          await FileDatabase.renameFile(fileID, filename);
       }
 
       if (fileBody) await FileSystem.writeFile(fileID, fileBody);
@@ -107,14 +104,6 @@ router
   .delete(async (req, res) => {
     try {
       var { fileID } = req.params;
-
-      if (!fileID) {
-        throw new BadRequestException("fileID");
-      }
-
-      if (!validate(fileID)) {
-        throw new DataNotFoundException("File", fileID);
-      }
 
       await FileDatabase.archiveFile(fileID);
 
@@ -129,10 +118,6 @@ router.get("/read/:fileID", async (req, res) => {
   try {
     var { fileID } = req.params;
 
-    if (!fileID) {
-      throw new BadRequestException("fileID");
-    }
-
     if (!validate(fileID)) {
       throw new DataNotFoundException("File", fileID);
     }
@@ -143,7 +128,7 @@ router.get("/read/:fileID", async (req, res) => {
 
     var fileContent = fileBuffer.toString('utf-8');
 
-    res.render("Reader", { fileName: fileData['name'], fileContent: fileContent });
+    res.render("Reader", { filename: fileData['name'], fileContent: fileContent });
   }
   catch (err) {
     errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
@@ -168,20 +153,34 @@ router.get("/trash", async (req, res) => {
 
 router.post("/new", async (req, res) => {
   try {
-    var { fileName } = req.body;
-
-    if (!fileName) {
-      fileName = "New File";
-    }
-
     var fileID = v4();
 
-    fileName = parse(fileName).name;
-
-    await FileDatabase.enterFile(fileID, fileName);
+    await FileDatabase.enterFile(fileID, "New File");
 
     await FileSystem.createFile(fileID);
 
+    res.redirect(`/edit/${fileID}`);
+  }
+  catch (err) {
+    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+  }
+});
+
+router.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+    console.log(req.file);
+    if (!req.file) {
+      throw new BadRequestException("File not uploaded");
+    }
+    if (req.file.mimetype !== "text/plain") {
+      await FileSystem.deleteUpload(req.file.filename);
+      throw new BadRequestException("File must be a text file");
+    }
+
+    var filename = req.file.originalname;
+    var fileID = req.file.filename;
+    await FileDatabase.enterFile(fileID, filename);
+    await FileSystem.uploadFile(fileID);
     res.redirect(`/edit/${fileID}`);
   }
   catch (err) {
@@ -195,14 +194,6 @@ router
     try {
       var { fileID } = req.params;
 
-      if (!fileID) {
-        throw new BadRequestException("fileID");
-      }
-
-      if (!validate(fileID)) {
-        throw new DataNotFoundException("File", fileID);
-      }
-
       await FileDatabase.archiveFile(fileID);
 
       res.redirect("/");
@@ -214,14 +205,6 @@ router
   .delete(async (req, res) => {
     try {
       var { fileID } = req.params;
-
-      if (!fileID) {
-        throw new BadRequestException("fileID");
-      }
-
-      if (!validate(fileID)) {
-        throw new DataNotFoundException("File", fileID);
-      }
 
       var fileData = await FileDatabase.deleteFile(fileID);
       await FileSystem.deleteFile(fileID);
@@ -236,12 +219,8 @@ router
 router.post("/restore/:fileID", async (req, res) => {
   try {
     console.log("Restoring file");
-    
-    var { fileID } = req.params;
 
-    if (!fileID) {
-      throw new BadRequestException("fileID");
-    }
+    var { fileID } = req.params;
 
     if (!validate(fileID)) {
       throw new DataNotFoundException("File", fileID);
@@ -260,9 +239,6 @@ router.get("/js/:scriptName", async (req, res) => {
   try {
     var { scriptName } = req.params;
 
-    if (!scriptName) {
-      throw new BadRequestException("scriptName");
-    }
     res.sendFile(join(jsPath, "public", scriptName));
   }
   catch (err) {
@@ -283,7 +259,7 @@ router.get("/:fileID", async (req, res, next) => {
 
       var fileContent = fileBuffer.toString('utf-8');
 
-      res.render("Preview", { fileName: fileData['name'], fileContent: fileContent });
+      res.render("Preview", { filename: fileData['name'], fileContent: fileContent });
     }
   }
   catch (err) {

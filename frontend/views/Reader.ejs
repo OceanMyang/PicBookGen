@@ -1,11 +1,11 @@
-<!-- Require { fileName: string, fileContent: string } -->
+<!-- Require { filename: string, fileContent: string } -->
 
-<%- include('header', { title: fileName }) %>
+<%- include('header', { title: filename }) %>
     <nav class="navbar navbar-expand">
         <a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
             <img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
         </a>
-        <div id="title-container" class="btn-light"><%- fileName -%>
+        <div id="title-container" class="btn-light"><%- filename -%>
         </div>
     </nav>
     <div class="split-view">
