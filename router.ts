@@ -1,7 +1,8 @@
 import express, { ErrorRequestHandler } from "express";
 import multer, { DiskStorageOptions } from "multer";
+import { fileTypeFromFile } from "file-type";
 import bodyParser from "body-parser";
-import { join } from "path";
+import path, { join } from "path";
 import { v4, validate } from "uuid";
 import FileDatabase from "./database/fileDatabase";
 import FileSystem from "./files/fileSystem";
@@ -49,7 +50,19 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   res.status(500).render("Error", { message: "Internal Server Error" });
 };
 
-router.route("/").get(async (req, res) => {
+const renderHandler = (res, view, options) => {
+  res.render(view, options, (err, html) => {
+    if (err) {
+      console.log(err);
+      throw new InternalServerException("rendering the page");
+    }
+    res.send(html);
+  });
+}
+
+router.use(errorHandler);
+
+router.get("/", async (req, res, next) => {
   try {
     var files = await FileDatabase.listFiles();
 
@@ -57,15 +70,19 @@ router.route("/").get(async (req, res) => {
     var IDs = files.map((file) => file['fileid']);
     var names = files.map((file) => file['name']);
 
-    res.render("Index", { IDs: IDs, names: names, scripts: scripts });
+    renderHandler(res, "Index", {
+      IDs: IDs,
+      names: names,
+      scripts: scripts
+    });
   } catch (err) {
-    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
 router
   .route("/edit/:fileID")
-  .get(async (req, res) => {
+  .get(async (req, res, next) => {
     try {
       var { fileID } = req.params;
 
@@ -77,13 +94,18 @@ router
 
       var scripts = required["Editor"];
 
-      res.render("Editor", { filename: fileData['name'], fileContent: fileContent, scripts: scripts });
+      renderHandler(res, "Editor", {
+        fileID: fileID,
+        filename: fileData['name'],
+        fileContent: fileContent,
+        scripts: scripts
+      });
     }
     catch (err) {
-      errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
-    }
+      next(err)
+    };
   })
-  .post(async (req, res) => {
+  .post(async (req, res, next) => {
     try {
       var { fileID } = req.params;
       var { filename, fileBody } = req.body;
@@ -98,10 +120,10 @@ router
       if (fileBody) await FileSystem.writeFile(fileID, fileBody);
     }
     catch (err) {
-      errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+      next(err);
     }
-  })
-  .delete(async (req, res) => {
+  }, errorHandler)
+  .delete(async (req, res, next) => {
     try {
       var { fileID } = req.params;
 
@@ -110,11 +132,11 @@ router
       res.redirect("/");
     }
     catch (err) {
-      errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+      next(err);
     }
-  })
+  }, errorHandler)
 
-router.get("/read/:fileID", async (req, res) => {
+router.get("/read/:fileID", async (req, res, next) => {
   try {
     var { fileID } = req.params;
 
@@ -128,30 +150,35 @@ router.get("/read/:fileID", async (req, res) => {
 
     var fileContent = fileBuffer.toString('utf-8');
 
-    res.render("Reader", { filename: fileData['name'], fileContent: fileContent });
+    renderHandler(res, "Preview",
+      { filename: fileData['name'], fileContent: fileContent });
   }
   catch (err) {
-    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
-router.get("/edit", (req, res) => res.redirect("/"));
-router.get("/read", (req, res) => res.redirect("/"));
+router.get("/edit", (req, res, next) => res.redirect("/"));
+router.get("/read", (req, res, next) => res.redirect("/"));
 
-router.get("/trash", async (req, res) => {
+router.get("/trash", async (req, res, next) => {
   try {
     var files = await FileDatabase.listArchivedFiles();
 
     var IDs = files.map((file) => file['fileid']);
     var names = files.map((file) => file['name']);
     var scripts = required["Trash"];
-    res.render("Trash", { IDs: IDs, names: names, scripts: scripts });
+    renderHandler(res, "Trash", {
+      IDs: IDs,
+      names: names,
+      scripts: scripts
+    });
   } catch (err) {
-    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
-router.post("/new", async (req, res) => {
+router.post("/new", async (req, res, next) => {
   try {
     var fileID = v4();
 
@@ -162,35 +189,37 @@ router.post("/new", async (req, res) => {
     res.redirect(`/edit/${fileID}`);
   }
   catch (err) {
-    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
-router.post("/upload", upload.single("file"), async (req, res) => {
+router.post("/upload", upload.single("file"), async (req, res, next) => {
   try {
     console.log(req.file);
     if (!req.file) {
-      throw new BadRequestException("File not uploaded");
-    }
-    if (req.file.mimetype !== "text/plain") {
-      await FileSystem.deleteUpload(req.file.filename);
-      throw new BadRequestException("File must be a text file");
+      throw new BadRequestException("File not uploaded.");
     }
 
-    var filename = req.file.originalname;
+    var result = await fileTypeFromFile(req.file.path);
+    if (result) {
+      await FileSystem.deleteUpload(req.file.filename);
+      throw new BadRequestException("File must be a text file.");
+    }
+
+    var filename = path.basename(req.file.originalname, path.extname(req.file.originalname));
     var fileID = req.file.filename;
     await FileDatabase.enterFile(fileID, filename);
     await FileSystem.uploadFile(fileID);
     res.redirect(`/edit/${fileID}`);
   }
   catch (err) {
-    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
 router
   .route("/delete/:fileID")
-  .post(async (req, res) => {
+  .post(async (req, res, next) => {
     try {
       var { fileID } = req.params;
 
@@ -199,10 +228,10 @@ router
       res.redirect("/");
     }
     catch (err) {
-      errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+      next(err);
     }
-  })
-  .delete(async (req, res) => {
+  }, errorHandler)
+  .delete(async (req, res, next) => {
     try {
       var { fileID } = req.params;
 
@@ -212,11 +241,11 @@ router
       res.status(200).send(fileData);
     }
     catch (err) {
-      errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+      next(err);
     }
-  });
+  }, errorHandler);
 
-router.post("/restore/:fileID", async (req, res) => {
+router.post("/restore/:fileID", async (req, res, next) => {
   try {
     console.log("Restoring file");
 
@@ -231,20 +260,20 @@ router.post("/restore/:fileID", async (req, res) => {
     res.redirect("/trash");
   }
   catch (err) {
-    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
-router.get("/js/:scriptName", async (req, res) => {
+router.get("/js/:scriptName", async (req, res, next) => {
   try {
     var { scriptName } = req.params;
 
     res.sendFile(join(jsPath, "public", scriptName));
   }
   catch (err) {
-    errorHandler(err, req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
 router.get("/:fileID", async (req, res, next) => {
   try {
@@ -259,7 +288,8 @@ router.get("/:fileID", async (req, res, next) => {
 
       var fileContent = fileBuffer.toString('utf-8');
 
-      res.render("Preview", { filename: fileData['name'], fileContent: fileContent });
+      renderHandler(res, "Preview",
+        { filename: fileData['name'], fileContent: fileContent });
     }
   }
   catch (err) {
@@ -268,7 +298,7 @@ router.get("/:fileID", async (req, res, next) => {
   }
 });
 
-router.get("*", (req, res) => {
+router.get("*", (req, res, next) => {
   errorHandler(new NotFoundException("Page", req.url),
     req, res, () => res.status(500).send(handlerError));
 });

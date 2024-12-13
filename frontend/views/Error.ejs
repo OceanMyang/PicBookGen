@@ -1,5 +1,15 @@
-<%- include('header', { title: "Error" } ) %>
+<%- include('header', { title: "Error" }) %>
+
   <body>
-    <%- locals? locals.message : "Oops! Seems you found an error." %>
+    <nav class="navbar navbar-expand">
+      <a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
+          <img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
+      </a>
+      <h1>Error</h1>
+    </nav>
+    <nav class="navbar navbar-expand">
+      <h3>Cat says: "<%- locals?.message %>"</h3>
+    </nav>
+    <img src="/res/error.jpg" alt="error">
   </body>
-<%- include('footer') %>
+  <%- include('footer') %>
