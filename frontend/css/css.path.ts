@@ -1,1 +1,0 @@
-export const cssPath = import.meta.dirname;

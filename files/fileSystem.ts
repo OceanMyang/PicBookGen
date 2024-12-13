@@ -24,7 +24,7 @@ export default class FileSystem {
 		try {
 			await fsp.mkdir(join(filesPath, fileID));
 			await fsp.mkdir(join(filesPath, fileID, "images"));
-			var fd = await fsp.open(join(filesPath, fileID, "index.html"), fsp.constants.O_CREAT, 'w');
+			var fd = await fsp.open(join(filesPath, fileID, "index.html"), fsp.constants.O_CREAT);
 			fd.close();
 			console.log(`File ${fileID} created on server.`);
 		} catch (err) {

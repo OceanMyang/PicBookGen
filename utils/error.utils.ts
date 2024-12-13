@@ -25,8 +25,8 @@ export class ConflictException extends HttpException {
 }
 
 export class NotFoundException extends HttpException {
-  constructor(name: ExceptionObjectNames, id: number | string, message?: string) {
-    super(404, `${name} ${id} ` + (message ? message : "is not found."));
+  constructor(name: ExceptionObjectNames, id?: number | string, message?: string) {
+    super(404, `${name + (id ? " " + id : "")} ${message ? message : "is not found."}`);
   }
 }
 

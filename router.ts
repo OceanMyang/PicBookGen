@@ -1,4 +1,4 @@
-import express, { ErrorRequestHandler } from "express";
+import express, { ErrorRequestHandler, Request, Response } from "express";
 import multer, { DiskStorageOptions } from "multer";
 import { fileTypeFromFile } from "file-type";
 import bodyParser from "body-parser";
@@ -7,16 +7,15 @@ import { v4, validate } from "uuid";
 import FileDatabase from "./database/fileDatabase";
 import FileSystem from "./files/fileSystem";
 import { BadRequestException, DataNotFoundException, FileNotFoundException, HttpException, InternalServerException, NotFoundException } from "./utils/error.utils";
-import { resPath } from "./frontend/res/res.path";
 import { viewPath } from "./frontend/views/view.path";
-import { cssPath } from "./frontend/css/css.path";
-import { jsPath } from "./frontend/js/js.path";
-import { required } from "./frontend/js/js.required";
-import { filesPath } from "./files/files.path";
+import { publicPath } from "./frontend/public/public.path";
+import { required } from "./frontend/js.required";
 import { uploadPath } from "./uploads/upload.path";
+import { NextFunction } from "express-serve-static-core";
 
 const router = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
+const allowedorigins = ["http://localhost:3000", "http://localhost:3001"];
 const handlerError = "Error in ErrorHandler";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -33,8 +32,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 router.set("views", viewPath);
 router.set("view engine", "ejs");
-router.use("/css", express.static(cssPath));
-router.use("/res", express.static(resPath));
+router.use("/", express.static(publicPath));
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.log(err);
@@ -50,7 +48,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   res.status(500).render("Error", { message: "Internal Server Error" });
 };
 
-const renderHandler = (res, view, options) => {
+const renderHandler = (res: Response, view: string, options: any) => {
   res.render(view, options, (err, html) => {
     if (err) {
       console.log(err);
@@ -158,8 +156,7 @@ router.get("/read/:fileID", async (req, res, next) => {
   }
 }, errorHandler);
 
-router.get("/edit", (req, res, next) => res.redirect("/"));
-router.get("/read", (req, res, next) => res.redirect("/"));
+router.get(["/edit", "/read", "/preview"], (req, res, next) => res.redirect("/"));
 
 router.get("/trash", async (req, res, next) => {
   try {
@@ -264,16 +261,10 @@ router.post("/restore/:fileID", async (req, res, next) => {
   }
 }, errorHandler);
 
-router.get("/js/:scriptName", async (req, res, next) => {
-  try {
-    var { scriptName } = req.params;
-
-    res.sendFile(join(jsPath, "public", scriptName));
-  }
-  catch (err) {
-    next(err);
-  }
-}, errorHandler);
+router.get(["/css/:file", "/js/:file", "/res/:file"], (req, res, next) => {
+  var { file } = req.params;
+  res.sendFile(join(publicPath, file));
+});
 
 router.get("/:fileID", async (req, res, next) => {
   try {
@@ -293,15 +284,13 @@ router.get("/:fileID", async (req, res, next) => {
     }
   }
   catch (err) {
-    errorHandler(new NotFoundException("File", req.url),
-      req, res, () => { res.status(500).send(handlerError) });
+    next(err);
   }
-});
+}, errorHandler);
 
-router.get("*", (req, res, next) => {
-  errorHandler(new NotFoundException("Page", req.url),
-    req, res, () => res.status(500).send(handlerError));
-});
+router.get("*", (req: Request, res: Response, next: NextFunction) =>
+  next(new NotFoundException("Page")),
+  errorHandler);
 
 router.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
