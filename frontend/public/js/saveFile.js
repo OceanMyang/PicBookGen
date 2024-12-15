@@ -15,7 +15,7 @@ const save = async () => {
   console.log(response);
 };
 
-$("#save-button").on("click", save);
+$("#save-file").on("click", save);
 $(document).on("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === "s") {
     e.preventDefault();

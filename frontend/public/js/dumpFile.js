@@ -6,13 +6,13 @@ const dump = async (path) => {
   }
 };
 
-$("#dump-button").on("click", async () => {
+$("#dump-file").on("click", async () => {
   var path = window.location.pathname.replace("edit", "delete");
   await dump(path);
   window.location = "/";
 });
 
-$(".dump-button").each((index, button) => {
+$(".dump-file").each((index, button) => {
   var id = $(button).data("id");
   $(button).on("click", async () =>
     dump(`/delete/${id}`).then(() => $(`#${id}`).remove())

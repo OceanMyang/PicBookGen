@@ -63,7 +63,7 @@ _Then compile all the scripts together when rendering the html_
 
   * file-name -> title-container
   * editor / reader -> text-viewer
-  * new-file / save-file / add-link -> new-button save-button image-button
+  * new-file / save-file / add-link -> new-file save-file upload-image
   * back -> index-button
 * Align the index-button with the file title
 

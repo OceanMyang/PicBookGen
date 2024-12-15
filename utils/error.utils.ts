@@ -25,7 +25,7 @@ export class ConflictException extends HttpException {
 }
 
 export class NotFoundException extends HttpException {
-  constructor(name: ExceptionObjectNames, id?: number | string, message?: string) {
+  constructor(name: string, id?: number | string, message?: string) {
     super(404, `${name + (id ? " " + id : "")} ${message ? message : "is not found."}`);
   }
 }
@@ -38,13 +38,13 @@ export class DeletedException extends NotFoundException {
 
 export class DataNotFoundException extends NotFoundException {
   constructor(name: ExceptionObjectNames, id: number | string) {
-    super(name, id, `doesn't exist in your ${name.toLowerCase()}s.`);
+    super(name, id, `doesn't exist in your ${name.toLowerCase()} data.`);
   }
 }
 
 export class FileNotFoundException extends NotFoundException {
   constructor(name: ExceptionObjectNames, id: number | string) {
-    super(name, id, "is no longer stored on server.");
+    super(name, id, "is not stored on server.");
   }
 }
 

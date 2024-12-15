@@ -1,4 +1,4 @@
-$(".restore-button").each((index, button) => {
+$(".restore-file").each((index, button) => {
   var id = $(button).data("id");
   $(button).on("click", async () => {
     var response = await fetch(`/restore/${id}`, { method: "POST" });

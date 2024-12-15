@@ -1,21 +1,21 @@
 export const required = {
     "Index": [
-        "newButton.js",
-        "uploadButton.js",
-        "dumpButton.js",
+        "newFile.js",
+        "uploadFile.js",
+        "dumpFile.js",
     ],
     "Editor": [
-        "newButton.js",
-        "saveButton.js",
-        "uploadButton.js",
-        "dumpButton.js",
-        "deleteButton.js",
-        "imageButton.js",
+        "newFile.js",
+        "saveFile.js",
+        "uploadFile.js",
+        "dumpFile.js",
+        "deleteFile.js",
+        "uploadImage.js",
         "textViewer.js",
         "titleContainer.js"
     ],
     "Trash": [
-        "deleteButton.js",
-        "restoreButton.js",
+        "deleteFile.js",
+        "restoreFile.js",
     ]
 }

@@ -2,7 +2,7 @@ import { promises as fsp } from "fs";
 import { join } from "path";
 import { Stream } from "stream";
 import { filesPath } from "./files.path";
-import { AccessDeniedException, ConflictException, FileNotFoundException, InternalServerException } from "../utils/error.utils";
+import { AccessDeniedException, ConflictException, FileNotFoundException, InternalServerException, NotFoundException } from "../utils/error.utils";
 import { uploadPath } from "../uploads/upload.path";
 
 export default class FileSystem {
@@ -102,27 +102,6 @@ export default class FileSystem {
 		}
 	}
 
-	static async deleteUpload(filename: string) {
-		if (filename.includes(".")) {
-			throw new FileNotFoundException("File", filename);
-		}
-
-		try {
-			await fsp.rm(join(uploadPath, filename));
-			console.log(`File ${filename} deleted from server permanently.`);
-		} catch (err) {
-			console.log(err);
-			switch (err.code) {
-				case "ENOENT":
-					throw new FileNotFoundException("File", filename);
-				case "EACCES":
-					throw new AccessDeniedException(`no permission to delete file ${filename} on server`);
-				default:
-					throw new InternalServerException("deleting the file");
-			}
-		}
-	}
-
 	static async uploadFile(fileID: string) {
 		if (fileID.includes(".")) {
 			throw new ConflictException("File", fileID);
@@ -142,6 +121,51 @@ export default class FileSystem {
 					throw new AccessDeniedException(`no permission to upload file ${fileID} on server`);
 				default:
 					throw new InternalServerException("uploading the file");
+			}
+		}
+	}
+
+	static async uploadImage(fileID: string, imageID: string, ext?: string) {
+		if (fileID.includes(".") || imageID.includes(".")) {
+			throw new ConflictException("Image", imageID);
+		}
+
+		try {
+			await fsp.access(join(filesPath, fileID, "images"));
+			await fsp.rename(join(uploadPath, imageID), join(filesPath, fileID, "images", imageID + (ext ? ext : "")));
+			console.log(`Image ${imageID} uploaded to server.`);
+		} catch (err) {
+			console.log(err.code);
+			switch (err.code) {
+				case "ENOENT":
+					throw new FileNotFoundException("File", fileID);
+				case "EEXIST":
+					throw new ConflictException("Image", imageID);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to upload image ${imageID} on server`);
+				default:
+					throw new InternalServerException("uploading the image");
+			}
+		}
+	}
+
+	static async deleteUpload(filename: string) {
+		if (filename.includes(".")) {
+			throw new FileNotFoundException("File", filename);
+		}
+
+		try {
+			await fsp.rm(join(uploadPath, filename));
+			console.log(`Uploaded File ${filename} deleted from server permanently.`);
+		} catch (err) {
+			console.log(err);
+			switch (err.code) {
+				case "ENOENT":
+					throw new NotFoundException("Uploaded File", filename);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to delete file ${filename} on server`);
+				default:
+					throw new InternalServerException("deleting the file");
 			}
 		}
 	}

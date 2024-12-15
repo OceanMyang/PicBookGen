@@ -214,6 +214,32 @@ router.post("/upload", upload.single("file"), async (req, res, next) => {
   }
 }, errorHandler);
 
+router.post("/upload/:fileID", upload.single("image"), async (req, res, next) => {
+  try {
+    var { fileID } = req.params;
+    console.log(req.file);
+    if (!req.file) {
+      throw new BadRequestException("Image not uploaded.");
+    }
+
+    var result = await fileTypeFromFile(req.file.path);
+    if (!result || !result.mime.startsWith("image")) {
+      throw new BadRequestException("File must be an image file.");
+    }
+
+    var imageID = req.file.filename;
+    var ext = path.extname(req.file.originalname);
+    await FileSystem.uploadImage(fileID, imageID, ext);
+    res.send(imageID + ext);
+  }
+  catch (err) {
+    if (req.file) {
+      await FileSystem.deleteUpload(req.file.filename);
+    }
+    next(err);
+  }
+}, errorHandler);
+
 router
   .route("/delete/:fileID")
   .post(async (req, res, next) => {

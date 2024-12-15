@@ -1,4 +1,4 @@
-$(".delete-button").each((index, button) => {
+$(".delete-file").each((index, button) => {
   var id = $(button).data("id");
   $(button).on("click", async () => {
     if (confirm("Are you sure? This cannot be undone.")) {
