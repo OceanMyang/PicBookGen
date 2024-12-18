@@ -18,12 +18,12 @@
 				<button id="new-file" class="btn btn-primary">New</button>
 				<button id="upload-file" class="btn btn-primary">Upload</button>
 				<button id="dump-file" class="btn btn-primary">Delete</button>
-			</div>
-			<div class="col" id="action-menu">
-				<a id="show-images" href="images" class="btn btn-primary">Show Images</a>
-				<button id="upload-image" type="button" class="btn btn-primary">Upload Image</button>
+				<a id="images-button" href="images" class="btn btn-primary">Images</a>
 			</div>
 		</nav>
+		<ul id="action-menu" class="dropdown-menu d-none">
+			<li><button id="upload-image" class="dropdown-item">Upload Image</button></li>
+		</ul>
 		<div class="row no-gutters">
 			<div class="col">
 				<div class="leftside" id="text-viewer" contenteditable="plaintext-only"><%- fileContent -%></div>

@@ -1,10 +1,16 @@
-$("#dump-file").on("click", async () => {
+import { $dumpFile, $dumpFiles } from "./components.js";
+
+if (!$dumpFile.length) {
+  throw new Error("Dump file button not found");
+}
+
+$dumpFile.on("click", async () => {
   var path = window.location.pathname.replace("edit", "delete");
   await dumpFile(path);
   window.location = "/";
 });
 
-$(".dump-file").each((index, button) => {
+$dumpFiles.each((index, button) => {
   var id = $(button).data("id");
   $(button).on("click", async () =>
     dumpFile(`/delete/${id}`).then(() => $(`#${id}`).remove())

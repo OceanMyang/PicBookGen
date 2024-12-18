@@ -1,4 +1,18 @@
-const saveFile = async () => {
+import { $saveFile } from "./components.js";
+
+if (!$saveFile.length) {
+  throw new Error("Save file button not found");
+}
+
+$saveFile.on("click", saveFile);
+$(document).on("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+    e.preventDefault();
+    saveFile();
+  }
+});
+
+export default async function saveFile() {
   var pathname = window.location.pathname;
   var filename = $("#title-container").text();
   var fileBody = $("#text-viewer").html();
@@ -13,14 +27,4 @@ const saveFile = async () => {
     }),
   });
   console.log(response);
-};
-
-$("#save-file").on("click", saveFile);
-$(document).on("keydown", (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-    e.preventDefault();
-    saveFile();
-  }
-});
-
-export default saveFile;
+}

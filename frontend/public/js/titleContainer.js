@@ -1,14 +1,20 @@
-$("#title-container")
+import { $titleContainer } from "./components.js";
+
+if (!$titleContainer.length) {
+  throw new Error("No title container found");
+}
+
+$titleContainer
   .on("click", (e) => {
-    var filename = $("#title-container").text();
+    var filename = $titleContainer.text();
     if (filename === "New File") {
       window.getSelection().selectAllChildren(e.target);
     }
   })
   .on("input", () => {
-    var filename = $("#title-container").text();
+    var filename = $titleContainer.text();
     if (!filename) {
-      $("#title-container").text("New File");
+      $titleContainer.text("New File");
     }
   })
   .on("keypress", (e) => {
@@ -37,5 +43,5 @@ $("#title-container")
     e.preventDefault();
     var rawText = await navigator.clipboard.readText();
     var newFileName = rawText.trim().replace(/(\r\n|\n|\r)/gm, " ");
-    $("#title-container").text(newFileName);
+    $titleContainer.text(newFileName);
   });

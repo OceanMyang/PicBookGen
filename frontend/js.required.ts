@@ -11,8 +11,10 @@ export const required = {
         "dumpFile.js",
         "deleteFile.js",
         "uploadImage.js",
+        "textViewer.js",
         "imageViewer.js",
-        "titleContainer.js"
+        "titleContainer.js",
+        "actionMenu.js",
     ],
     "Trash": [
         "deleteFile.js",

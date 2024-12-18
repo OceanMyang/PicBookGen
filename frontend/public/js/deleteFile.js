@@ -1,4 +1,6 @@
-$(".delete-file").each((index, button) => {
+import { $deleteFiles } from "./components.js";
+
+$deleteFiles.each((index, button) => {
   var id = $(button).data("id");
   $(button).on("click", async () => {
     if (confirm("Are you sure? This cannot be undone.")) {

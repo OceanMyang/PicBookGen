@@ -1,25 +1,24 @@
+import { $imageViewer } from "./components.js";
 import deleteLinkByImage from "./deleteImage.js";
 import saveFile from "./saveFile.js";
 
-$("#text-viewer").on("mouseover", async (e) => {
-  if (e.target.tagName === "A") {
-    var href = e.target.href;
-    $("#image-viewer").attr("alt", "Loading...");
-    var result = await fetch(href);
-    if (result.ok) {
-      $("#image-viewer").attr("src", href);
-      console.log(href);
-    } else {
-      $("#image-viewer").attr("alt", "File Missing");
-      $("#image-viewer").attr("src", "");
-      if (confirm("This image is missing. Would you like to delete the link?")) {
-        deleteLinkByImage(href);
-        saveFile();
-      }
-    }
+export async function loadImage(src) {
+  $imageViewer.attr("alt", "Loading...");
+  var result = await fetch(src);
+  if (result.ok) {
+    $imageViewer.attr("src", src);
+    console.log(src);
   } else {
-    $("#image-viewer").attr("alt", "");
-    $("#image-viewer").attr("src", "");
+    $imageViewer.attr("alt", "File Missing");
+    $imageViewer.attr("src", "");
+    if (confirm("This image is missing. Would you like to delete the link?")) {
+      deleteLinkByImage(src);
+      saveFile();
+    }
   }
-});
+}
 
+export async function clearImage() {
+  $imageViewer.attr("alt", "");
+  $imageViewer.attr("src", "");
+}
