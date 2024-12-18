@@ -80,3 +80,9 @@ _Then compile all the scripts together when rendering the html_
 
 * Add upload image functionality to the app
   * Store the uploaded image into the respective file folder
+
+# December 18
+* Upload Image, read all images, and delete images
+* Link and unlink
+* Client side scripts are compiled in modules
+* next: update ui and add floating menu when uploading image
