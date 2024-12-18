@@ -9,30 +9,35 @@
 			</a>
 			<div id="title-container" class="btn-light" contenteditable="plaintext-only"><%- filename -%></div>
 		</nav>
-		<nav class="split-view navbar navbar-expand">
+		<nav class="navbar navbar-expand row no-gutters">
 			<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
 				<input id="input" type="file" accept="text/plain" name="file" class="d-none">
 			</form>
-			<div id="file-menu">
+			<div class="col" id="file-menu">
 				<button id="save-file" class="btn btn-primary">Save</button>
 				<button id="new-file" class="btn btn-primary">New</button>
 				<button id="upload-file" class="btn btn-primary">Upload</button>
 				<button id="dump-file" class="btn btn-primary">Delete</button>
 			</div>
-			<div id="action-menu">
+			<div class="col" id="action-menu">
+				<a id="show-images" href="images" class="btn btn-primary">Show Images</a>
 				<button id="upload-image" type="button" class="btn btn-primary">Upload Image</button>
 			</div>
 		</nav>
-		<div class="split-view">
-			<div id="text-viewer" contenteditable="plaintext-only"><%- fileContent -%></div>
-			<div>
-				<img id="image-viewer" src="" alt="">
+		<div class="row no-gutters">
+			<div class="col">
+				<div class="leftside" id="text-viewer" contenteditable="plaintext-only"><%- fileContent -%></div>
+			</div>
+			<div class="col">
+				<div class="rightside justify-content-center align-items-center text-center">
+					<img id="image-viewer" src="" alt="">
+				</div>
 			</div>
 		</div>
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>
-			<script src="/js/<%= script %>"></script>
+			<script type="module" src="/js/<%= script %>"></script>
 			<% }) %>
 	</div>
 	<%- include('footer') %>

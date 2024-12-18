@@ -8,10 +8,10 @@
 		</nav>
 		<nav class="navbar navbar-expand">
 			<div>
-				<button id="new-file" class="btn btn-primary">New</button>
-				<button id="upload-file" class="btn btn-primary">Upload</button>
+				<button id="new-button" class="btn btn-primary">New</button>
+				<button id="upload-button" class="btn btn-primary">Upload</button>
 				<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
-					<input id="input" type="file" accept="text/plain" name="file" class="d-none">
+					<input id="input" type="file" accept=".txt" name="file" class="d-none">
 				</form>
 				<a href="/trash" class="btn btn-primary">Trash Can</a>
 			</div>
@@ -26,7 +26,7 @@
 						</h3>
 					</a>
 					<div>
-						<button data-id="<%= IDs[i] %>" class="dump-file border-0 btn-link">
+						<button data-id="<%= IDs[i] %>" class="dump-button border-0 btn-link">
 							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
 						</button>
 					</div>
@@ -39,7 +39,7 @@
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>
-			<script src="/js/<%= script %>"></script>
+			<script type="module" src="/js/<%= script %>"></script>
 			<% }) %>
 	</div>
 	<%- include('footer') %>

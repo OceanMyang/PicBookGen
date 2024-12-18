@@ -2,7 +2,7 @@ $("#upload-file").on("click", () => {
   $("#input").attr({
     type: "file",
     name: "file",
-    accept: "text/*",
+    accept: "text/plain",
   });
 
   $("#input")

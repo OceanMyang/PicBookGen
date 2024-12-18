@@ -8,10 +8,17 @@
         <div id="title-container" class="btn-light"><%- filename -%>
         </div>
     </nav>
-    <div class="split-view">
-        <div id="text-viewer"><%- fileContent -%></div>
-        <div>
-            <img id="image-viewer" src="" alt="">
+    <div class="row no-gutters">
+        <div class="col">
+            <div class="leftside" id="text-viewer"><%- fileContent -%></div>
         </div>
+        <div class="col">
+            <img class="rightside" id="image-viewer" src="" alt="">
+        </div>
+    </div>
+    <div>
+        <% scripts.forEach(script=> { -%>
+            <script type="module" src="/js/<%= script %>"></script>
+            <% }) %>
     </div>
     <%- include('footer') %>

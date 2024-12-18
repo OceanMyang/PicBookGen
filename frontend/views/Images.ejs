@@ -1,0 +1,24 @@
+<!-- Require (images: string[], scripts: string[]) -->
+
+<%- include('header') %>
+
+	<body>
+		<div class="row no-gutters">
+			<% for (let i=0; i < images.length; i++) {-%>
+				<div id="<%= images[i] %>" class="card d-inline-block col-4">
+					<img src="<%= images[i] %>" alt="<%= images[i] %>">
+					<div class="card-body text-center">
+						<button data-id="<%= images[i] %>" class="delete-image border-0 btn-link">
+							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
+						</button>
+					</div>
+				</div>
+				<% } %>
+		</div>
+	</body>
+	<div>
+		<% scripts.forEach(script=> { -%>
+			<script type="module" src="/js/<%= script %>"></script>
+			<% }) %>
+	</div>
+	<%- include('footer') %>

@@ -1,4 +1,4 @@
-const save = async () => {
+const saveFile = async () => {
   var pathname = window.location.pathname;
   var filename = $("#title-container").text();
   var fileBody = $("#text-viewer").html();
@@ -15,10 +15,12 @@ const save = async () => {
   console.log(response);
 };
 
-$("#save-file").on("click", save);
+$("#save-file").on("click", saveFile);
 $(document).on("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === "s") {
     e.preventDefault();
-    save();
+    saveFile();
   }
 });
+
+export default saveFile;

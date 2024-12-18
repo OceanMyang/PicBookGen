@@ -15,8 +15,6 @@ import { NextFunction } from "express-serve-static-core";
 
 const router = express();
 const port = 3000;
-const allowedorigins = ["http://localhost:3000", "http://localhost:3001"];
-const handlerError = "Error in ErrorHandler";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadPath);
@@ -148,15 +146,40 @@ router.get("/read/:fileID", async (req, res, next) => {
 
     var fileContent = fileBuffer.toString('utf-8');
 
-    renderHandler(res, "Preview",
-      { filename: fileData['name'], fileContent: fileContent });
+    var scripts = required["Reader"];
+    renderHandler(res, "Reader",
+      { filename: fileData['name'], fileContent: fileContent, scripts: scripts });
   }
   catch (err) {
     next(err);
   }
 }, errorHandler);
 
-router.get(["/edit", "/read", "/preview"], (req, res, next) => res.redirect("/"));
+router.get(["/edit", "/read"], (req, res, next) => res.redirect("/"));
+
+router.route(["/edit/:fileID/images", "/read/:fileID/images"])
+  .get(async (req, res, next) => {
+    try {
+      var { fileID } = req.params;
+      var images = await FileSystem.showImages(fileID);
+      var scripts = required["Images"];
+      renderHandler(res, "Images", { images: images, scripts: scripts });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router.get(["/edit/:fileID/:imageID", "/read/:fileID/:imageID"],
+  async (req, res, next) => {
+    try {
+      var { fileID, imageID } = req.params;
+      var path = await FileSystem.accessFile(fileID, imageID);
+      res.sendFile(path);
+    } catch (err) {
+      next(err);
+    }
+  });
+
 
 router.get("/trash", async (req, res, next) => {
   try {
@@ -229,7 +252,7 @@ router.post("/upload/:fileID", upload.single("image"), async (req, res, next) =>
 
     var imageID = req.file.filename;
     var ext = path.extname(req.file.originalname);
-    await FileSystem.uploadImage(fileID, imageID, ext);
+    await FileSystem.renameImage(fileID, imageID, ext);
     res.send(imageID + ext);
   }
   catch (err) {
@@ -267,6 +290,16 @@ router
       next(err);
     }
   }, errorHandler);
+
+router.delete("/delete/:fileID/:imageID", async (req, res, next) => {
+  try {
+    var { fileID, imageID } = req.params;
+    await FileSystem.deleteImage(fileID, imageID);
+    res.status(200).send(imageID);
+  } catch (err) {
+    next(err);
+  }
+}, errorHandler);
 
 router.post("/restore/:fileID", async (req, res, next) => {
   try {

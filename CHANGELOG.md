@@ -68,10 +68,15 @@ _Then compile all the scripts together when rendering the html_
 * Align the index-button with the file title
 
 # December 12
-## 1
-Add /upload endpoint to the router
-Only support upload txt file
-Temporarily store the file in the uploads/ folder
-Check if the file is a text-plain file
-If not, remove the file from the tmp folder
-mv the file from the uploads to the actual file storage
+
+* Add /upload endpoint to the router
+  * Only support upload txt file
+  * Temporarily store the file in the uploads/ folder
+  * Check if the file is a text-plain file
+    * If not: remove the file from the tmp folder
+    * Else: mv the file from the uploads to the actual file storage
+
+# December 13
+
+* Add upload image functionality to the app
+  * Store the uploaded image into the respective file folder

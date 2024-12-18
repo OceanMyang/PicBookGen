@@ -32,7 +32,7 @@
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>
-			<script src="/js/<%= script %>"></script>
+			<script type="module" src="/js/<%= script %>"></script>
 			<% }) %>
 	</div>
 	<%- include('footer') %>

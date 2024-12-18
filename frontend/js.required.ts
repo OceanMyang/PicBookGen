@@ -11,11 +11,17 @@ export const required = {
         "dumpFile.js",
         "deleteFile.js",
         "uploadImage.js",
-        "textViewer.js",
+        "imageViewer.js",
         "titleContainer.js"
     ],
     "Trash": [
         "deleteFile.js",
         "restoreFile.js",
-    ]
+    ],
+    "Reader": [
+        "imageViewer.js",
+    ],
+    "Images": [
+        "deleteImage.js",
+    ],
 }

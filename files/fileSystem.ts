@@ -6,6 +6,36 @@ import { AccessDeniedException, ConflictException, FileNotFoundException, Intern
 import { uploadPath } from "../uploads/upload.path";
 
 export default class FileSystem {
+	static async accessFile(fileID: string, imageID?: string): Promise<string> {
+		var path = join(filesPath, fileID);
+		var type = "File";
+		var id = fileID;
+		if (fileID.includes(".")) {
+			throw new FileNotFoundException("File", fileID);
+		}
+
+		try {
+			await fsp.access(path);
+			if (imageID) {
+				type = "Image";
+				id = imageID;
+				path = join(filesPath, fileID, "images", imageID);
+				await fsp.access(path);
+			}
+			return path;
+		} catch (err) {
+			console.log(err);
+			switch (err.code) {
+				case "ENOENT":
+					throw new NotFoundException(type, id);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to access file ${fileID} on server`);
+				default:
+					throw new InternalServerException("accessing the file");
+			}
+		}
+	}
+
 	static async readDir(): Promise<string[]> {
 		try {
 			var dirEnts = await fsp.readdir(filesPath, { withFileTypes: true });
@@ -125,7 +155,27 @@ export default class FileSystem {
 		}
 	}
 
-	static async uploadImage(fileID: string, imageID: string, ext?: string) {
+	static async showImages(fileID: string): Promise<string[]> {
+		if (fileID.includes(".")) {
+			throw new FileNotFoundException("File", fileID);
+		}
+
+		try {
+			return await fsp.readdir(join(filesPath, fileID, "images"));
+		} catch (err) {
+			console.log(err);
+			switch (err.code) {
+				case "ENOENT":
+					throw new NotFoundException("Images");
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to access file ${fileID} on server`);
+				default:
+					throw new InternalServerException("showing the image");
+			}
+		}
+	}
+
+	static async renameImage(fileID: string, imageID: string, ext?: string) {
 		if (fileID.includes(".") || imageID.includes(".")) {
 			throw new ConflictException("Image", imageID);
 		}
@@ -145,6 +195,27 @@ export default class FileSystem {
 					throw new AccessDeniedException(`no permission to upload image ${imageID} on server`);
 				default:
 					throw new InternalServerException("uploading the image");
+			}
+		}
+	}
+
+	static async deleteImage(fileID: string, imageID: string) {
+		if (fileID.includes(".")) {
+			throw new FileNotFoundException("File", fileID);
+		}
+
+		try {
+			await fsp.rm(join(filesPath, fileID, "images", imageID));
+			console.log(`Image ${imageID} deleted from File ${fileID}.`);
+		} catch (err) {
+			console.log(err.code);
+			switch (err.code) {
+				case "ENOENT":
+					throw new FileNotFoundException("Image", imageID);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to delete image ${imageID} on server`);
+				default:
+					throw new InternalServerException("deleting the image");
 			}
 		}
 	}

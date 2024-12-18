@@ -18,23 +18,15 @@ nav {
     font-size: xx-large;
 }
 
-.split-view > div {
-    width: 50%;
-}
-
 #text-viewer {
     border-right: solid black 1px;
     overflow-y: auto;
-    height: 85vh;
 }
 
 #image-viewer {
     max-width: 100%;
     height: auto;
-}
-
-.btn {
-    display: inline-block;
+    border: none;
 }
 
 .btn-light {
@@ -49,6 +41,8 @@ nav {
 
 img {
     border: gainsboro 1px solid;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 iframe {
@@ -59,4 +53,15 @@ iframe {
     height: 20px;
     width: 20px;
     display: block;
+}
+
+.leftside, .rightside {
+    height: 100vh;
+    width: 100%;
+}
+
+.disabled {
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
