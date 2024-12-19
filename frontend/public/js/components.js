@@ -1,7 +1,6 @@
 export const $input = $("#input");
 export const $inputForm = $("#input-form");
-export const $textViewer = $("#text-viewer");
-export const $imageViewer = $("#image-viewer");
+export const $textContainer = $("#text-container");
 export const $titleContainer = $("#title-container");
 export const $actionMenu = $("#action-menu");
 export const $newFile = $("#new-file");

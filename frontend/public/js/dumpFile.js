@@ -1,7 +1,7 @@
 import { $dumpFile, $dumpFiles } from "./components.js";
 
-if (!$dumpFile.length) {
-  throw new Error("Dump file button not found");
+if (!$dumpFile.length && !$dumpFiles.length) {
+  console.error("Dump file button not found");
 }
 
 $dumpFile.on("click", async () => {
@@ -21,6 +21,6 @@ const dumpFile = async (path) => {
   var response = await fetch(path, { method: "POST" });
   console.log(response);
   if (!response.ok) {
-    throw new Error(response.statusText);
+    console.error(response.statusText);
   }
 };

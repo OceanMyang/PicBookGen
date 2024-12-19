@@ -5,17 +5,11 @@
         <a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
             <img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
         </a>
-        <div id="title-container" class="btn-light"><%- filename -%>
+        <div id="title-container" class="btn btn-light"><%- filename -%>
         </div>
     </nav>
-    <div class="row no-gutters">
-        <div class="col">
-            <div class="leftside" id="text-viewer"><%- fileContent -%></div>
-        </div>
-        <div class="col">
-            <img class="rightside" id="image-viewer" src="" alt="">
-        </div>
-    </div>
+    <ul id="action-menu" class="dropdown-menu"></ul>
+    <div class="leftside" id="text-container"><%- fileContent -%></div>
     <div>
         <% scripts.forEach(script=> { -%>
             <script type="module" src="/js/<%= script %>"></script>

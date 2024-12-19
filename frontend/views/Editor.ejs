@@ -7,33 +7,25 @@
 			<a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
 				<img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
 			</a>
-			<div id="title-container" class="btn-light" contenteditable="plaintext-only"><%- filename -%></div>
+			<div id="title-container" class="btn btn-light" contenteditable="plaintext-only"><%- filename -%></div>
 		</nav>
-		<nav class="navbar navbar-expand row no-gutters">
+		<nav id="file-menu" class="navbar navbar-expand">
+			<button id="save-file" class="btn btn-light">Save</button>
+			<button id="new-file" class="btn btn-light">New</button>
+			<button id="upload-file" class="btn btn-light">Upload</button>
+			<button id="dump-file" class="btn btn-light">Delete</button>
+			<a id="images-button" href="images" class="btn btn-light">Images</a>
+		</nav>
+		<div id="hidden-menu">
 			<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
 				<input id="input" type="file" accept="text/plain" name="file" class="d-none">
 			</form>
-			<div class="col" id="file-menu">
-				<button id="save-file" class="btn btn-primary">Save</button>
-				<button id="new-file" class="btn btn-primary">New</button>
-				<button id="upload-file" class="btn btn-primary">Upload</button>
-				<button id="dump-file" class="btn btn-primary">Delete</button>
-				<a id="images-button" href="images" class="btn btn-primary">Images</a>
-			</div>
-		</nav>
-		<ul id="action-menu" class="dropdown-menu d-none">
-			<li><button id="upload-image" class="dropdown-item">Upload Image</button></li>
-		</ul>
-		<div class="row no-gutters">
-			<div class="col">
-				<div class="leftside" id="text-viewer" contenteditable="plaintext-only"><%- fileContent -%></div>
-			</div>
-			<div class="col">
-				<div class="rightside justify-content-center align-items-center text-center">
-					<img id="image-viewer" src="" alt="">
-				</div>
-			</div>
+			<button id="upload-image" class="btn btn-light">Upload Image</button>
 		</div>
+		<ul id="action-menu" class="dropdown-menu">
+			<button id="upload-image" class="dropdown-item">Upload Image</button>
+		</ul>
+		<div id="text-container" contenteditable="plaintext-only"><%- fileContent -%></div>
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>

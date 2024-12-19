@@ -1,5 +1,9 @@
 import { $deleteFiles } from "./components.js";
 
+if (!$deleteFiles.length) {
+  console.error("Delete file button not found");
+}
+
 $deleteFiles.each((index, button) => {
   var id = $(button).data("id");
   $(button).on("click", async () => {

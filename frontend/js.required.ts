@@ -9,10 +9,9 @@ export const required = {
         "saveFile.js",
         "uploadFile.js",
         "dumpFile.js",
-        "deleteFile.js",
         "uploadImage.js",
-        "textViewer.js",
-        "imageViewer.js",
+        "handleHover.js",
+        "handleSelect.js",
         "titleContainer.js",
         "actionMenu.js",
     ],
@@ -21,7 +20,7 @@ export const required = {
         "restoreFile.js",
     ],
     "Reader": [
-        "imageViewer.js",
+        "handleHover.js",
     ],
     "Images": [
         "deleteImage.js",

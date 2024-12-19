@@ -1,7 +1,7 @@
 import { $saveFile } from "./components.js";
 
 if (!$saveFile.length) {
-  throw new Error("Save file button not found");
+  console.error("Save file button not found");
 }
 
 $saveFile.on("click", saveFile);
@@ -15,7 +15,7 @@ $(document).on("keydown", (e) => {
 export default async function saveFile() {
   var pathname = window.location.pathname;
   var filename = $("#title-container").text();
-  var fileBody = $("#text-viewer").html();
+  var filebody = $("#text-container").html();
   var response = await fetch(pathname, {
     method: "POST",
     headers: {
@@ -23,7 +23,7 @@ export default async function saveFile() {
     },
     body: JSON.stringify({
       filename: filename,
-      fileBody: fileBody,
+      filebody: filebody,
     }),
   });
   console.log(response);

@@ -1,13 +1,13 @@
 import { $input, $inputForm, $uploadFile } from "./components.js";
 
 if (!$input.length) {
-  throw new Error("No input element found");
+  console.error("No input element found");
 }
 if (!$inputForm.length) {
-  throw new Error("No input form found");
+  console.error("No input form found");
 }
 if (!$uploadFile.length) {
-  throw new Error("No upload file button found");
+  console.error("No upload file button found");
 }
 
 $uploadFile.on("click", () => {

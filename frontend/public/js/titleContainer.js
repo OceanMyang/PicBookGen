@@ -1,7 +1,7 @@
 import { $titleContainer } from "./components.js";
 
 if (!$titleContainer.length) {
-  throw new Error("No title container found");
+  console.error("No title container found");
 }
 
 $titleContainer

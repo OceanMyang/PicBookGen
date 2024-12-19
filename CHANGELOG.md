@@ -62,7 +62,7 @@ _Then compile all the scripts together when rendering the html_
 * Renamed html components
 
   * file-name -> title-container
-  * editor / reader -> text-viewer
+  * editor / reader -> text-container
   * new-file / save-file / add-link -> new-file save-file upload-image
   * back -> index-button
 * Align the index-button with the file title
@@ -82,7 +82,22 @@ _Then compile all the scripts together when rendering the html_
   * Store the uploaded image into the respective file folder
 
 # December 18
+
 * Upload Image, read all images, and delete images
 * Link and unlink
 * Client side scripts are compiled in modules
 * next: update ui and add floating menu when uploading image
+
+# December 19
+
+## Major UI Update
+
+Add interaction action menu to the text container
+
+## Standardization of Components
+
+Each component is included in components.js.
+
+Each script will acquire components (image view is an exception) from the components.js.
+
+If the corresponding component is missing, the script will throw an error.

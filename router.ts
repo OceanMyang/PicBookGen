@@ -104,7 +104,7 @@ router
   .post(async (req, res, next) => {
     try {
       var { fileID } = req.params;
-      var { filename, fileBody } = req.body;
+      var { filename, filebody } = req.body;
 
       if (filename) {
         var fileData = await FileDatabase.findFile(fileID);
@@ -113,7 +113,7 @@ router
           await FileDatabase.renameFile(fileID, filename);
       }
 
-      if (fileBody) await FileSystem.writeFile(fileID, fileBody);
+      if (filebody) await FileSystem.writeFile(fileID, filebody);
     }
     catch (err) {
       next(err);

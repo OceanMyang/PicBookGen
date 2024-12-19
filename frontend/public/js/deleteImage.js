@@ -1,5 +1,9 @@
 import { $deleteImages } from "./components.js";
 
+if (!$deleteImages.length) {
+  console.error("Delete image button not found");
+}
+
 $deleteImages.each((index, button) => {
   var params = window.location.pathname.split("/");
   params.pop();
@@ -16,7 +20,7 @@ $deleteImages.each((index, button) => {
   });
 });
 
-export default function deleteLinkByImage(imageID) {
+export function deleteLinkByImage(imageID) {
   var basename = imageID.split("/").pop();
   $(`a[href$="${basename}"]`).each((index, anchor) => {
     console.log(anchor);

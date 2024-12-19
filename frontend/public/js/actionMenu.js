@@ -1,29 +1,39 @@
-import { $actionMenu, $textViewer } from "./components.js";
+import { $actionMenu } from "./components.js";
 
 if (!$actionMenu.length) {
-  throw new Error("Action menu not found");
-}
-if (!$textViewer.length) {
-  throw new Error("Text viewer not found");
+  console.error("Action menu not found");
 }
 
-const showMenu = (e) => {
-  e.preventDefault();
+export const showMenu = (obj) => {
+  if (!obj) {
+    console.error("The menu must be located relative to an object");
+    return;
+  }
+  var top = obj.top + window.scrollY + obj.height;
+  var left = obj.left + window.scrollX;
+  if (obj.left + window.scrollX + $actionMenu.width() > window.innerWidth) {
+    left = window.innerWidth - $actionMenu.width();
+  }
+  // Calculate position relative to the whole page
   $actionMenu.css({
-    top: `${e.clientY}px`,
-    left: `${e.clientX}px`,
+    top: `${top}px`,
+    left: `${left}px`,
     display: "block",
   });
-}
+};
 
-const hideMenu = () => {
+export const hideMenu = () => {
   $actionMenu.css("display", "none");
-}
+};
 
-// Show custom context menu on text selection
-$textViewer.on("contextmenu", (e) => {
-  showMenu(e);
+export const clearMenu = () => {
+  $actionMenu.empty();
+};
+
+export const appendItem = ($item) => {
+  $actionMenu.append($item);
+};
+
+$actionMenu.on("click", (e) => {
+  hideMenu();
 });
-
-// Hide menu when clicking anywhere else
-$(document).on("click", hideMenu);
