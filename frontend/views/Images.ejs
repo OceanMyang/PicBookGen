@@ -3,6 +3,12 @@
 <%- include('header') %>
 
 	<body>
+		<nav class="navbar navbar-expand">
+      <a style="height: 2em;" class="d-inline-block" id="index-button" href=".">
+          <img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
+      </a>
+      <h1>Images</h1>
+    </nav>
 		<div class="row no-gutters">
 			<% for (let i=0; i < images.length; i++) {-%>
 				<div id="<%= images[i] %>" class="card d-inline-block col-4">

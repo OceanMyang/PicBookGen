@@ -7,9 +7,11 @@
       </a>
       <h1>Error</h1>
     </nav>
-    <nav class="navbar navbar-expand">
-      <h3>Cat says: "<%- locals?.message %>"</h3>
-    </nav>
-    <img src="/res/error.jpg" alt="error">
+    <ul id="action-menu" class="dropdown-menu"></ul>
+    <div class="text-center" id="text-container">
+      <a class="view" href="/res/error.jpg" style="display: inline-block; font-size: xx-large;">Cat says: "<%- locals?.message %>"</a>
+    </div>
   </body>
+  <script type="module" src="/js/handleHover.js"></script>
+  <script type="module" src="/js/actionMenu.js"></script>
   <%- include('footer') %>

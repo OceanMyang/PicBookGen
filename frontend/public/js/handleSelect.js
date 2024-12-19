@@ -3,7 +3,7 @@ import { $textContainer } from "./components.js";
 import { uploadImageButton } from "./uploadImage.js";
 
 if (!$textContainer.length) {
-  console.error("Text viewer not found");
+  console.error("Text container not found");
 }
 
 document.addEventListener("selectionchange", (e) => {
