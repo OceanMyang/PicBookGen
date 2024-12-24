@@ -23,7 +23,7 @@ export default class FileSystem {
 				await fsp.access(path);
 			}
 			return path;
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "ENOENT":
@@ -40,7 +40,7 @@ export default class FileSystem {
 		try {
 			var dirEnts = await fsp.readdir(filesPath, { withFileTypes: true });
 			return dirEnts.filter((ent) => ent.isDirectory()).map((ent) => ent.name);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			throw new InternalServerException("reading the files directory on server");
 		}
@@ -57,7 +57,7 @@ export default class FileSystem {
 			var fd = await fsp.open(join(filesPath, fileID, "index.html"), fsp.constants.O_CREAT);
 			fd.close();
 			console.log(`File ${fileID} created on server.`);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "EEXIST":
@@ -77,7 +77,7 @@ export default class FileSystem {
 
 		try {
 			return await fsp.readFile(join(filesPath, fileID, "index.html"));
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "ENOENT":
@@ -98,7 +98,7 @@ export default class FileSystem {
 		try {
 			await fsp.writeFile(join(filesPath, fileID, "index.html"), data);
 			console.log(`File ${fileID} updated on server.`);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "ENOENT":
@@ -119,7 +119,7 @@ export default class FileSystem {
 		try {
 			await fsp.rm(join(filesPath, fileID), { recursive: true });
 			console.log(`File ${fileID} deleted from server permanently.`);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "ENOENT":
@@ -142,7 +142,7 @@ export default class FileSystem {
 			await fsp.mkdir(join(filesPath, fileID, "images"));
 			await fsp.rename(join(uploadPath, fileID), join(filesPath, fileID, "index.html"));
 			console.log(`File ${fileID} uploaded to server.`);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "EEXIST":
@@ -162,7 +162,7 @@ export default class FileSystem {
 
 		try {
 			return await fsp.readdir(join(filesPath, fileID, "images"));
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "ENOENT":
@@ -184,7 +184,7 @@ export default class FileSystem {
 			await fsp.access(join(filesPath, fileID, "images"));
 			await fsp.rename(join(uploadPath, imageID), join(filesPath, fileID, "images", imageID + (ext ? ext : "")));
 			console.log(`Image ${imageID} uploaded to server.`);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err.code);
 			switch (err.code) {
 				case "ENOENT":
@@ -207,7 +207,7 @@ export default class FileSystem {
 		try {
 			await fsp.rm(join(filesPath, fileID, "images", imageID));
 			console.log(`Image ${imageID} deleted from File ${fileID}.`);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err.code);
 			switch (err.code) {
 				case "ENOENT":
@@ -228,7 +228,7 @@ export default class FileSystem {
 		try {
 			await fsp.rm(join(uploadPath, filename));
 			console.log(`Uploaded File ${filename} deleted from server permanently.`);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {
 				case "ENOENT":

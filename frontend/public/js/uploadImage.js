@@ -19,7 +19,6 @@ const handleUploadImage = async () => {
           href: response,
           html: selectedText,
           onclick: "event.preventDefault()",
-          display: "inline-block",
         });
         $anchor.data("id", response);
         range.deleteContents();
