@@ -4,9 +4,9 @@ import { fileTypeFromFile } from "file-type";
 import bodyParser from "body-parser";
 import path, { join } from "path";
 import { v4, validate } from "uuid";
-import FileDatabase from "./database/fileDatabase";
-import FileSystem from "./files/fileSystem";
-import { BadRequestException, DataNotFoundException, FileNotFoundException, HttpException, InternalServerException, NotFoundException } from "./utils/error.utils";
+import FileDatabase from "./backend/database/fileDatabase";
+import FileSystem from "./backend/system/fileSystem";
+import { BadRequestException, DataNotFoundException, FileNotFoundException, HttpException, InternalServerException, NotFoundException } from "./backend/utils/error.util";
 import { viewPath } from "./frontend/views/view.path";
 import { publicPath } from "./frontend/public/public.path";
 import { required } from "./frontend/js.required";
@@ -33,7 +33,7 @@ router.set("view engine", "ejs");
 router.use("/", express.static(publicPath));
 
 const errorHandler: ErrorRequestHandler = (err, req: Request, res: Response, next: NextFunction) => {
-  console.log(err);
+  console.log("Handler" + err);
   if (res.headersSent) {
     res.status(500).send("Internal Server Error");
     return;
@@ -98,9 +98,9 @@ router
       });
     }
     catch (err) {
-      next(err)
-    };
-  })
+      next(err);
+    }
+  }, errorHandler)
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
       var { fileID } = req.params;
@@ -167,7 +167,7 @@ router.route(["/edit/:fileID/images", "/read/:fileID/images"])
     } catch (err) {
       next(err);
     }
-  });
+  }, errorHandler);
 
 router.get(["/edit/:fileID/:imageID", "/read/:fileID/:imageID"],
   async (req: Request, res: Response, next: NextFunction) => {
@@ -178,7 +178,7 @@ router.get(["/edit/:fileID/:imageID", "/read/:fileID/:imageID"],
     } catch (err) {
       next(err);
     }
-  });
+  }, errorHandler);
 
 
 router.get("/trash", async (req: Request, res: Response, next: NextFunction) => {
@@ -331,7 +331,8 @@ router.get("/:fileID", async (req: Request, res: Response, next: NextFunction) =
 
     if (!fileID || !validate(fileID)) {
       next();
-    } else {
+    }
+    else {
       var fileData = await FileDatabase.findFile(fileID);
 
       var fileBuffer = await FileSystem.readFile(fileID);

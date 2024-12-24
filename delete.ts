@@ -1,5 +1,5 @@
-import FileDatabase from "./database/fileDatabase";
-import FileSystem from "./files/fileSystem";
+import FileDatabase from "./backend/database/fileDatabase";
+import FileSystem from "./backend/system/fileSystem";
 
 var args = process.argv;
 if (args.length !== 3) {

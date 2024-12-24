@@ -1,15 +1,10 @@
 <%- include('header', { title: "Error" }) %>
 
   <body>
-    <nav class="navbar navbar-expand">
-      <a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
-          <img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
-      </a>
-      <h1>Error</h1>
-    </nav>
     <ul id="action-menu" class="dropdown-menu"></ul>
-    <div class="text-center" id="text-container">
-      <a class="view" href="/res/error.jpg" style="display: inline-block; font-size: xx-large;">Cat says: "<%- locals?.message %>"</a>
+    <div id="text-container">
+      <h1>Error</h1>
+      <a class="view" href="/res/error.jpg"><%- locals?.message %></a>
     </div>
   </body>
   <script type="module" src="/js/handleHover.js"></script>
