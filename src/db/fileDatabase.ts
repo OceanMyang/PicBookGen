@@ -13,7 +13,7 @@ dotenv.config();
 const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
-  throw new Error("DATABASE_URL is not set in .env file.");
+  throw new Error(".env file is not found or DATABASE_URL is not set in .env file.");
 }
 
 const pool = new Pool({
