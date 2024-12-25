@@ -112,3 +112,4 @@ Published the app on picbookgen.com on December 20
 * Add dotenv package and .env file for the database url
 * fixed style for text container
 * ejs now receives FileData[] type instead of string[]: solved the bug that file titles differ with contents in view
+* change module from es2016 to node next (prevent import errors after tsc compilation)

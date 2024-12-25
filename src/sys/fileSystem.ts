@@ -1,9 +1,15 @@
 import { promises as fsp } from "fs";
 import { join } from "path";
 import { Stream } from "stream";
-import { filesPath } from "../../files/files.path";
-import { AccessDeniedException, ConflictException, FileNotFoundException, InternalServerException, NotFoundException } from "../utils/error.util";
-import { uploadPath } from "../../uploads/upload.path";
+import { filesPath } from "../../files/files.path.js";
+import {
+	AccessDeniedException,
+	ConflictException,
+	FileNotFoundException,
+	InternalServerException,
+	NotFoundException
+} from "../utils/error.util.js";
+import { uploadPath } from "../../uploads/upload.path.js";
 
 export default class FileSystem {
 	static async accessFile(fileID: string, imageID?: string): Promise<string> {

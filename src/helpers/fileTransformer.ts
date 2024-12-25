@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BadRequestException, DataNotFoundException } from '../utils/error.util';
+import { BadRequestException } from '../utils/error.util.js';
 
 const fileSchema = z.object({
   fileid: z.string().uuid(),

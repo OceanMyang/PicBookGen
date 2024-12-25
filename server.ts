@@ -4,13 +4,19 @@ import { fileTypeFromFile } from "file-type";
 import bodyParser from "body-parser";
 import path, { join } from "path";
 import { v4, validate } from "uuid";
-import FileDatabase from "./backend/database/fileDatabase";
-import FileSystem from "./backend/system/fileSystem";
-import { BadRequestException, DataNotFoundException, FileNotFoundException, HttpException, InternalServerException, NotFoundException } from "./backend/utils/error.util";
-import { viewPath } from "./frontend/views/view.path";
-import { publicPath } from "./frontend/public/public.path";
-import { required } from "./frontend/js.required";
-import { uploadPath } from "./uploads/upload.path";
+import FileDatabase from "./src/db/fileDatabase.js";
+import FileSystem from "./src/sys/fileSystem.js";
+import {
+  BadRequestException,
+  DataNotFoundException,
+  HttpException,
+  InternalServerException,
+  NotFoundException
+} from "./src/utils/error.util.js";
+import { viewPath } from "./frontend/views/view.path.js";
+import { publicPath } from "./frontend/public/public.path.js";
+import { required } from "./frontend/js.required.js";
+import { uploadPath } from "./uploads/upload.path.js";
 import { NextFunction } from "express-serve-static-core";
 
 const router = express();

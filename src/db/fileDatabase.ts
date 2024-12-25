@@ -1,8 +1,12 @@
 import { validate } from 'uuid';
-import { DataNotFoundException, DeletedException, InternalServerException } from '../utils/error.util';
+import {
+  DataNotFoundException,
+  DeletedException,
+  InternalServerException
+} from '../utils/error.util.js';
 import pg from 'pg';
 import dotenv from 'dotenv';
-import { filesTransformer, fileTransformer } from '../transformers/fileTransformer';
+import { filesTransformer, fileTransformer } from '../helpers/fileTransformer.js';
 
 dotenv.config();
 
