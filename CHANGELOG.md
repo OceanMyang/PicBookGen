@@ -108,6 +108,7 @@ Published the app on picbookgen.com on December 20
 
 ## Updates
 
+* Local machine now uses local database instead of supabase
 * Add dotenv package and .env file for the database url
 * fixed style for text container
 * ejs now receives FileData[] type instead of string[]: solved the bug that file titles differ with contents in view
