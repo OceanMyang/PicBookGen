@@ -63,12 +63,9 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     var files = await FileDatabase.listFiles();
 
     var scripts = required["Index"];
-    var IDs = files.map((file) => file['fileid']);
-    var names = files.map((file) => file['name']);
 
     renderHandler(res, "Index", {
-      IDs: IDs,
-      names: names,
+      files: files,
       scripts: scripts
     });
   } catch (err) {
@@ -185,12 +182,9 @@ router.get("/trash", async (req: Request, res: Response, next: NextFunction) => 
   try {
     var files = await FileDatabase.listArchivedFiles();
 
-    var IDs = files.map((file) => file['fileid']);
-    var names = files.map((file) => file['name']);
     var scripts = required["Trash"];
     renderHandler(res, "Trash", {
-      IDs: IDs,
-      names: names,
+      files: files,
       scripts: scripts
     });
   } catch (err) {

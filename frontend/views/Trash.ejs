@@ -1,4 +1,4 @@
-<!-- Require (IDs: string[], names: string[], scripts: string[]) -->
+<!-- Require (files: FileData[], scripts: string[]) -->
 
 <%- include('header', { title: "Trash Can" }) %>
 
@@ -9,20 +9,20 @@
 			</a>
 			<h1 class="d-inline-block">Trash Can</h1>
 		</nav>
-		<% for (let i=0; i < IDs.length; i++) {-%>
-			<div id="<%= IDs[i] %>" class="card d-inline-flex" href="#">
+		<% for (file of files) {-%>
+			<div id="<%= file.fileid %>" class="card d-inline-flex" href="#">
 				<iframe class="full" src="/res/file.png"></iframe>
 				<span class="card-body text-center">
 					<a href="#">
 						<h3 class="card-title text-center d-inline-flex">
-							<%= names[i] %>
+							<%= file.name %>
 						</h3>
 					</a>
 					<div>
-						<button data-id="<%= IDs[i] %>" class="delete-file border-0 btn-link">
+						<button data-id="<%= file.fileid %>" class="delete-file border-0 btn-link">
 							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
 						</button>
-						<button data-id="<%= IDs[i] %>" class="restore-file border-0 btn-link">
+						<button data-id="<%= file.fileid %>" class="restore-file border-0 btn-link">
 							<img class="border-0" src="/res/restore.ico" alt="restore" style="height: 2em;">
 						</button>
 					</div>

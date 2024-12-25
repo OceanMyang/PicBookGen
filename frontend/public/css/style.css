@@ -19,7 +19,6 @@ nav {
 }
 
 #text-container {
-  border-right: solid black 1px;
   overflow-y: auto;
   height: 100vh;
 }

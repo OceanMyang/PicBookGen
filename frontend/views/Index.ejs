@@ -1,4 +1,4 @@
-<!-- Require (IDs: string[], names: string[], scripts: string[]) -->
+<!-- Require (files: FileData[], scripts: string[]) -->
 
 <%- include('header') %>
 
@@ -16,26 +16,26 @@
 				<a href="/trash" class="btn btn-light">Trash Can</a>
 			</div>
 		</nav>
-		<% for (let i=0; i < IDs.length; i++) {-%>
-			<div id="<%= IDs[i] %>" class="card d-inline-flex">
-				<iframe class="full" src="/<%= IDs[i] %>" title="<%= names[i] %>"></iframe>
+		<% if (files.length===0) {-%>
+			<div> Click <button class="btn btn-light">New</button> to add more files! </div>
+			<% } %>
+		<% for (file of files) {-%>
+			<div id="<%= file.fileid %>" class="card d-inline-flex">
+				<iframe class="full" src="/<%= file.fileid %>" title="<%= file.name %>"></iframe>
 				<span class="card-body text-center">
-					<a href="/edit/<%= IDs[i] %>/">
+					<a href="/edit/<%= file.fileid %>/">
 						<h3 class="card-title text-center d-inline-flex">
-							<%= names[i] %>
+							<%= file.name %>
 						</h3>
 					</a>
 					<div>
-						<button data-id="<%= IDs[i] %>" class="dump-file border-0 btn-link">
+						<button data-id="<%= file.fileid %>" class="dump-file border-0 btn-link">
 							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
 						</button>
 					</div>
 				</span>
 			</div>
 			<% } %>
-				<% if (IDs.length===0) {-%>
-					<div> Click <button class="btn btn-light">New</button> to add more files! </div>
-					<% } %>
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>

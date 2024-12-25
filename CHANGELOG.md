@@ -101,3 +101,13 @@ Each component is included in components.js.
 Each script will acquire components (image view is an exception) from the components.js.
 
 If the corresponding component is missing, the script will throw an error.
+
+# December 25
+
+Published the app on picbookgen.com on December 20
+
+## Updates
+
+* Add dotenv package and .env file for the database url
+* fixed style for text container
+* ejs now receives FileData[] type instead of string[]: solved the bug that file titles differ with contents in view

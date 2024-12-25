@@ -1,9 +1,13 @@
 import { validate } from 'uuid';
 import { DataNotFoundException, DeletedException, InternalServerException } from '../utils/error.util';
 import pg from 'pg';
+import dotenv from 'dotenv';
 import { filesTransformer, fileTransformer } from '../transformers/fileTransformer';
+
+dotenv.config();
+
 const { Pool } = pg;
-const connectionString = 'postgresql://postgres.jpfmecydsiiscddxoopg:sbgl4572d2z@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
+const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({
   connectionString,
 });
@@ -33,7 +37,7 @@ export default class FileDatabase {
   static async enterFile(
     fileID: string,
     name: string,
-    author: string = "test"
+    author: string = "anon",
   ): Promise<FileData> {
     if (!validate(fileID)) {
       throw new InternalServerException("generating a new file ID");
