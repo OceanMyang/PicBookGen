@@ -113,3 +113,13 @@ Published the app on picbookgen.com on December 20
 * fixed style for text container
 * ejs now receives FileData[] type instead of string[]: solved the bug that file titles differ with contents in view
 * change module from es2016 to node next (prevent import errors after tsc compilation)
+
+# December 27
+
+## Updates
+
+* select image window - uncomplete
+* improved the style of the page: now only scrollable element (editor)can be scrolled
+* fixed that render vulnerability in errorhandler leads to source leak
+* add idContainer to contain id information in editor
+* change new file button to the form

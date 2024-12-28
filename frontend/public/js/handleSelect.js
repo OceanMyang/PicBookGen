@@ -1,5 +1,11 @@
-import { hideMenu, showMenu, clearMenu, appendItem } from "./actionMenu.js";
+import {
+  hideMenu,
+  showMenuAtPos,
+  clearMenu,
+  appendItem,
+} from "./actionMenu.js";
 import { $textContainer } from "./components.js";
+import { selectImageButton } from "./selectImage.js";
 import { uploadImageButton } from "./uploadImage.js";
 
 if (!$textContainer.length) {
@@ -20,8 +26,7 @@ document.addEventListener("selectionchange", (e) => {
     var rect = range.getBoundingClientRect();
     clearMenu();
     appendItem(uploadImageButton());
-    showMenu(rect);
-  } else {
-    hideMenu();
+    appendItem(selectImageButton());
+    showMenuAtPos(rect);
   }
 });

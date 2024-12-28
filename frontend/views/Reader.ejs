@@ -9,7 +9,7 @@
         </div>
     </nav>
     <ul id="action-menu" class="dropdown-menu"></ul>
-    <div class="leftside" id="text-container"><%- fileContent -%></div>
+    <div class="leftside" id="text-container" contenteditable="plaintext-only"><%- fileContent -%></div>
     <div>
         <% scripts.forEach(script=> { -%>
             <script type="module" src="/js/<%= script %>"></script>

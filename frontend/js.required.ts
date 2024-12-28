@@ -1,15 +1,14 @@
 export const required = {
     "Index": [
-        "newFile.js",
         "uploadFile.js",
         "dumpFile.js",
     ],
     "Editor": [
-        "newFile.js",
         "saveFile.js",
         "uploadFile.js",
         "dumpFile.js",
         "uploadImage.js",
+        "selectImage.js",
         "handleHover.js",
         "handleSelect.js",
         "titleContainer.js",

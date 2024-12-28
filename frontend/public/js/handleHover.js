@@ -1,4 +1,9 @@
-import { appendItem, clearMenu, hideMenu, showMenu } from "./actionMenu.js";
+import {
+  appendItem,
+  clearMenu,
+  hideMenu,
+  showMenuAtPos,
+} from "./actionMenu.js";
 import { $actionMenu, $textContainer } from "./components.js";
 import { deleteLinkByImage } from "./deleteImage.js";
 import saveFile from "./saveFile.js";
@@ -16,7 +21,7 @@ $(document).on("mouseover", async (e) => {
       clearMenu();
       appendItem(imageViewer(anchor.href));
       var rect = anchor.getBoundingClientRect();
-      showMenu(rect);
+      showMenuAtPos(rect);
     } else {
       if (
         confirm("This image is missing. Would you like to delete the link?")

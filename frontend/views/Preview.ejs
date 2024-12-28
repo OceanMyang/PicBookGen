@@ -1,7 +1,5 @@
 <!-- Require { filename: string, fileContent: string } -->
 
 <%- include('nheader', { title: filename }) %>
-    <div class="disabled">
-        <%- fileContent -%>
-    </div>
+    <div id="text-container" class="disabled" contenteditable="plaintext-only"><%- fileContent -%></div>
         <%- include('nfooter') %>

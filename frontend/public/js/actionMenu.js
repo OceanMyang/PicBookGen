@@ -4,7 +4,7 @@ if (!$actionMenu.length) {
   console.error("Action menu not found");
 }
 
-export const showMenu = (obj) => {
+export const showMenuAtPos = (obj) => {
   if (!obj) {
     console.error("The menu must be located relative to an object");
     return;
@@ -20,6 +20,10 @@ export const showMenu = (obj) => {
     left: `${left}px`,
     display: "block",
   });
+};
+
+export const showMenu = () => {
+  $actionMenu.css("display", "block");
 };
 
 export const hideMenu = () => {

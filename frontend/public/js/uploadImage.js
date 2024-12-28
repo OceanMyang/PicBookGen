@@ -1,4 +1,4 @@
-import { $input, $inputForm } from "./components.js";
+import { $idContainer, $input, $inputForm } from "./components.js";
 import saveFile from "./saveFile.js";
 
 if (!$input.length) {
@@ -17,8 +17,7 @@ const handleUploadImage = async () => {
       uploadImage().then((response) => {
         var $anchor = $("<a>", {
           href: response,
-          html: selectedText,
-          onclick: "event.preventDefault()",
+          html: selectedText
         });
         $anchor.data("id", response);
         range.deleteContents();
@@ -43,9 +42,9 @@ async function uploadImage() {
 
           var formData = new FormData();
           formData.append("image", $input[0].files[0]);
-          var path = window.location.pathname;
+          var fileID = $idContainer.val();
           try {
-            const response = await fetch(path.replace("edit", "upload"), {
+            const response = await fetch(`/upload/${fileID}`, {
               method: "POST",
               body: formData,
             });
@@ -62,12 +61,10 @@ async function uploadImage() {
   });
 }
 
-export var uploadImageButton = () => {
-  var button = $("<button>", {
+export const uploadImageButton = () => {
+  return $("<button>", {
     id: "upload-image",
     text: "Upload Image",
     class: "dropdown-item",
-  });
-  button.on("click", handleUploadImage);
-  return button;
+  }).on("click", handleUploadImage);
 };

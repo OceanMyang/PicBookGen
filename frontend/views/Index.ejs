@@ -8,7 +8,9 @@
 		</nav>
 		<nav class="navbar navbar-expand">
 			<div>
-				<button id="new-file" class="btn btn-light">New</button>
+				<form action="/new" method="post" class="d-inline">
+					<input type="submit" id="new-file" class="btn btn-light" value="New" />
+				</form>
 				<button id="upload-file" class="btn btn-light">Upload</button>
 				<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
 					<input id="input" type="file" accept=".txt" name="file" class="d-none">
@@ -17,25 +19,27 @@
 			</div>
 		</nav>
 		<% if (files.length===0) {-%>
-			<div> Click <button class="btn btn-light">New</button> to add more files! </div>
+			<div> Click New to add more files! </div>
 			<% } %>
-		<% for (file of files) {-%>
-			<div id="<%= file.fileid %>" class="card d-inline-flex">
-				<iframe class="full" src="/<%= file.fileid %>" title="<%= file.name %>"></iframe>
-				<span class="card-body text-center">
-					<a href="/edit/<%= file.fileid %>/">
-						<h3 class="card-title text-center d-inline-flex">
-							<%= file.name %>
-						</h3>
-					</a>
-					<div>
-						<button data-id="<%= file.fileid %>" class="dump-file border-0 btn-link">
-							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-						</button>
-					</div>
-				</span>
-			</div>
-			<% } %>
+				<div class="scrollable">
+					<% for (file of files) {-%>
+						<div id="<%= file.fileid %>" class="card d-inline-flex">
+							<iframe class="full disabled" src="/<%= file.fileid %>" title="<%= file.name %>"></iframe>
+							<span class="card-body text-center">
+								<a href="/edit/<%= file.fileid %>/">
+									<h3 class="card-title text-center d-inline-flex">
+										<%= file.name %>
+									</h3>
+								</a>
+								<div>
+									<button data-id="<%= file.fileid %>" class="dump-file border-0 btn-link">
+										<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
+									</button>
+								</div>
+							</span>
+						</div>
+						<% } %>
+				</div>
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>

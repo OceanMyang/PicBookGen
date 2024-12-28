@@ -38,29 +38,30 @@ router.set("views", viewPath);
 router.set("view engine", "ejs");
 router.use("/", express.static(publicPath));
 
+const renderHandler = (res: Response, view: string, options: any) => {
+  res.render(view, options, (err, html) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    }
+    res.send(html);
+  });
+}
+
 const errorHandler: ErrorRequestHandler = (err, req: Request, res: Response, next: NextFunction) => {
   console.log("Handler" + err);
   if (res.headersSent) {
     res.status(500).send("Internal Server Error");
     return;
   }
+
   if (err instanceof HttpException) {
-    res.status(err.status).render("Error", { message: err.message });
+    renderHandler(res, "Error", { message: err.message });
     return;
   }
 
   res.status(500).render("Error", { message: "Internal Server Error" });
 };
-
-const renderHandler = (res: Response, view: string, options: any) => {
-  res.render(view, options, (err, html) => {
-    if (err) {
-      console.log(err);
-      throw new InternalServerException("rendering the page");
-    }
-    res.send(html);
-  });
-}
 
 router.use(errorHandler);
 
@@ -94,8 +95,7 @@ router
       var scripts = required["Editor"];
 
       renderHandler(res, "Editor", {
-        fileID: fileID,
-        filename: fileData['name'],
+        file: fileData,
         fileContent: fileContent,
         scripts: scripts
       });

@@ -1,13 +1,15 @@
-import { $deleteImages } from "./components.js";
+import { $deleteImages, $idContainer } from "./components.js";
 
 if (!$deleteImages.length) {
   console.error("Delete image button not found");
 }
 
+if (!$idContainer.length) {
+  console.error("ID container not found");
+}
+
 $deleteImages.each((index, button) => {
-  var params = window.location.pathname.split("/");
-  params.pop();
-  var fileID = params.pop();
+  var fileID = $idContainer.val();
   var imageID = $(button).data("id");
   $(button).on("click", async () => {
     if (confirm("Are you sure? This cannot be undone.")) {

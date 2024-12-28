@@ -1,13 +1,15 @@
-import { $dumpFile, $dumpFiles } from "./components.js";
+import { $dumpFile, $dumpFiles, $idContainer } from "./components.js";
 
 if (!$dumpFile.length && !$dumpFiles.length) {
   console.error("Dump file button not found");
 }
 
 $dumpFile.on("click", async () => {
-  var path = window.location.pathname.replace("edit", "delete");
-  await dumpFile(path);
-  window.location = "/";
+  if (confirm("Do you want to move this file to trash?")) {
+    var fileID = $idContainer.val();
+    await dumpFile(`/delete/${fileID}`, { method: "POST" });
+    location.href = "/";
+  }
 });
 
 $dumpFiles.each((index, button) => {

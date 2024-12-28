@@ -2,8 +2,16 @@ header {
   position: relative;
 }
 
-.body {
-  text-align: center;
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scrollable {
+  overflow: auto !important;
 }
 
 nav {
@@ -19,8 +27,15 @@ nav {
 }
 
 #text-container {
+  flex: 1;
   overflow-y: auto;
-  height: 100vh;
+  padding: 20px;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+#text-container:focus {
+  outline: none;
 }
 
 #image-viewer {
@@ -47,7 +62,6 @@ img {
 
 iframe {
   border: gainsboro 1px solid;
-  pointer-events: none;
 }
 
 .icon {

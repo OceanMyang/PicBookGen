@@ -9,26 +9,28 @@
 			</a>
 			<h1 class="d-inline-block">Trash Can</h1>
 		</nav>
-		<% for (file of files) {-%>
-			<div id="<%= file.fileid %>" class="card d-inline-flex" href="#">
-				<iframe class="full" src="/res/file.png"></iframe>
-				<span class="card-body text-center">
-					<a href="#">
-						<h3 class="card-title text-center d-inline-flex">
-							<%= file.name %>
-						</h3>
-					</a>
-					<div>
-						<button data-id="<%= file.fileid %>" class="delete-file border-0 btn-link">
-							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-						</button>
-						<button data-id="<%= file.fileid %>" class="restore-file border-0 btn-link">
-							<img class="border-0" src="/res/restore.ico" alt="restore" style="height: 2em;">
-						</button>
-					</div>
-				</span>
-			</div>
-			<% } %>
+		<div class="scrollable">
+			<% for (file of files) {-%>
+				<div id="<%= file.fileid %>" class="card d-inline-flex" href="#">
+					<iframe class="full" src="/res/file.png"></iframe>
+					<span class="card-body text-center">
+						<a href="#">
+							<h3 class="card-title text-center d-inline-flex">
+								<%= file.name %>
+							</h3>
+						</a>
+						<div>
+							<button data-id="<%= file.fileid %>" class="delete-file border-0 btn-link">
+								<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
+							</button>
+							<button data-id="<%= file.fileid %>" class="restore-file border-0 btn-link">
+								<img class="border-0" src="/res/restore.ico" alt="restore" style="height: 2em;">
+							</button>
+						</div>
+					</span>
+				</div>
+				<% } %>
+		</div>
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>

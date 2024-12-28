@@ -1,5 +1,6 @@
 export const $input = $("#input");
 export const $inputForm = $("#input-form");
+export const $idContainer = $("#file-id");
 export const $textContainer = $("#text-container");
 export const $titleContainer = $("#title-container");
 export const $actionMenu = $("#action-menu");
