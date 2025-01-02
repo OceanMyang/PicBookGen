@@ -13,9 +13,9 @@ import { uploadPath } from "../../uploads/upload.path.js";
 
 export default class FileSystem {
 	static async accessFile(fileID: string, imageID?: string): Promise<string> {
-		var path = join(filesPath, fileID);
-		var type = "File";
-		var id = fileID;
+		let path = join(filesPath, fileID);
+		let type = "File";
+		let id = fileID;
 		if (fileID.includes(".")) {
 			throw new FileNotFoundException("File", fileID);
 		}
@@ -44,7 +44,7 @@ export default class FileSystem {
 
 	static async readDir(): Promise<string[]> {
 		try {
-			var dirEnts = await fsp.readdir(filesPath, { withFileTypes: true });
+			const dirEnts = await fsp.readdir(filesPath, { withFileTypes: true });
 			return dirEnts.filter((ent) => ent.isDirectory()).map((ent) => ent.name);
 		} catch (err: any) {
 			console.log(err);
@@ -60,7 +60,7 @@ export default class FileSystem {
 		try {
 			await fsp.mkdir(join(filesPath, fileID));
 			await fsp.mkdir(join(filesPath, fileID, "images"));
-			var fd = await fsp.open(join(filesPath, fileID, "index.html"), fsp.constants.O_CREAT);
+			const fd = await fsp.open(join(filesPath, fileID, "index.html"), fsp.constants.O_CREAT);
 			fd.close();
 			console.log(`File ${fileID} created on server.`);
 		} catch (err: any) {
@@ -161,7 +161,7 @@ export default class FileSystem {
 		}
 	}
 
-	static async showImages(fileID: string): Promise<string[]> {
+	static async listImages(fileID: string): Promise<string[]> {
 		if (fileID.includes(".")) {
 			throw new FileNotFoundException("File", fileID);
 		}
@@ -187,6 +187,7 @@ export default class FileSystem {
 		}
 
 		try {
+			console.log(join(filesPath, fileID, "images"));
 			await fsp.access(join(filesPath, fileID, "images"));
 			await fsp.rename(join(uploadPath, imageID), join(filesPath, fileID, "images", imageID + (ext ? ext : "")));
 			console.log(`Image ${imageID} uploaded to server.`);

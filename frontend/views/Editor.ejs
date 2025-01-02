@@ -1,37 +1,37 @@
 <!-- Require { file: FileData, fileContent: string, scripts: string[] } -->
 
-<%- include('header', { title: file.name }) %>
+<%- include("header", { title: file.name }) %>
 
 	<body>
 		<nav class="navbar navbar-expand">
-			<a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
-				<img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
+			<a style="height: 2em;" class="d-inline-block index" href="/">
+				<img style="height: 2em; border: none; " src="/res/books.svg" alt="Back">
 			</a>
-			<div id="title-container" class="btn btn-light" contenteditable="plaintext-only"><%- file.name -%></div>
+			<div class="btn btn-light title" contenteditable="plaintext-only"><%- file.name -%></div>
 		</nav>
-		<nav id="file-menu" class="navbar navbar-expand">
+		<nav class="navbar navbar-expand">
 			<button id="save-file" class="btn btn-light">Save</button>
 			<form action="/new" method="post" class="d-inline">
-				<input type="submit" id="new-file" class="btn btn-light" value="New"/>
+				<input type="submit" id="new-file" class="btn btn-light" value="New" />
 			</form>
 			<button id="upload-file" class="btn btn-light">Upload</button>
+			<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
+				<input id="input" type="file" accept="text/plain" name="file" class="d-none">
+			</form>
 			<button id="dump-file" class="btn btn-light">Delete</button>
-			<a id="images-button" href="./images" class="btn btn-light">Images</a>
+			<button id="toggle" class="btn btn-light">Images</button>
 		</nav>
-		<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
-			<input id="input" type="file" accept="text/plain" name="file" class="d-none">
-			<input id="file-id" type="hidden" class="d-none" name="fileid" value="<%= file.fileid %>">
-		</form>
-		<ul id="action-menu" class="dropdown-menu">
-			<button id="upload-image" class="dropdown-item">Upload Image</button>
-		</ul>
-		<div class="scrollable">
-			<div id="text-container" contenteditable="plaintext-only"><%- fileContent -%></div>
+		<div class="scrollable w-100 h-100 p-3">
+			<div id="editor" contenteditable="plaintext-only" style><%- fileContent -%></div>
+			<div id="image-panel" style="display: none;"></div>
 		</div>
-		<div>
-			<% scripts.forEach(script=> { -%>
-				<script type="module" src="/js/<%= script %>"></script>
-				<% }) %>
-		</div>
+		<input id="file-id" type="hidden" class="d-none" name="fileid" value="<%= file.fileid %>">
+		<input id="image-id" type="hidden" class="d-none" name="fileid" value="">
+		<div id="context-menu" class="dropdown-menu"></div>
 	</body>
-	<%- include('footer') %>
+	<div>
+		<% scripts.forEach(script=> { -%>
+			<script type="module" src="/js/<%= script %>"></script>
+			<% }) %>
+	</div>
+	<%- include("footer") %>

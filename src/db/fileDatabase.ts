@@ -65,9 +65,9 @@ export default class FileDatabase {
   }
 
   static async findFile(fileID: string): Promise<FileData> {
-    var json = await this.getJSON(fileID);
+    const json = await this.getJSON(fileID);
 
-    var file = fileTransformer(json);
+    const file = fileTransformer(json);
 
     return file;
   }
@@ -76,9 +76,9 @@ export default class FileDatabase {
     fileID: string,
     name: string,
   ): Promise<FileData> {
-    var json = await this.getJSON(fileID);
+    const json = await this.getJSON(fileID);
 
-    var oldFile = fileTransformer(json);
+    const oldFile = fileTransformer(json);
     if (oldFile.deletedat) {
       throw new DeletedException("File", fileID);
     }
@@ -88,7 +88,7 @@ export default class FileDatabase {
         if (rows.length === 0) {
           throw new InternalServerException("renaming the file");
         }
-        var newFile = fileTransformer(rows[0]);
+        const newFile = fileTransformer(rows[0]);
         console.log(`File ${fileID} renamed from ${oldFile.name} to ${newFile.name} in database.`);
         return newFile;
       })
@@ -99,9 +99,9 @@ export default class FileDatabase {
   }
 
   static async archiveFile(fileID: string): Promise<FileData> {
-    var json = await this.getJSON(fileID);
+    const json = await this.getJSON(fileID);
 
-    var oldFile = fileTransformer(json);
+    const oldFile = fileTransformer(json);
 
     if (oldFile.deletedat) {
       throw new DeletedException("File", fileID);
@@ -122,9 +122,9 @@ export default class FileDatabase {
   }
 
   static async restoreFile(fileID: string): Promise<FileData> {
-    var json = await this.getJSON(fileID);
+    const json = await this.getJSON(fileID);
 
-    var oldFile = fileTransformer(json);
+    const oldFile = fileTransformer(json);
 
     if (!oldFile.deletedat) {
       throw new DeletedException("File", fileID, false);
@@ -149,9 +149,9 @@ export default class FileDatabase {
       throw new DataNotFoundException("File", fileID);
     }
 
-    var json = await this.getJSON(fileID);
+    const json = await this.getJSON(fileID);
 
-    var file = fileTransformer(json);
+    const file = fileTransformer(json);
 
     if (!file.deletedat) {
       throw new DeletedException("File", fileID, false);

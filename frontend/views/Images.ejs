@@ -1,30 +1,10 @@
-<!-- Require (images: string[], scripts: string[]) -->
-
-<%- include('header') %>
-
-	<body>
-		<nav class="navbar navbar-expand">
-      <a style="height: 2em;" class="d-inline-block" id="index-button" href=".">
-          <img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
-      </a>
-      <h1>Images</h1>
-    </nav>
-		<div class="row no-gutters">
+<div class="row no-gutters">
+	<% if (images.length==0) { %>
+		No images for now. Select text in editor to add images.
+		<% } %>
 			<% for (let i=0; i < images.length; i++) {-%>
-				<div id="<%= images[i] %>" class="card d-inline-block col-4">
-					<img src="<%= images[i] %>" alt="<%= images[i] %>">
-					<div class="card-body text-center">
-						<button data-id="<%= images[i] %>" class="delete-image border-0 btn-link">
-							<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-						</button>
-					</div>
+				<div id="<%= images[i] %>" class="col-4 overflow-hidden hover-select p-2 rounded id-selectable">
+					<img src="/access/<%= fileID %>/<%= images[i] %>" alt="<%= images[i] %>">
 				</div>
 				<% } %>
-		</div>
-	</body>
-	<div>
-		<% scripts.forEach(script=> { -%>
-			<script type="module" src="/js/<%= script %>"></script>
-			<% }) %>
-	</div>
-	<%- include('footer') %>
+</div>

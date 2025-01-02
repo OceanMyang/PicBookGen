@@ -1,7 +1,7 @@
 import FileDatabase from "./src/db/fileDatabase.js";
 import FileSystem from "./src/sys/fileSystem.js";
 
-var args = process.argv;
+const args = process.argv;
 if (args.length !== 3) {
   console.log("Usage: delete.ts <fileID>");
   console.log("Current argument count: " + args.length);
@@ -12,7 +12,7 @@ else if (!args[2]) {
   process.exit(1);
 }
 
-var fileID = args[2];
+const fileID = args[2];
 Promise.all([
   FileDatabase.deleteFile(fileID),
   FileSystem.deleteFile(fileID)

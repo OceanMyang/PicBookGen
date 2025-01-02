@@ -1,35 +1,36 @@
 <!-- Require (files: FileData[], scripts: string[]) -->
 
-<%- include('header', { title: "Trash Can" }) %>
+<%- include("header", { title: "Trash Can" }) %>
 
 	<body>
 		<nav class="navbar navbar-expand">
-			<a style="height: 2em;" class="d-inline-block" id="index-button" href="/">
-				<img style="height: 2em; border: none; " src="/res/file.png" alt="Back">
+			<a style="height: 2em;" class="d-inline-block index" href="/">
+				<img style="height: 2em; border: none; " src="/res/books.svg" alt="Back">
 			</a>
 			<h1 class="d-inline-block">Trash Can</h1>
 		</nav>
-		<div class="scrollable">
-			<% for (file of files) {-%>
-				<div id="<%= file.fileid %>" class="card d-inline-flex" href="#">
-					<iframe class="full" src="/res/file.png"></iframe>
-					<span class="card-body text-center">
-						<a href="#">
+		<div class="scrollable p-3">
+			<input id="file-id" type="hidden" class="d-none disabled" name="fileid" value="">
+			<div id="trash-panel">
+				<% for (file of files) {-%>
+					<div id="<%= file.fileid %>" class="card d-inline-flex hover-select id-selectable" href="#">
+						<img src="/res/book.svg" style="width: 300px; height: 150px;" alt="Book"></img>
+						<span class="card-body text-center">
 							<h3 class="card-title text-center d-inline-flex">
 								<%= file.name %>
 							</h3>
-						</a>
-						<div>
-							<button data-id="<%= file.fileid %>" class="delete-file border-0 btn-link">
-								<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-							</button>
-							<button data-id="<%= file.fileid %>" class="restore-file border-0 btn-link">
-								<img class="border-0" src="/res/restore.ico" alt="restore" style="height: 2em;">
-							</button>
-						</div>
-					</span>
-				</div>
-				<% } %>
+							<div>
+								<img class="border-0 btn btn-light rounded option" src="/res/option.svg" alt="options"
+									style="height: 40px;">
+							</div>
+						</span>
+					</div>
+					<% } %>
+			</div>
+		</div>
+		<div id="context-menu" class="dropdown-menu">
+			<button id="restore-file" class="dropdown-item">Restore</button>
+			<button id="delete-file" class="dropdown-item">Delete</button>
 		</div>
 	</body>
 	<div>
@@ -37,4 +38,4 @@
 			<script type="module" src="/js/<%= script %>"></script>
 			<% }) %>
 	</div>
-	<%- include('footer') %>
+	<%- include("footer") %>

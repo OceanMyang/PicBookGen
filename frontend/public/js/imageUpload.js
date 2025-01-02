@@ -1,5 +1,5 @@
-import { $idContainer, $input, $inputForm } from "./components.js";
-import saveFile from "./saveFile.js";
+import { $fileSelector, $input, $inputForm } from "./components.js";
+import { saveFile } from "./fileSave.js";
 
 if (!$input.length) {
   console.error("No input element found");
@@ -8,18 +8,24 @@ if (!$inputForm.length) {
   console.error("No input form found");
 }
 
+if (!$fileSelector.length) {
+  console.error("File selector not found");
+}
+
 const handleUploadImage = async () => {
-  var selection = window.getSelection();
-  var selectedText = selection.toString();
+  console.log("Uploading image");
+  const selection = window.getSelection();
+  const selectedText = selection.toString();
   if (selectedText && !/^\s+$/.test(selectedText)) {
-    var range = selection.getRangeAt(0);
+    const range = selection.getRangeAt(0);
     if (range.startContainer === range.endContainer) {
-      uploadImage().then((response) => {
-        var $anchor = $("<a>", {
-          href: response,
-          html: selectedText
+      uploadImage().then((imageID) => {
+        const fileID = $fileSelector.val();
+        const $anchor = $("<a>", {
+          href: `/access/${fileID}/${imageID}`,
+          html: selectedText,
+          class: "view",
         });
-        $anchor.data("id", response);
         range.deleteContents();
         range.insertNode($anchor[0]);
         saveFile();
@@ -37,17 +43,20 @@ async function uploadImage() {
     });
     $input.trigger("click").on("input", async () => {
       $inputForm
-        .submit(async (e) => {
+        .on("submit", async (e) => {
           e.preventDefault();
 
-          var formData = new FormData();
+          const formData = new FormData();
           formData.append("image", $input[0].files[0]);
-          var fileID = $idContainer.val();
+          const fileID = $fileSelector.val();
           try {
             const response = await fetch(`/upload/${fileID}`, {
               method: "POST",
               body: formData,
             });
+            if (!response.ok) {
+              throw new Error(response.statusText);
+            }
             const text = await response.text();
             console.log(text);
             resolve(text); // Resolve the promise with the final result
@@ -56,7 +65,7 @@ async function uploadImage() {
             reject(err); // Reject the promise in case of an error
           }
         })
-        .submit();
+        .trigger("submit");
     });
   });
 }

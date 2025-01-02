@@ -1,49 +1,51 @@
 <!-- Require (files: FileData[], scripts: string[]) -->
 
-<%- include('header') %>
+<%- include("header") %>
 
 	<body>
 		<nav class="navbar navbar-expand">
 			<h1>PicBookGen</h1>
 		</nav>
 		<nav class="navbar navbar-expand">
-			<div>
-				<form action="/new" method="post" class="d-inline">
-					<input type="submit" id="new-file" class="btn btn-light" value="New" />
-				</form>
-				<button id="upload-file" class="btn btn-light">Upload</button>
-				<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
-					<input id="input" type="file" accept=".txt" name="file" class="d-none">
-				</form>
-				<a href="/trash" class="btn btn-light">Trash Can</a>
-			</div>
+			<form action="/new" method="post" class="d-inline">
+				<input type="submit" id="new-file" class="btn btn-light" value="New" />
+			</form>
+			<button id="upload-file" class="btn btn-light">Upload</button>
+			<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
+				<input id="input" type="file" accept=".txt" name="file" class="d-none">
+			</form>
+			<a href="/trash" class="btn btn-light">Trash Can</a>
 		</nav>
-		<% if (files.length===0) {-%>
-			<div> Click New to add more files! </div>
-			<% } %>
-				<div class="scrollable">
-					<% for (file of files) {-%>
-						<div id="<%= file.fileid %>" class="card d-inline-flex">
-							<iframe class="full disabled" src="/<%= file.fileid %>" title="<%= file.name %>"></iframe>
-							<span class="card-body text-center">
-								<a href="/edit/<%= file.fileid %>/">
-									<h3 class="card-title text-center d-inline-flex">
-										<%= file.name %>
-									</h3>
-								</a>
-								<div>
-									<button data-id="<%= file.fileid %>" class="dump-file border-0 btn-link">
-										<img class="border-0" src="/res/delete.ico" alt="delete" style="height: 2em;">
-									</button>
-								</div>
-							</span>
-						</div>
-						<% } %>
-				</div>
+		<div class="scrollable p-3">
+			<div id="file-panel">
+				<% if (files.length===0) {-%>
+					<div> Click New to add more files! </div>
+					<% } %>
+						<% for (file of files) {-%>
+							<a id="<%= file.fileid %>" href="/edit/<%= file.fileid %>"
+								class="card d-inline-flex hover-select id-selectable">
+								<iframe class="disabled" src="/<%= file.fileid %>" title="<%= file.name %>"></iframe>
+								<span class="card-body text-center">
+									<div class="btn btn-light title" contenteditable="plaintext-only"><%- file.name -%></div>
+									<div>
+										<img class="border-0 btn btn-light rounded option" src="/res/option.svg" alt="options"
+											style="height: 40px;">
+									</div>
+								</span>
+							</a>
+							<% } %>
+			</div>
+		</div>
+		<input id="file-id" type="hidden" class="d-none" name="fileid" value="">
+		<div id="context-menu" class="dropdown-menu">
+			<a class="dropdown-item read" href="/read">Read</a>
+			<button id="rename-file" class="dropdown-item">Rename</button>
+			<button id="dump-file" class="dropdown-item">Delete</button>
+		</div>
 	</body>
 	<div>
 		<% scripts.forEach(script=> { -%>
 			<script type="module" src="/js/<%= script %>"></script>
 			<% }) %>
 	</div>
-	<%- include('footer') %>
+	<%- include("footer") %>

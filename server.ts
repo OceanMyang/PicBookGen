@@ -10,7 +10,6 @@ import {
   BadRequestException,
   DataNotFoundException,
   HttpException,
-  InternalServerException,
   NotFoundException
 } from "./src/utils/error.util.js";
 import { viewPath } from "./frontend/views/view.path.js";
@@ -26,7 +25,7 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    var fileID = v4();
+    const fileID = v4();
     cb(null, fileID);
   }
 });
@@ -56,7 +55,13 @@ const errorHandler: ErrorRequestHandler = (err, req: Request, res: Response, nex
   }
 
   if (err instanceof HttpException) {
-    renderHandler(res, "Error", { message: err.message });
+    res.render("Error", { message: err.message }, (error, html) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+      }
+      res.status(err.status).send(html);
+    });
     return;
   }
 
@@ -67,9 +72,9 @@ router.use(errorHandler);
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    var files = await FileDatabase.listFiles();
+    const files = await FileDatabase.listFiles();
 
-    var scripts = required["Index"];
+    const scripts = required["Index"];
 
     renderHandler(res, "Index", {
       files: files,
@@ -84,15 +89,15 @@ router
   .route("/edit/:fileID")
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      var { fileID } = req.params;
+      const { fileID } = req.params;
 
-      var fileData = await FileDatabase.findFile(fileID);
+      const fileData = await FileDatabase.findFile(fileID);
 
-      var fileBuffer = await FileSystem.readFile(fileID);
+      const fileBuffer = await FileSystem.readFile(fileID);
 
-      var fileContent = fileBuffer.toString('utf-8');
+      const fileContent = fileBuffer.toString('utf-8');
 
-      var scripts = required["Editor"];
+      const scripts = required["Editor"];
 
       renderHandler(res, "Editor", {
         file: fileData,
@@ -106,11 +111,11 @@ router
   }, errorHandler)
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      var { fileID } = req.params;
-      var { filename, filebody } = req.body;
+      const { fileID } = req.params;
+      const { filename, filebody } = req.body;
 
       if (filename) {
-        var fileData = await FileDatabase.findFile(fileID);
+        const fileData = await FileDatabase.findFile(fileID);
 
         if (filename != fileData['name'])
           await FileDatabase.renameFile(fileID, filename);
@@ -124,7 +129,7 @@ router
   }, errorHandler)
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      var { fileID } = req.params;
+      const { fileID } = req.params;
 
       await FileDatabase.archiveFile(fileID);
 
@@ -137,19 +142,19 @@ router
 
 router.get("/read/:fileID", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    var { fileID } = req.params;
+    const { fileID } = req.params;
 
     if (!validate(fileID)) {
       throw new DataNotFoundException("File", fileID);
     }
 
-    var fileData = await FileDatabase.findFile(fileID);
+    const fileData = await FileDatabase.findFile(fileID);
 
-    var fileBuffer = await FileSystem.readFile(fileID);
+    const fileBuffer = await FileSystem.readFile(fileID);
 
-    var fileContent = fileBuffer.toString('utf-8');
+    const fileContent = fileBuffer.toString('utf-8');
 
-    var scripts = required["Reader"];
+    const scripts = required["Reader"];
     renderHandler(res, "Reader",
       { filename: fileData['name'], fileContent: fileContent, scripts: scripts });
   }
@@ -160,35 +165,34 @@ router.get("/read/:fileID", async (req: Request, res: Response, next: NextFuncti
 
 router.get(["/edit", "/read"], (req: Request, res: Response, next: NextFunction) => res.redirect("/"));
 
-router.route(["/edit/:fileID/images", "/read/:fileID/images"])
+router.route("/access/:fileID")
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      var { fileID } = req.params;
-      var images = await FileSystem.showImages(fileID);
-      var scripts = required["Images"];
-      renderHandler(res, "Images", { images: images, scripts: scripts });
+      const { fileID } = req.params;
+      const images = await FileSystem.listImages(fileID);
+      const scripts = required["Images"];
+      renderHandler(res, "Images", { fileID: fileID, images: images, scripts: scripts });
     } catch (err) {
       next(err);
     }
   }, errorHandler);
 
-router.get(["/edit/:fileID/:imageID", "/read/:fileID/:imageID"],
+router.get("/access/:fileID/:imageID",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      var { fileID, imageID } = req.params;
-      var path = await FileSystem.accessFile(fileID, imageID);
+      const { fileID, imageID } = req.params;
+      const path = await FileSystem.accessFile(fileID, imageID);
       res.sendFile(path);
     } catch (err) {
       next(err);
     }
   }, errorHandler);
 
-
 router.get("/trash", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    var files = await FileDatabase.listArchivedFiles();
+    const files = await FileDatabase.listArchivedFiles();
 
-    var scripts = required["Trash"];
+    const scripts = required["Trash"];
     renderHandler(res, "Trash", {
       files: files,
       scripts: scripts
@@ -200,7 +204,7 @@ router.get("/trash", async (req: Request, res: Response, next: NextFunction) => 
 
 router.post("/new", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    var fileID = v4();
+    const fileID = v4();
 
     await FileDatabase.enterFile(fileID, "New File");
 
@@ -220,14 +224,14 @@ router.post("/upload", upload.single("file"), async (req: Request, res: Response
       throw new BadRequestException("File not uploaded.");
     }
 
-    var result = await fileTypeFromFile(req.file.path);
+    const result = await fileTypeFromFile(req.file.path);
     if (result) {
       await FileSystem.deleteUpload(req.file.filename);
       throw new BadRequestException("File must be a text file.");
     }
 
-    var filename = path.basename(req.file.originalname, path.extname(req.file.originalname));
-    var fileID = req.file.filename;
+    const filename = path.basename(req.file.originalname, path.extname(req.file.originalname));
+    const fileID = req.file.filename;
     await FileDatabase.enterFile(fileID, filename);
     await FileSystem.uploadFile(fileID);
     res.redirect(`/edit/${fileID}`);
@@ -239,19 +243,19 @@ router.post("/upload", upload.single("file"), async (req: Request, res: Response
 
 router.post("/upload/:fileID", upload.single("image"), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    var { fileID } = req.params;
+    const { fileID } = req.params;
     console.log(req.file);
     if (!req.file) {
       throw new BadRequestException("Image not uploaded.");
     }
-
-    var result = await fileTypeFromFile(req.file.path);
+    
+    const result = await fileTypeFromFile(req.file.path);
     if (!result || !result.mime.startsWith("image")) {
       throw new BadRequestException("File must be an image file.");
     }
 
-    var imageID = req.file.filename;
-    var ext = path.extname(req.file.originalname);
+    const imageID = req.file.filename;
+    const ext = path.extname(req.file.originalname);
     await FileSystem.renameImage(fileID, imageID, ext);
     res.send(imageID + ext);
   }
@@ -267,7 +271,7 @@ router
   .route("/delete/:fileID")
   .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      var { fileID } = req.params;
+      const { fileID } = req.params;
 
       await FileDatabase.archiveFile(fileID);
 
@@ -279,9 +283,9 @@ router
   }, errorHandler)
   .delete(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      var { fileID } = req.params;
+      const { fileID } = req.params;
 
-      var fileData = await FileDatabase.deleteFile(fileID);
+      const fileData = await FileDatabase.deleteFile(fileID);
       await FileSystem.deleteFile(fileID);
 
       res.status(200).send(fileData);
@@ -293,7 +297,7 @@ router
 
 router.delete("/delete/:fileID/:imageID", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    var { fileID, imageID } = req.params;
+    const { fileID, imageID } = req.params;
     await FileSystem.deleteImage(fileID, imageID);
     res.status(200).send(imageID);
   } catch (err) {
@@ -305,7 +309,7 @@ router.post("/restore/:fileID", async (req: Request, res: Response, next: NextFu
   try {
     console.log("Restoring file");
 
-    var { fileID } = req.params;
+    const { fileID } = req.params;
 
     if (!validate(fileID)) {
       throw new DataNotFoundException("File", fileID);
@@ -321,23 +325,23 @@ router.post("/restore/:fileID", async (req: Request, res: Response, next: NextFu
 }, errorHandler);
 
 router.get(["/css/:file", "/js/:file", "/res/:file"], (req: Request, res: Response, next: NextFunction) => {
-  var { file } = req.params;
+  const { file } = req.params;
   res.sendFile(join(publicPath, file));
 });
 
 router.get("/:fileID", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    var { fileID } = req.params;
+    const { fileID } = req.params;
 
     if (!fileID || !validate(fileID)) {
       next();
     }
     else {
-      var fileData = await FileDatabase.findFile(fileID);
+      const fileData = await FileDatabase.findFile(fileID);
 
-      var fileBuffer = await FileSystem.readFile(fileID);
+      const fileBuffer = await FileSystem.readFile(fileID);
 
-      var fileContent = fileBuffer.toString('utf-8');
+      const fileContent = fileBuffer.toString('utf-8');
 
       renderHandler(res, "Preview",
         { filename: fileData['name'], fileContent: fileContent });

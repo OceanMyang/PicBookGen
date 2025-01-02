@@ -40,7 +40,7 @@ _I'm considering change the POST to PUT. PUT is more accurate here._
 
 ## 2
 
-Now the title-container div is content-editable. I used the script to make sure that the filename can't have line breaks.
+Now the title div is content-editable. I used the script to make sure that the filename can't have line breaks.
 
 I also changed the editor to plaintext-only so that user is unable to add html contents to it and break the style.
 
@@ -61,8 +61,8 @@ _Then compile all the scripts together when rendering the html_
   * For example: $("#image-viewer").on ... -> imageViewer.js
 * Renamed html components
 
-  * file-name -> title-container
-  * editor / reader -> text-container
+  * file-name -> title
+  * editor / reader -> editor
   * new-file / save-file / add-link -> new-file save-file upload-image
   * back -> index-button
 * Align the index-button with the file title
@@ -92,7 +92,7 @@ _Then compile all the scripts together when rendering the html_
 
 ## Major UI Update
 
-Add interaction action menu to the text container
+Add interaction context menu to the Editor
 
 ## Standardization of Components
 
@@ -110,7 +110,7 @@ Published the app on picbookgen.com on December 20
 
 * Local machine now uses local database instead of supabase
 * Add dotenv package and .env file for the database url
-* fixed style for text container
+* fixed style for Editor
 * ejs now receives FileData[] type instead of string[]: solved the bug that file titles differ with contents in view
 * change module from es2016 to node next (prevent import errors after tsc compilation)
 
@@ -123,3 +123,29 @@ Published the app on picbookgen.com on December 20
 * fixed that render vulnerability in errorhandler leads to source leak
 * add idContainer to contain id information in editor
 * change new file button to the form
+
+# December 28
+
+* select images window completed
+
+# January 2
+
+## Major UI Update
+
+* editor and image routes now share the same page
+  * enabling faster and more interactive experiences
+* User now view file actions through context menu
+  * Add option button to show context menu
+  * This applies to editor, image and trash
+* The rename action is now more intuitive.
+  * The user can rename a file by clicking the title or rename option in context menu
+  * This applies to editor and index page
+
+## Minor Updates
+
+* Renamed most js files so that they are arranged more intuitively
+* Changed most icons to svg to reach max efficiency
+* Add scripts to unify the experiences across different interfaces
+* Improved the fluid title experience
+* Change edit/../images endpoints to /access/.. endpoints
+* Code practice: changed all var to const: use let when variable is necessary

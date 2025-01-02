@@ -18,6 +18,6 @@ $uploadFile.on("click", () => {
   });
 
   $input.trigger("click").on("input", () => {
-    $inputForm.submit();
+    $inputForm.trigger("submit");
   });
 });

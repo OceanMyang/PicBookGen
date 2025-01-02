@@ -1,12 +1,12 @@
-<%- include('header', { title: "Error" }) %>
+<%- include("header", { title: "Error" }) %>
 
   <body>
-    <ul id="action-menu" class="dropdown-menu"></ul>
-    <div id="text-container">
+    <div id="editor">
       <h1>Error</h1>
       <a class="view" href="/res/error.jpg"><%- locals?.message %></a>
     </div>
+    <div id="context-menu" class="dropdown-menu"></div>
   </body>
   <script type="module" src="/js/handleHover.js"></script>
-  <script type="module" src="/js/actionMenu.js"></script>
-  <%- include('footer') %>
+  <script type="module" src="/js/contextMenu.js"></script>
+  <%- include("footer") %>
