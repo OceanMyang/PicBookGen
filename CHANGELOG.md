@@ -175,15 +175,14 @@ Published the app on picbookgen.com on December 20
 
 # Major Updates
 
+* Generate Image from pollinations.ai
 * Disable user from adding link if link is involved in selection
 * Button to reselect the image
 * Reader now doesn't need any components from editor
+* Changed img in Images page to object-fit: cover
 
 # Minor Updates
 
 * Changed the image for loading and broken image
 * Centered the imageViewer
-
-# To Do
-
-* Generate Image
+* Add createWriteStream to System

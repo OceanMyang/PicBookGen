@@ -11,6 +11,7 @@ import { reselectImageButton, selectImageButton } from "./imageSelect.js";
 import { uploadImageButton } from "./imageUpload.js";
 import { deleteLink } from "./components.js";
 import { saveFile } from "./fileSave.js";
+import { generateImageButton } from "./imageGenerate.js";
 
 if (!$(editor).length) {
   console.error("Editor not found");
@@ -26,6 +27,7 @@ document.addEventListener("selectionchange", (e) => {
     clearMenu();
     appendItem(selectImageButton());
     appendItem(uploadImageButton());
+    appendItem(generateImageButton());
     setMode(MODE.MENU);
     showMenuAtPos(rect);
   }

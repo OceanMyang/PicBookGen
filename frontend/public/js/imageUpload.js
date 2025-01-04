@@ -43,6 +43,7 @@ $(document).on("input", imageInput, async (e) => {
       const imageID = await response.text();
       $("a.view.loading")
         .attr("href", `/access/${fileID}/${imageID}`)
+        .attr("alt", `/access/${fileID}/${imageID}`)
         .removeClass("loading");
       saveFile();
     } else {

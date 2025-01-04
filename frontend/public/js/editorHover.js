@@ -17,11 +17,12 @@ if (!$(fileSelector).length) {
 
 const imageViewer = (src, alt) =>
   $("<img>", {
-    id: "image-viewer",
+    class: "image-viewer",
     src: src,
     alt: alt ? alt : "Loading...",
     display: "block",
-    maxwidth: "50vw",
+  }).css({
+    "max-width": "50vw"
   });
 
 $(editor).on("mouseover", "a", async (e) => {

@@ -1,7 +1,7 @@
 import express, { ErrorRequestHandler, Request, Response } from "express";
 import multer, { DiskStorageOptions } from "multer";
 import { fileTypeFromFile } from "file-type";
-import bodyParser from "body-parser";
+import bodyParser, { text } from "body-parser";
 import path, { join } from "path";
 import { v4, validate } from "uuid";
 import FileDatabase from "./src/db/fileDatabase.js";
@@ -17,9 +17,12 @@ import { publicPath } from "./frontend/public/public.path.js";
 import { required } from "./frontend/js.required.js";
 import { uploadPath } from "./uploads/upload.path.js";
 import { NextFunction } from "express-serve-static-core";
+import { Readable } from "stream";
+import mime from "mime-types";
 
 const router = express();
 const port = 3000;
+const api = "https://pollinations.ai/prompt/";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadPath);
@@ -36,6 +39,16 @@ router.use(bodyParser.json());
 router.set("views", viewPath);
 router.set("view engine", "ejs");
 router.use("/", express.static(publicPath));
+
+function textToUrlSlug(text: string): string {
+  return text
+      .toLowerCase()                 // Convert to lowercase
+      .trim()                        // Remove leading/trailing whitespace
+      .replace(/[^a-z0-9\s-]/g, '')  // Remove non-alphanumeric characters
+      .replace(/\s+/g, '-')          // Replace spaces with hyphens
+      .replace(/-+/g, '-')           // Remove multiple consecutive hyphens
+      .replace(/^-|-$/g, '');        // Trim leading/trailing hyphens
+}
 
 const renderHandler = (res: Response, view: string, options: any) => {
   res.render(view, options, (err, html) => {
@@ -255,9 +268,9 @@ router.post("/upload/:fileID", upload.single("image"), async (req: Request, res:
     }
 
     const imageID = req.file.filename;
-    const ext = path.extname(req.file.originalname);
-    await FileSystem.renameImage(fileID, imageID, ext);
-    res.send(imageID + ext);
+    const extension = path.extname(req.file.originalname);
+    await FileSystem.moveImage(fileID, imageID, extension);
+    res.send(imageID + extension);
   }
   catch (err) {
     if (req.file) {
@@ -333,6 +346,42 @@ router.post("/restore/:fileID", async (req: Request, res: Response, next: NextFu
     next(err);
   }
 }, errorHandler);
+
+router.post("/generate/:fileID", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { prompt } = req.body;
+    const { fileID } = req.params;
+    if (!prompt) {
+      throw new BadRequestException("Prompt not provided.");
+    }
+    const response = await fetch(api + textToUrlSlug(prompt));
+    if (!response.ok || !response.body) {
+      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    }
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.startsWith("image")) {
+      throw new Error(`Invalid content type: ${contentType}`);
+    }
+    const imageID = v4();
+    const extension = "." + mime.extension(contentType);
+    if (!extension) {
+      throw new Error(`Invalid content type: ${contentType}`);
+    }
+    const readStream = Readable.from(response.body);
+    const writeStream = FileSystem.createWriteStream(fileID, imageID, extension);
+    readStream.pipe(writeStream);
+    writeStream.on('finish', () => {
+      res.status(200).send(imageID + extension);
+    });
+
+    writeStream.on('error', (error) => {
+      next(error);
+    });
+  }
+  catch (err) {
+    next(err);
+  }
+});
 
 router.get(["/css/:file", "/js/:file", "/res/:file"], (req: Request, res: Response, next: NextFunction) => {
   const { file } = req.params;

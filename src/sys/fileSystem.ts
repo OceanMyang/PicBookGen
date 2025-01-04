@@ -1,6 +1,5 @@
-import { promises as fsp } from "fs";
+import fs, { promises as fsp } from "fs";
 import { join } from "path";
-import { Stream } from "stream";
 import { filesPath } from "../../files/files.path.js";
 import {
 	AccessDeniedException,
@@ -96,7 +95,7 @@ export default class FileSystem {
 		}
 	}
 
-	static async writeFile(fileID: string, data: string | Buffer | Stream) {
+	static async writeFile(fileID: string, data: string) {
 		if (fileID.includes(".")) {
 			throw new FileNotFoundException("File", fileID);
 		}
@@ -181,7 +180,7 @@ export default class FileSystem {
 		}
 	}
 
-	static async renameImage(fileID: string, imageID: string, ext?: string) {
+	static async moveImage(fileID: string, imageID: string, ext: string = "") {
 		if (fileID.includes(".") || imageID.includes(".")) {
 			throw new ConflictException("Image", imageID);
 		}
@@ -189,7 +188,7 @@ export default class FileSystem {
 		try {
 			console.log(join(filesPath, fileID, "images"));
 			await fsp.access(join(filesPath, fileID, "images"));
-			await fsp.rename(join(uploadPath, imageID), join(filesPath, fileID, "images", imageID + (ext ? ext : "")));
+			await fsp.rename(join(uploadPath, imageID), join(filesPath, fileID, "images", imageID + ext));
 			console.log(`Image ${imageID} uploaded to server.`);
 		} catch (err: any) {
 			console.log(err.code);
@@ -202,6 +201,28 @@ export default class FileSystem {
 					throw new AccessDeniedException(`no permission to upload image ${imageID} on server`);
 				default:
 					throw new InternalServerException("uploading the image");
+			}
+		}
+	}
+
+	static createWriteStream(fileID: string, imageID: string, ext: string): fs.WriteStream {
+		if (fileID.includes(".")) {
+			throw new FileNotFoundException("File", fileID);
+		}
+
+		try {
+			return fs.createWriteStream(join(filesPath, fileID, "images", imageID + ext));
+		} catch (err: any) {
+			console.log(err);
+			switch (err.code) {
+				case "ENOENT":
+					throw new FileNotFoundException("File", fileID);
+				case "EEXIST":
+					throw new ConflictException("Image", imageID);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to write image ${imageID} on server`);
+				default:
+					throw new InternalServerException("writing the image");
 			}
 		}
 	}
