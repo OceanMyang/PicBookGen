@@ -8,12 +8,9 @@
 		</nav>
 		<nav class="navbar navbar-expand">
 			<form action="/new" method="post" class="d-inline">
-				<input type="submit" id="new-file" class="btn btn-light" value="New" />
+				<input type="submit" class="btn btn-light new-file" value="New" />
 			</form>
-			<button id="upload-file" class="btn btn-light">Upload</button>
-			<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
-				<input id="input" type="file" accept=".txt" name="file" class="d-none">
-			</form>
+			<button class="btn btn-light upload-file">Upload</button>
 			<a href="/trash" class="btn btn-light">Trash Can</a>
 		</nav>
 		<div class="scrollable p-3">
@@ -36,11 +33,17 @@
 							<% } %>
 			</div>
 		</div>
+		<dialog class="dialog" style="display: none;">
+			<button class="btn btn-light close-dialog">Close</button>
+			<form>
+				<input type="file" class="d-inline" accept="text/plain" name="file" required>
+			</form>
+		</dialog>
 		<input id="file-id" type="hidden" class="d-none" name="fileid" value="">
 		<div id="context-menu" class="dropdown-menu">
 			<a class="dropdown-item read" href="/read">Read</a>
-			<button id="rename-file" class="dropdown-item">Rename</button>
-			<button id="dump-file" class="dropdown-item">Delete</button>
+			<button class="dropdown-item rename-file">Rename</button>
+			<button class="dropdown-item dump-file">Delete</button>
 		</div>
 	</body>
 	<div>

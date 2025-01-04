@@ -212,8 +212,36 @@ export default class FileSystem {
 		}
 
 		try {
-			await fsp.rm(join(filesPath, fileID, "images", imageID));
+			await fsp.unlink(join(filesPath, fileID, "images", imageID));
 			console.log(`Image ${imageID} deleted from File ${fileID}.`);
+		} catch (err: any) {
+			console.log(err.code);
+			switch (err.code) {
+				case "ENOENT":
+					throw new FileNotFoundException("Image", imageID);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to delete image ${imageID} on server`);
+				default:
+					throw new InternalServerException("deleting the image");
+			}
+		}
+	}
+
+	static async deleteAllImages(fileID: string) {
+		if (fileID.includes(".")) {
+			throw new FileNotFoundException("File", fileID);
+		}
+
+		let imageID = "";
+		try {
+			const folderPath = join(filesPath, fileID, "images");
+			const files = await fsp.readdir(folderPath);
+
+			for (const file of files) {
+				imageID = file;
+				const filePath = join(folderPath, file);
+				await fsp.unlink(filePath);
+			}
 		} catch (err: any) {
 			console.log(err.code);
 			switch (err.code) {
@@ -233,7 +261,7 @@ export default class FileSystem {
 		}
 
 		try {
-			await fsp.rm(join(uploadPath, filename));
+			await fsp.unlink(join(uploadPath, filename));
 			console.log(`Uploaded File ${filename} deleted from server permanently.`);
 		} catch (err: any) {
 			console.log(err);

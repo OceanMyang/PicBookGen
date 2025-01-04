@@ -95,3 +95,23 @@ iframe {
 .title:focus {
   border: 1px solid blue
 }
+
+dialog {
+  display: none;
+}
+
+dialog[open] {
+  display: block !important;
+}
+
+.close-dialog {
+  float: right;
+}
+
+.hidden {
+  display: none;
+}
+
+.view:focus {
+  border: 1px solid blue
+}

@@ -1,11 +1,11 @@
-import { $restoreFile, $fileSelector } from "./components.js";
+import { restoreFile, fileSelector } from "./components.js";
 
-if (!$restoreFile.length) {
+if (!$(restoreFile).length) {
   console.error("Restore file button not found");
 }
 
 const handleRestoreFile = async () => {
-  const fileID = $fileSelector.val();
+  const fileID = $(fileSelector).val();
   if (!fileID) {
     console.error("Invalid file ID");
     return;
@@ -18,10 +18,4 @@ const handleRestoreFile = async () => {
   $(document).trigger("complete");
 };
 
-$restoreFile.on("click", handleRestoreFile);
-
-export const restoreFileButton = () =>
-  $("<button>", {
-    text: "Delete",
-    class: "dropdown-item",
-  }).on("click", handleRestoreFile);
+$(restoreFile).on("click", handleRestoreFile);

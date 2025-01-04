@@ -149,3 +149,24 @@ Published the app on picbookgen.com on December 20
 * Improved the fluid title experience
 * Change edit/../images endpoints to /access/.. endpoints
 * Code practice: changed all var to const: use let when variable is necessary
+
+# January 3
+
+# Major Updates
+
+* Fixed the bug in uploading image
+  * upload image malfuncitons after first image upload
+  * multiple images uploaded at the same time
+* Add menu option to delete Link
+
+# Minor Updates
+
+* Change all components to string selectors
+* Add dialog to the pages
+* Add a button to delete all images at once
+
+# To Do
+
+* Solve the bug where selection inside of the anchor leads to multiple texts
+* Button to delete all files at once (by repeatedly fetching)
+* Generate Image!!!

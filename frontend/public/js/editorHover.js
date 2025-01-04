@@ -7,11 +7,11 @@ import {
   setMode,
   showMenuAtPos,
 } from "./contextMenu.js";
-import { $editor } from "./components.js";
-import { deleteLink } from "./imageDelete.js";
+import { editor } from "./components.js";
+import { deleteLink } from "./components.js";
 import { saveFile } from "./fileSave.js";
 
-if (!$editor.length) {
+if (!$(editor).length) {
   console.error("Editor not found");
 }
 
@@ -24,11 +24,10 @@ const imageViewer = (src, alt) =>
     width: "50vw",
   });
 
-$editor.on("mouseover", "a.view", async (e) => {
+$(editor).on("mouseover", "a.view", async (e) => {
   if (getMode() === MODE.VIEW) {
     const anchor = e.target;
     const response = await fetch(anchor.href);
-    console.log(response);
     if (response.ok) {
       clearMenu();
       appendItem(imageViewer(anchor.href));

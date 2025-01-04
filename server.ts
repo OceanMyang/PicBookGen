@@ -248,7 +248,7 @@ router.post("/upload/:fileID", upload.single("image"), async (req: Request, res:
     if (!req.file) {
       throw new BadRequestException("Image not uploaded.");
     }
-    
+
     const result = await fileTypeFromFile(req.file.path);
     if (!result || !result.mime.startsWith("image")) {
       throw new BadRequestException("File must be an image file.");
@@ -294,6 +294,16 @@ router
       next(err);
     }
   }, errorHandler);
+
+router.delete("/delete/:fileID/all", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { fileID, imageID } = req.params;
+    await FileSystem.deleteAllImages(fileID);
+    res.status(200).send(imageID);
+  } catch (err) {
+    next(err);
+  }
+}, errorHandler);
 
 router.delete("/delete/:fileID/:imageID", async (req: Request, res: Response, next: NextFunction) => {
   try {

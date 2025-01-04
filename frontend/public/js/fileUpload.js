@@ -1,23 +1,38 @@
-import { $input, $inputForm, $uploadFile } from "./components.js";
+import { uploadFile, input, fileInput } from "./components.js";
 
-if (!$input.length) {
-  console.error("No input element found");
-}
-if (!$inputForm.length) {
-  console.error("No input form found");
-}
-if (!$uploadFile.length) {
+if (!$(uploadFile).length) {
   console.error("No upload file button found");
 }
 
-$uploadFile.on("click", () => {
-  $input.attr({
-    type: "file",
-    name: "file",
-    accept: "text/plain",
-  });
+if (!$(input).length) {
+  console.error("No input found");
+}
 
-  $input.trigger("click").on("input", () => {
-    $inputForm.trigger("submit");
+$(uploadFile).on("click", () => {
+  $(input)
+    .attr({
+      name: "file",
+      accept: "text/plain",
+    })
+    .trigger("click");
+});
+
+$(document).on("input", fileInput, async (e) => {
+  const fileID = $(fileSelector).val();
+  if (!fileID) {
+    console.error("Invalid file ID");
+    return;
+  }
+  const file = e.target.files[0];
+  if (!file) {
+    console.error("No file selected");
+    return;
+  }
+  const formData = new FormData();
+  formData.append("file", file);
+  await fetch(`/new`, {
+    method: "POST",
+    body: formData,
   });
+  $(this).val("");
 });

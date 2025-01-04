@@ -9,22 +9,28 @@
 			</a>
 			<div class="btn btn-light title" contenteditable="plaintext-only"><%- file.name -%></div>
 		</nav>
-		<nav class="navbar navbar-expand">
-			<button id="save-file" class="btn btn-light">Save</button>
+		<nav class="navbar navbar-expand toggleable">
+			<button class="btn btn-light toggle">Images</button>
+			<button class="btn btn-light save-file">Save</button>
 			<form action="/new" method="post" class="d-inline">
-				<input type="submit" id="new-file" class="btn btn-light" value="New" />
+				<input type="submit" class="btn btn-light new-file" value="New" />
 			</form>
-			<button id="upload-file" class="btn btn-light">Upload</button>
-			<form id="input-form" class="d-none" action="/upload" method="post" enctype="multipart/form-data">
-				<input id="input" type="file" accept="text/plain" name="file" class="d-none">
-			</form>
-			<button id="dump-file" class="btn btn-light">Delete</button>
-			<button id="toggle" class="btn btn-light">Images</button>
+			<button class="btn btn-light upload-file">Upload</button>
+			<button class="btn btn-light dump-file">Delete</button>
+		</nav>
+		<nav class="navbar navbar-expand toggleable hidden">
+			<button class="btn btn-light toggle">Editor</button>
+			<button class="btn btn-light upload-image">Upload</button>
+			<button class="btn btn-light clear-images">Delete All</button>
 		</nav>
 		<div class="scrollable w-100 h-100 p-3">
-			<div id="editor" contenteditable="plaintext-only" style><%- fileContent -%></div>
-			<div id="image-panel" style="display: none;"></div>
+			<div id="editor" class="toggleable" contenteditable="plaintext-only" style><%- fileContent -%></div>
+			<div id="image-panel" class="toggleable hidden"></div>
 		</div>
+		<dialog class="dialog" style="display: none;">
+			<button class="btn btn-light close-dialog">Close</button>
+			<input type="file" name="file" class="d-inline" accept="text/plain" required>
+		</dialog>
 		<input id="file-id" type="hidden" class="d-none" name="fileid" value="<%= file.fileid %>">
 		<input id="image-id" type="hidden" class="d-none" name="fileid" value="">
 		<div id="context-menu" class="dropdown-menu"></div>
