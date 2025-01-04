@@ -1,4 +1,4 @@
-import { clearImages, fileSelector, imageSelector } from "./components.js";
+import { clearImages, contextMenu, deleteLinkByImage, fileSelector, imageSelector } from "./components.js";
 import { saveFile } from "./fileSave.js";
 
 if (!$(fileSelector).length) {
@@ -26,7 +26,7 @@ const handleDeleteImage = async () => {
       deleteLinkByImage(imageID);
       saveFile();
     }
-    $(document).trigger("complete");
+    $(contextMenu).trigger("complete");
   }
 };
 
@@ -45,14 +45,14 @@ const handleClearImages = async () => {
       method: "DELETE",
     });
     if (response.ok) {
-      $(".id-selectable[id]").each((index, imageEle) => {
-        const imageID = imageEle.id
+      $(".id-selectable[id]").each((index, imageContainer) => {
+        const imageID = imageContainer.id
         deleteLinkByImage(imageID);
-        imageEle.remove();
+        imageContainer.remove();
       });
       saveFile();
     }
-    $(document).trigger("complete");
+    $(contextMenu).trigger("complete");
   }
 };
 

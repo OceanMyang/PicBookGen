@@ -31,13 +31,13 @@ document.addEventListener("selectionchange", (e) => {
   }
 });
 
-$(editor).on("contextmenu", "a.view", (e) => {
+$(editor).on("contextmenu", "a", (e) => {
   e.preventDefault();
   const anchor = e.target;
   window.getSelection().selectAllChildren(anchor);
   clearMenu();
-  appendItem(deleteLinkButton(anchor));
   appendItem(reselectImageButton(anchor));
+  appendItem(deleteLinkButton(anchor));
   setMode(MODE.MENU);
   const rect = anchor.getBoundingClientRect();
   showMenuAtPos(rect);
@@ -89,7 +89,7 @@ export const textToLink = (href, className) => {
 
 const deleteLinkButton = (anchor) =>
   $("<button>", {
-    text: "Delete Link",
+    text: "Unlink",
     class: "dropdown-item",
     on: {
       click: () => {

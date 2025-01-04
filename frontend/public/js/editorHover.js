@@ -21,10 +21,10 @@ const imageViewer = (src, alt) =>
     src: src,
     alt: alt ? alt : "Loading...",
     display: "block",
-    width: "50vw",
+    maxwidth: "50vw",
   });
 
-$(editor).on("mouseover", "a.view", async (e) => {
+$(editor).on("mouseover", "a", async (e) => {
   const anchor = e.target;
   try {
     const relhref = anchor.getAttribute("href");
@@ -38,21 +38,20 @@ $(editor).on("mouseover", "a.view", async (e) => {
     const response = await fetch(anchor.href);
     if (!response.ok) {
       throw new Error("Invalid anchor href");
-    }
-    else {
-      const contentType = response.headers.get('Content-Type');
+    } else {
+      const contentType = response.headers.get("Content-Type");
       if (!contentType || !contentType.includes("image")) {
         throw new Error("Invalid anchor href content type");
       }
     }
   } catch (error) {
     console.error(error);
-    anchor.href = "/res/image.svg";
+    anchor.href = "/res/broken-image.png";
     anchor.alt = "Broken Link";
     $(anchor).addClass("broken");
   }
   clearMenu();
-  appendItem(imageViewer(anchor.href));
+  appendItem(imageViewer(anchor.href, anchor.alt));
   setMode(MODE.VIEW);
   const rect = anchor.getBoundingClientRect();
   showMenuAtPos(rect);

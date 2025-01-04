@@ -63,7 +63,7 @@ $(document).on("input", imageInput, async (e) => {
 });
 
 const handleUploadImage = () => {
-  if (!textToLink("/res/image.svg", "view loading")) {
+  if (!textToLink("/res/loading.gif", "view loading")) {
     return;
   }
   $(input)

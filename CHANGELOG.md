@@ -179,5 +179,11 @@ Published the app on picbookgen.com on December 20
 * Button to reselect the image
 * Reader now doesn't need any components from editor
 
+# Minor Updates
+
+* Changed the image for loading and broken image
+* Centered the imageViewer
+
 # To Do
+
 * Generate Image

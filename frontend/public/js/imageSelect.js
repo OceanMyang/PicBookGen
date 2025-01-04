@@ -65,7 +65,7 @@ export const selectImageButton = () => {
 
 export const reselectImageButton = (anchor) => {
   return $("<button>", {
-    text: "Reselect Image",
+    text: "Relink",
     class: "dropdown-item reselect-image",
   }).on("click", () => {
     openSelectWindow((e) => {
