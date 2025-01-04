@@ -170,3 +170,14 @@ Published the app on picbookgen.com on December 20
 * Solve the bug where selection inside of the anchor leads to multiple texts
 * Button to delete all files at once (by repeatedly fetching)
 * Generate Image!!!
+
+# Janurary 4th
+
+# Major Updates
+
+* Disable user from adding link if link is involved in selection
+* Button to reselect the image
+* Reader now doesn't need any components from editor
+
+# To Do
+* Generate Image

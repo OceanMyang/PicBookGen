@@ -24,7 +24,7 @@ export const required = {
         "trashPanel.js",
     ],
     "Reader": [
-        "readerHover.js",
+        "editorHover.js",
     ],
     "Images": [
         "imageDelete.js",

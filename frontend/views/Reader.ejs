@@ -13,6 +13,7 @@
       <div id="editor" contenteditable="plaintext-only"><%- fileContent -%></div>
 		</div>
     <div id="context-menu" class="dropdown-menu"></div>
+    <input id="file-id" type="hidden" class="d-none" name="fileid" value="<%= file.fileid %>">
   </body>
   <% scripts.forEach(script=> { -%>
     <script type="module" src="/js/<%= script %>"></script>

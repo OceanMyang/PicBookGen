@@ -1,18 +1,18 @@
 import {
   appendItem,
   clearMenu,
-  getMode,
-  hideMenu,
   MODE,
   setMode,
   showMenuAtPos,
 } from "./contextMenu.js";
-import { editor } from "./components.js";
-import { deleteLink } from "./components.js";
-import { saveFile } from "./fileSave.js";
+import { editor, fileSelector } from "./components.js";
 
 if (!$(editor).length) {
   console.error("Editor not found");
+}
+
+if (!$(fileSelector).length) {
+  console.error("File selector not found");
 }
 
 const imageViewer = (src, alt) =>
@@ -25,22 +25,35 @@ const imageViewer = (src, alt) =>
   });
 
 $(editor).on("mouseover", "a.view", async (e) => {
-  if (getMode() === MODE.VIEW) {
-    const anchor = e.target;
+  const anchor = e.target;
+  try {
+    const relhref = anchor.getAttribute("href");
+    if (!relhref) {
+      throw new Error("Anchor href not found");
+    }
+    const fileID = $(fileSelector).val();
+    if (!fileID) {
+      throw new Error("Invalid file ID");
+    }
     const response = await fetch(anchor.href);
-    if (response.ok) {
-      clearMenu();
-      appendItem(imageViewer(anchor.href));
-      setMode(MODE.VIEW);
-      const rect = anchor.getBoundingClientRect();
-      showMenuAtPos(rect);
-    } else {
-      if (confirm("This link is broken. Would you like to delete the link?")) {
-        deleteLink(anchor);
-        saveFile();
+    if (!response.ok) {
+      throw new Error("Invalid anchor href");
+    }
+    else {
+      const contentType = response.headers.get('Content-Type');
+      if (!contentType || !contentType.includes("image")) {
+        throw new Error("Invalid anchor href content type");
       }
     }
-  } else {
-    if (getMode() === MODE.VIEW) hideMenu();
+  } catch (error) {
+    console.error(error);
+    anchor.href = "/res/image.svg";
+    anchor.alt = "Broken Link";
+    $(anchor).addClass("broken");
   }
+  clearMenu();
+  appendItem(imageViewer(anchor.href));
+  setMode(MODE.VIEW);
+  const rect = anchor.getBoundingClientRect();
+  showMenuAtPos(rect);
 });

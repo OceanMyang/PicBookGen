@@ -18,11 +18,6 @@ $(uploadFile).on("click", () => {
 });
 
 $(document).on("input", fileInput, async (e) => {
-  const fileID = $(fileSelector).val();
-  if (!fileID) {
-    console.error("Invalid file ID");
-    return;
-  }
   const file = e.target.files[0];
   if (!file) {
     console.error("No file selected");
@@ -30,9 +25,14 @@ $(document).on("input", fileInput, async (e) => {
   }
   const formData = new FormData();
   formData.append("file", file);
-  await fetch(`/new`, {
+  const response = await fetch(`/upload`, {
     method: "POST",
     body: formData,
   });
   $(this).val("");
+  if (response.ok) {
+    if (response.url) {
+      window.location = response.url;
+    }
+  }
 });
