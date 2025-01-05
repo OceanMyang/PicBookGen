@@ -186,3 +186,8 @@ Published the app on picbookgen.com on December 20
 * Changed the image for loading and broken image
 * Centered the imageViewer
 * Add createWriteStream to System
+
+# TO DO
+
+* Favicon (SVG)
+* enforce RLS

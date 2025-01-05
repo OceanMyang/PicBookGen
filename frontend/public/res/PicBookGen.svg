@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Adobe Illustrator 24.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="50px" height="50px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;fill:#28B0D1;stroke:#28B0D1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st1{fill:#F3E064;stroke:#F3E064;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st2{fill:#F92891;stroke:#F92891;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	
+		.st3{clip-path:url(#SVGID_2_);fill:#28B0D1;stroke:#28B0D1;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st4{stroke:#000000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st5{fill:#28B0D1;stroke:#28B0D1;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<path class="st0" d="M25.2,36.19c-5.44-3.34-9.92-4.62-15.29-1.51c-0.87-1.99,1.81-7.04,4.36-4.5c1.04-4.95,4.54-5.88,5.55,0.43
+	c2.32-2.32,4.43,1.91,3.31,4.1"/>
+<path class="st0" d="M32.7,33.57c-2.65,0-4.6,0.96-7.5,2.62"/>
+<path class="st1" d="M17.41,47.02c3.56,0.86,8.5-2.35,5.09-6.23c-2.81-3.22,1.84-6.47,4.34-3.81C29.4,39.88,28.92,49.75,17.41,47.02
+	z"/>
+<path class="st2" d="M16.95,46.75c8.19,1.53,9.88-6.44,6.7-12.15c-0.97-4.17,5.01-4.59,5.85-1.59c2.26,7.78-3.33,15.48-12.49,13.77
+	L16.95,46.75z"/>
+<g>
+	<defs>
+		<path id="SVGID_1_" d="M22.01,45.81c-3.92,2.04-6.36-1.89-3.09-5c7.25-6.9-3.9-16.07-9.79-8.46c-3.69,6.09-0.56,14.51,10.33,15.47
+			"/>
+	</defs>
+	<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
+	<clipPath id="SVGID_2_">
+		<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
+	</clipPath>
+	<path class="st3" d="M5.23,48.71c6.24,3.39,39.24,15.14,12.35-6.43c1.19-1.8,2.21-3.63-1.18-1.92c-2.71,1.38-2.11-0.28-2.5-0.8
+		c-1.27-2.77-4.48,0.17-4.48-2.36c-0.18-3.63-1.02-2.95-1.54-0.65C6.76,38.72,0.4,45.09,5.23,48.71z"/>
+</g>
+<polygon class="st4" points="31.41,2.14 13.59,31.85 18.51,34.48 36.41,5.07 "/>
+<path class="st5" d="M15.76,46.84c10.43,3.79,24.47-3.54,26.27-13.06c2.68-10.18-12.48-15.03-13.31-3.15
+	C29.78,37.67,24.04,49.62,15.76,46.84z"/>
+</svg>
