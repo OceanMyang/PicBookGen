@@ -3,27 +3,31 @@
 <%- include("header", { title: "Trash Can" }) %>
 
 	<body>
-		<nav class="navbar navbar-expand">
-			<a class="d-inline-block index" href="/">
-				<img src="/res/books.svg" alt="Back">
-			</a>
-			<h1 class="d-inline-block">Trash Can</h1>
-		</nav>
-		<div class="scrollable p-3">
+		<header>
+			<nav class="navbar navbar-expand">
+				<a class="d-inline-block index" href="/">
+					<img src="/res/books.svg" alt="Back">
+				</a>
+				<h1 class="d-inline-block">Trash Can</h1>
+			</nav>
+		</header>
+		<div class="scrollable">
 			<input id="file-id" type="hidden" class="d-none disabled" name="fileid" value="">
 			<div id="trash-panel">
 				<% for (file of files) {-%>
-					<div id="<%= file.fileid %>" class="card d-inline-flex hover-select id-selectable" href="#">
-						<img src="/res/book.svg" style="width: 300px; height: 150px;" alt="Book"></img>
-						<span class="card-body text-center">
-							<h3 class="card-title text-center d-inline-flex">
-								<%= file.name %>
-							</h3>
-							<div>
-								<img class="border-0 btn btn-light rounded option" src="/res/option.svg" alt="options"
-									style="height: 40px;">
-							</div>
-						</span>
+					<div class="p-2 d-inline-block">
+						<div id="<%= file.fileid %>" class="card d-inline-flex hover-select id-selectable" href="#">
+							<img src="/res/book.svg" style="width: 300px; height: 150px;" alt="Book"></img>
+							<span class="card-body text-center">
+								<h3 class="card-title text-center d-inline-flex">
+									<%= file.name %>
+								</h3>
+								<div>
+									<img class="border-0 btn btn-light rounded option" src="/res/option.svg" alt="options"
+										style="height: 40px;">
+								</div>
+							</span>
+						</div>
 					</div>
 					<% } %>
 			</div>

@@ -119,7 +119,7 @@ Published the app on picbookgen.com on December 20
 ## Updates
 
 * select image window - uncomplete
-* improved the style of the page: now only scrollable element (editor)can be scrolled
+* improved the style of the page: now only scrollableelement (editor)can be scrolled
 * fixed that render vulnerability in errorhandler leads to source leak
 * add idContainer to contain id information in editor
 * change new file button to the form
@@ -201,3 +201,10 @@ Published the app on picbookgen.com on December 20
 * Add BadGatewayException and GatewayTimeoutException
 * Handle timeout for unable to fetch response to external api
 * Renewed the logo
+* Fixed the scrolling problem on mobile devices
+
+# Styles
+
+* Editor now fits the whole rest of the page and has text cursor
+* Proper space between grid items
+* Deleted unused

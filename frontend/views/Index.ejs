@@ -3,36 +3,40 @@
 <%- include("header") %>
 
 	<body>
-		<nav class="navbar navbar-expand">
-			<div class="d-inline-block index">
-				<img src="/res/PicBookGen.svg" alt="Logo">
-			</div>
-			<h1>Picture Book Generator</h1>
-		</nav>
-		<nav class="navbar navbar-expand">
-			<form action="/new" method="post" class="d-inline">
-				<input type="submit" class="btn btn-light new-file" value="New" />
-			</form>
-			<button class="btn btn-light upload-file">Upload</button>
-			<a href="/trash" class="btn btn-light">Trash Can</a>
-		</nav>
-		<div class="scrollable p-3">
-			<div id="file-panel">
+		<header>
+			<nav class="navbar navbar-expand">
+				<div class="d-inline-block index">
+					<img class="w-100 h-100 object-fit-fill" src="/res/PicBookGen.svg" alt="Logo">
+				</div>
+				<h1>Picture Book Generator</h1>
+			</nav>
+			<nav class="navbar navbar-expand">
+				<form action="/new" method="post" class="d-inline">
+					<input type="submit" class="btn btn-light new-file" value="New" />
+				</form>
+				<button class="btn btn-light upload-file">Upload</button>
+				<a href="/trash" class="btn btn-light">Trash Can</a>
+			</nav>
+		</header>
+		<div class="scrollable">
+			<div id="file-panel" class="grid">
 				<% if (files.length===0) {-%>
 					<div> Click New to add more files! </div>
 					<% } %>
 						<% for (file of files) {-%>
-							<a id="<%= file.fileid %>" href="/edit/<%= file.fileid %>"
-								class="card d-inline-flex hover-select id-selectable">
-								<iframe class="disabled" src="/<%= file.fileid %>" title="<%= file.name %>"></iframe>
-								<span class="card-body text-center">
-									<div class="btn btn-light title" contenteditable="plaintext-only"><%- file.name -%></div>
-									<div>
-										<img class="border-0 btn btn-light rounded option" src="/res/option.svg" alt="options"
-											style="height: 40px;">
-									</div>
-								</span>
-							</a>
+							<div class="p-2 d-inline-block">
+								<a id="<%= file.fileid %>" href="/edit/<%= file.fileid %>"
+									class="card d-inline-flex hover-select id-selectable">
+									<iframe class="disabled" src="/<%= file.fileid %>" title="<%= file.name %>"></iframe>
+									<span class="card-body text-center">
+										<div class="btn btn-light title" contenteditable="plaintext-only"><%- file.name -%></div>
+										<div>
+											<img class="border-0 btn btn-light rounded option" src="/res/option.svg" alt="options"
+												style="height: 40px;">
+										</div>
+									</span>
+								</a>
+							</div>
 							<% } %>
 			</div>
 		</div>

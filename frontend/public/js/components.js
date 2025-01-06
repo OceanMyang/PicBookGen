@@ -27,10 +27,11 @@ $(window).on("load", () => {
     window.innerWidth <= 768;
 
   if (isMobile) {
-    console.log("Mobile device detected");
+    console.log("Mobile detected");
     document.body.style.overflow = "auto";
-  } else {
-    document.body.style.overflow = "hidden";
+  }
+  if ($("header").length && $(".scrollable").length) {
+    $(".scrollable").css("height", `calc(100vh - ${$("header").height()}px)`);
   }
 });
 
