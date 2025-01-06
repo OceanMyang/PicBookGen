@@ -14,7 +14,7 @@ if (!$(contextMenu).length) {
   console.error("Context menu not found");
 }
 
-$(editor).on("mouseup", () => {
+document.addEventListener("selectionchange", () => {
   const selection = window.getSelection();
   if (!validateSelection(selection)) {
     return;
@@ -25,11 +25,10 @@ $(editor).on("mouseup", () => {
   }
   const rect = range.getBoundingClientRect();
   clearMenu();
-  appendItem(selectImageButton());
   appendItem(generateImageButton());
+  appendItem(selectImageButton());
   appendItem(uploadImageButton());
   showMenuAtPos(rect);
-  $(editor).trigger("blur");
 });
 
 $(editor).on("contextmenu dblclick", "a", (e) => {
@@ -48,10 +47,10 @@ export const validateSelection = (selection) => {
     return false;
   }
   const selectedText = selection.toString();
-  if (!selectedText || /^\s+$/.test(selectedText)) {
+  if (selection.rangeCount === 0) {
     return false;
   }
-  if (selection.rangeCount === 0) {
+  if (!selectedText || /^\s+$/.test(selectedText)) {
     return false;
   }
   return true;
@@ -86,6 +85,7 @@ export const textToLink = (href, className) => {
     );
     return false;
   }
+  const selectedText = selection.toString();
   const $anchor = $("<a>", {
     href: href,
     html: selectedText,
