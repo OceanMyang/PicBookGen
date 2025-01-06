@@ -1,8 +1,6 @@
 import {
   appendItem,
   clearMenu,
-  MODE,
-  setMode,
   showMenuAtPos,
 } from "./contextMenu.js";
 import { editor, fileSelector } from "./components.js";
@@ -25,7 +23,7 @@ const imageViewer = (src, alt) =>
     "max-width": "50vw"
   });
 
-$(editor).on("mouseover", "a", async (e) => {
+$(editor).on("mouseover click", "a", async (e) => {
   const anchor = e.target;
   try {
     const relhref = anchor.getAttribute("href");
@@ -53,7 +51,6 @@ $(editor).on("mouseover", "a", async (e) => {
   }
   clearMenu();
   appendItem(imageViewer(anchor.href, anchor.alt));
-  setMode(MODE.VIEW);
   const rect = anchor.getBoundingClientRect();
   showMenuAtPos(rect);
 });

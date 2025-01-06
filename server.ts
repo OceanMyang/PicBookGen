@@ -10,7 +10,9 @@ import {
   BadRequestException,
   DataNotFoundException,
   HttpException,
-  NotFoundException
+  NotFoundException,
+  GatewayTimeoutException,
+  BadGatewayException
 } from "./src/utils/error.util.js";
 import { viewPath } from "./frontend/views/view.path.js";
 import { publicPath } from "./frontend/public/public.path.js";
@@ -19,6 +21,7 @@ import { uploadPath } from "./uploads/upload.path.js";
 import { NextFunction } from "express-serve-static-core";
 import { Readable } from "stream";
 import mime from "mime-types";
+import { clear } from "console";
 
 const router = express();
 const port = 3000;
@@ -42,12 +45,12 @@ router.use("/", express.static(publicPath));
 
 function textToUrlSlug(text: string): string {
   return text
-      .toLowerCase()                 // Convert to lowercase
-      .trim()                        // Remove leading/trailing whitespace
-      .replace(/[^a-z0-9\s-]/g, '')  // Remove non-alphanumeric characters
-      .replace(/\s+/g, '-')          // Replace spaces with hyphens
-      .replace(/-+/g, '-')           // Remove multiple consecutive hyphens
-      .replace(/^-|-$/g, '');        // Trim leading/trailing hyphens
+    .toLowerCase()                 // Convert to lowercase
+    .trim()                        // Remove leading/trailing whitespace
+    .replace(/[^a-z0-9\s-]/g, '')  // Remove non-alphanumeric characters
+    .replace(/\s+/g, '-')          // Replace spaces with hyphens
+    .replace(/-+/g, '-')           // Remove multiple consecutive hyphens
+    .replace(/^-|-$/g, '');        // Trim leading/trailing hyphens
 }
 
 const renderHandler = (res: Response, view: string, options: any) => {
@@ -348,37 +351,45 @@ router.post("/restore/:fileID", async (req: Request, res: Response, next: NextFu
 }, errorHandler);
 
 router.post("/generate/:fileID", async (req: Request, res: Response, next: NextFunction) => {
+  const timeout = setTimeout(() => {
+    next(new GatewayTimeoutException("Image"));
+  }, 30000);
+  
   try {
     const { prompt } = req.body;
     const { fileID } = req.params;
     if (!prompt) {
       throw new BadRequestException("Prompt not provided.");
     }
+
     const response = await fetch(api + textToUrlSlug(prompt));
     if (!response.ok || !response.body) {
-      throw new Error(`Failed to fetch image: ${response.statusText}`);
+      throw new BadGatewayException(`Failed to fetch image: ${response.statusText}`);
     }
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.startsWith("image")) {
-      throw new Error(`Invalid content type: ${contentType}`);
+      throw new BadGatewayException(`Invalid content type: ${contentType}`);
     }
     const imageID = v4();
     const extension = "." + mime.extension(contentType);
     if (!extension) {
-      throw new Error(`Invalid content type: ${contentType}`);
+      throw new BadGatewayException(`Invalid content type: ${contentType}`);
     }
     const readStream = Readable.from(response.body);
     const writeStream = FileSystem.createWriteStream(fileID, imageID, extension);
     readStream.pipe(writeStream);
     writeStream.on('finish', () => {
+      clearTimeout(timeout);
       res.status(200).send(imageID + extension);
     });
 
     writeStream.on('error', (error) => {
+      clearTimeout(timeout);
       next(error);
     });
   }
   catch (err) {
+    clearTimeout(timeout);
     next(err);
   }
 });

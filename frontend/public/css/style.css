@@ -14,9 +14,11 @@ body {
   overflow: auto !important;
 }
 
-nav {
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
   border-bottom: solid black 1px;
-  gap: 10px;
+  max-width: 100vw;
 }
 
 .index {
@@ -80,6 +82,9 @@ iframe {
 .title {
   font-size: xx-large;
   box-sizing: border-box;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .title:focus {
@@ -111,5 +116,15 @@ dialog[open] {
 }
 
 img {
+  border: none;
+}
+
+.index {
+  width: 2em;
+  height: 2em;
+  flex: 0 0 auto;
+}
+
+.index img {
   border: none;
 }

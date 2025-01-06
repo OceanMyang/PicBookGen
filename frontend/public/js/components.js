@@ -21,8 +21,8 @@ export const fileInput = "input[name=file]";
 export const imageInput = "input[name=image]";
 export const clearImages = ".clear-images";
 
-$(closeDialog).on("click", () => {
-  document.querySelector(dialog).close();
+$(window).on("load", () => {
+  window.scrollTo(0, 0);
 });
 
 export const deleteLink = (anchor) => {

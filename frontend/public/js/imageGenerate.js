@@ -8,7 +8,7 @@ const handleGenerateImage = async () => {
     return;
   }
   const fileID = $(fileSelector).val();
-  const selectedText = window.getSelection().toString();
+  const selectedText = window.getSelection()?.toString();
   const response = await fetch(`/generate/${fileID}`, {
     method: "POST",
     headers: {

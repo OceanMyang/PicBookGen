@@ -1,11 +1,4 @@
-import {
-  showMenuAtPos,
-  clearMenu,
-  appendItem,
-  setMode,
-  MODE,
-  getMode,
-} from "./contextMenu.js";
+import { showMenuAtPos, clearMenu, appendItem } from "./contextMenu.js";
 import { contextMenu, editor } from "./components.js";
 import { reselectImageButton, selectImageButton } from "./imageSelect.js";
 import { uploadImageButton } from "./imageUpload.js";
@@ -18,29 +11,26 @@ if (!$(editor).length) {
 }
 
 document.addEventListener("selectionchange", (e) => {
-  if (getMode() === MODE.VIEW) {
-    const selection = window.getSelection();
-    const selectedText = selection.toString();
-    if (!selectedText || /^\s+$/.test(selectedText)) return;
-    const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-    clearMenu();
-    appendItem(selectImageButton());
-    appendItem(uploadImageButton());
-    appendItem(generateImageButton());
-    setMode(MODE.MENU);
-    showMenuAtPos(rect);
-  }
+  const selection = window.getSelection();
+  if (!selection) return;
+  const selectedText = selection.toString();
+  if (!selectedText || /^\s+$/.test(selectedText)) return;
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  clearMenu();
+  appendItem(selectImageButton());
+  appendItem(generateImageButton());
+  appendItem(uploadImageButton());
+  showMenuAtPos(rect);
 });
 
-$(editor).on("contextmenu", "a", (e) => {
+$(editor).on("contextmenu dblclick", "a", (e) => {
   e.preventDefault();
   const anchor = e.target;
-  window.getSelection().selectAllChildren(anchor);
+  window.getSelection()?.selectAllChildren(anchor);
   clearMenu();
   appendItem(reselectImageButton(anchor));
   appendItem(deleteLinkButton(anchor));
-  setMode(MODE.MENU);
   const rect = anchor.getBoundingClientRect();
   showMenuAtPos(rect);
 });

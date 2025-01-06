@@ -4,14 +4,14 @@
 
   <body>
     <nav class="navbar navbar-expand">
-      <a style="height: 2em;" class="d-inline-block index" href="/">
-        <img style="height: 2em; border: none; " src="/res/books.svg" alt="Back">
+      <a class="d-inline-block index" href="/">
+        <img src="/res/books.svg" alt="Back">
       </a>
       <div class="btn btn-light title"><%- filename -%></div>
     </nav>
     <div class="scrollable w-100 h-100 p-3">
       <div id="editor" contenteditable="plaintext-only"><%- fileContent -%></div>
-		</div>
+    </div>
     <div id="context-menu" class="dropdown-menu"></div>
     <input id="file-id" type="hidden" class="d-none" name="fileid" value="<%= file.fileid %>">
   </body>

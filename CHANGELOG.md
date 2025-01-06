@@ -191,3 +191,13 @@ Published the app on picbookgen.com on December 20
 
 * Favicon (SVG)
 * enforce RLS
+
+# January 5th
+
+# Mobile Adaptations
+
+* Solved the bug: index button disappears due to inappropriate viewport
+* Title and navbar items fixed proportion and exceeds max viewport
+* Add BadGatewayException and GatewayTimeoutException
+* Handle timeout for unable to fetch response to external api
+* Renewed the logo

@@ -4,19 +4,6 @@ if (!$(contextMenu).length) {
   console.error("Context menu not found");
 }
 
-export const MODE = {
-  MENU: "menu",
-  VIEW: "view",
-};
-
-let mode = MODE.VIEW;
-
-export const setMode = (newMode = MODE.VIEW) => {
-  mode = newMode;
-};
-
-export const getMode = () => mode;
-
 export const showMenuAtPos = (pos) => {
   if (!pos) {
     console.error("The menu must be located relative to an object");
@@ -55,7 +42,6 @@ $(document).on("complete", hideMenu);
 
 $(document).on("mousedown", (e) => {
   if (!$(e.target).closest(contextMenu).length) {
-    setMode(MODE.VIEW);
     hideMenu();
   }
 });

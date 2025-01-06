@@ -54,4 +54,16 @@ export class AccessDeniedException extends HttpException {
   }
 }
 
+export class BadGatewayException extends HttpException {
+  constructor(message: string) {
+    super(502, message);
+  }
+}
+
+export class GatewayTimeoutException extends HttpException {
+  constructor(name: string) {
+    super(504, `Request for ${name} timed out.`);
+  }
+}
+
 export type ExceptionObjectNames = "Page" | "File" | "Image" | "Script";
