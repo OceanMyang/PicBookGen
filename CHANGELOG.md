@@ -207,4 +207,14 @@ Published the app on picbookgen.com on December 20
 
 * Editor now fits the whole rest of the page and has text cursor
 * Proper space between grid items
-* Deleted unused
+* Deleted unused classes
+
+# Usage
+
+* Now user can upload svg files. Improved the upload process.
+
+# To Do
+
+* RLS enforced
+* Now the error handling in frontend is still pretty dry. Basicall an error html page is sent to the client everytime. A form will auto handle the response but ajax won't. I need to do more work on handling errors.
+* Anchor select all children triggers context menu first

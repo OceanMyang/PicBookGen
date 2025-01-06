@@ -8,7 +8,7 @@ import {
   input,
   uploadImage,
 } from "./components.js";
-import { textToLink, validateRange } from "./editorSelect.js";
+import { textToLink } from "./editorSelect.js";
 import { saveFile } from "./fileSave.js";
 
 if (!$(contextMenu).length) {
@@ -47,6 +47,7 @@ $(document).on("input", imageInput, async (e) => {
         .removeClass("loading");
       saveFile();
     } else {
+      alert(response.statusText);
       throw new Error(response.statusText);
     }
 
@@ -56,6 +57,9 @@ $(document).on("input", imageInput, async (e) => {
     if (response2.ok) {
       const html = await response2.text();
       $(imagePanel).html(html);
+    }
+    else {
+      throw new Error(response.statusText);
     }
   } catch (error) {
     console.error(error);

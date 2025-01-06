@@ -265,8 +265,7 @@ router.post("/upload/:fileID", upload.single("image"), async (req: Request, res:
       throw new BadRequestException("Image not uploaded.");
     }
 
-    const result = await fileTypeFromFile(req.file.path);
-    if (!result || !result.mime.startsWith("image")) {
+    if (!req.file.mimetype || !req.file.mimetype.startsWith("image")) {
       throw new BadRequestException("File must be an image file.");
     }
 
@@ -354,7 +353,7 @@ router.post("/generate/:fileID", async (req: Request, res: Response, next: NextF
   const timeout = setTimeout(() => {
     next(new GatewayTimeoutException("Image"));
   }, 30000);
-  
+
   try {
     const { prompt } = req.body;
     const { fileID } = req.params;

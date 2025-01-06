@@ -10,18 +10,26 @@ if (!$(editor).length) {
   console.error("Editor not found");
 }
 
-document.addEventListener("selectionchange", () => {
+if (!$(contextMenu).length) {
+  console.error("Context menu not found");
+}
+
+$(editor).on("mouseup", () => {
   const selection = window.getSelection();
-  if (!selection) return;
-  const selectedText = selection.toString();
-  if (!selectedText || /^\s+$/.test(selectedText)) return;
+  if (!validateSelection(selection)) {
+    return;
+  }
   const range = selection.getRangeAt(0);
+  if (!validateRange(range)) {
+    return;
+  }
   const rect = range.getBoundingClientRect();
   clearMenu();
   appendItem(selectImageButton());
   appendItem(generateImageButton());
   appendItem(uploadImageButton());
   showMenuAtPos(rect);
+  $(editor).trigger("blur");
 });
 
 $(editor).on("contextmenu dblclick", "a", (e) => {
@@ -34,6 +42,20 @@ $(editor).on("contextmenu dblclick", "a", (e) => {
   const rect = anchor.getBoundingClientRect();
   showMenuAtPos(rect);
 });
+
+export const validateSelection = (selection) => {
+  if (!selection || !(selection instanceof Selection)) {
+    return false;
+  }
+  const selectedText = selection.toString();
+  if (!selectedText || /^\s+$/.test(selectedText)) {
+    return false;
+  }
+  if (selection.rangeCount === 0) {
+    return false;
+  }
+  return true;
+};
 
 export const validateRange = (range) => {
   if (!range || !(range instanceof Range)) {
@@ -53,15 +75,10 @@ export const validateRange = (range) => {
 
 export const textToLink = (href, className) => {
   const selection = window.getSelection();
-  if (!selection) {
-    console.error("No selection found");
+  if (!validateSelection(selection)) {
+    alert("Invalid Selection.");
     return false;
   }
-  if (selection.rangeCount === 0) {
-    console.error("No range selected");
-    return false;
-  }
-  const selectedText = selection.toString();
   const range = selection.getRangeAt(0);
   if (!validateRange(range)) {
     alert(
