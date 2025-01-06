@@ -10,7 +10,7 @@ if (!$(editor).length) {
   console.error("Editor not found");
 }
 
-document.addEventListener("selectionchange", (e) => {
+document.addEventListener("selectionchange", () => {
   const selection = window.getSelection();
   if (!selection) return;
   const selectedText = selection.toString();

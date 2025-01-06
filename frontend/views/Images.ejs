@@ -3,7 +3,7 @@
 		No images for now. Select text in editor to add images.
 		<% } %>
 			<% for (let i=0; i < images.length; i++) {-%>
-				<div id="<%= images[i] %>" class="col-4 overflow-hidden hover-select p-2 rounded id-selectable">
+				<div id="<%= images[i] %>" class="col-4 hover-select p-2 rounded id-selectable">
 					<img class="cover" src="/access/<%= fileID %>/<%= images[i] %>" alt="<%= images[i] %>">
 				</div>
 				<% } %>

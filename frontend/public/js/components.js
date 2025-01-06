@@ -22,7 +22,16 @@ export const imageInput = "input[name=image]";
 export const clearImages = ".clear-images";
 
 $(window).on("load", () => {
-  window.scrollTo(0, 0);
+  const isMobile =
+    /Mobi|Android|iPhone/i.test(navigator.userAgent) ||
+    window.innerWidth <= 768;
+
+  if (isMobile) {
+    console.log("Mobile device detected");
+    document.body.style.overflow = "auto";
+  } else {
+    document.body.style.overflow = "hidden";
+  }
 });
 
 export const deleteLink = (anchor) => {
