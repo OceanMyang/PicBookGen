@@ -4,7 +4,7 @@ if (!$(contextMenu).length) {
   console.error("Context menu not found");
 }
 
-export const showMenuAtPos = (pos) => {
+export const showMenuAtPos = (pos, temp = false) => {
   if (!pos) {
     console.error("The menu must be located relative to an object");
     return;
@@ -26,6 +26,13 @@ export const showMenuAtPos = (pos) => {
     left: `${left}px`,
     display: "block",
   });
+
+  if (temp) {
+    $(contextMenu).addClass("temp");
+  }
+  else {
+    $(contextMenu).removeClass("temp");
+  }
 };
 
 export const showMenu = () => $(contextMenu).css("display", "block");

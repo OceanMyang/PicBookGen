@@ -1,9 +1,10 @@
 import {
   appendItem,
   clearMenu,
+  hideMenu,
   showMenuAtPos,
 } from "./contextMenu.js";
-import { editor, fileSelector } from "./components.js";
+import { contextMenu, editor, fileSelector } from "./components.js";
 
 if (!$(editor).length) {
   console.error("Editor not found");
@@ -20,10 +21,11 @@ const imageViewer = (src, alt) =>
     alt: alt ? alt : "Loading...",
     display: "block",
   }).css({
-    "max-width": "50vw"
+    "max-width": "50vw",
+    "max-height": "50vh"
   });
 
-$(editor).on("mouseover", "a", async (e) => {
+$(editor).on("mouseenter", "a", async (e) => {
   const anchor = e.target;
   try {
     const relhref = anchor.getAttribute("href");
@@ -52,5 +54,10 @@ $(editor).on("mouseover", "a", async (e) => {
   clearMenu();
   appendItem(imageViewer(anchor.href, anchor.alt));
   const rect = anchor.getBoundingClientRect();
-  showMenuAtPos(rect);
+  showMenuAtPos(rect, true);
+})
+.on("mouseleave", "a", () => {
+  if ($(contextMenu).is(".temp")) {
+    hideMenu();
+  }
 });
