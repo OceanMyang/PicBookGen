@@ -43,7 +43,7 @@ export default class UserDatabase {
       })
       .catch((err) => {
         console.log(err);
-        throw new NotFoundException("User", userID);
+        return null;
       })
   }
 
@@ -57,7 +57,7 @@ export default class UserDatabase {
       })
       .catch((err) => {
         console.log(err);
-        throw new NotFoundException("User", email);
+        return null;
       })
   }
 
