@@ -1,19 +1,25 @@
 <%- include("header", { title: "Register" }) %>
 
-  <body class="center">
-    <form class="auth-form" action="/register" method="post">
-      <img class="logo object-fit-fill" src="/res/PicBookGen.svg" alt="Logo">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" class="form-control" name="email" value="" required placeholder="example@gmail.com">
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" name="password" value="" required
-          placeholder="An letter and a number">
-      </div>
-      <button type="submit" class="btn btn-primary">Register</button>
-      <a href="/login" class="btn btn-info">Switch to Login</a>
-    </form>
+  <body class="center bg-theme">
+    <div class="form-container">
+      <form class="auth-form" action="/register" method="post">
+        <div class="logo-container">
+          <img class="logo d-inline" src="/res/PicBookGen2.svg" alt="Logo">
+          <h1 class="logo-title tilted-text d-inline">icBookGen</h1>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" value="" required
+            placeholder="example@gmail.com">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" value="" required
+            placeholder="An letter and a number">
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+        <a href="/login" class="btn btn-info">Switch to Login</a>
+      </form>
+    </div>
   </body>
   <%- include("footer") %>

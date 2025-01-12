@@ -676,7 +676,7 @@ router.get("/:fileID", authenticateToken, async (req: Request, res: Response, ne
     const { fileID } = req.params;
 
     if (!fileID || !validate(fileID)) {
-      next();
+      next(new NotFoundException("Page"));
     }
     else {
       const fileData = await FileDatabase.findFile(fileID, userID);

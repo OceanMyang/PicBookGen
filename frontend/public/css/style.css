@@ -10,6 +10,16 @@ body {
   overflow: hidden;
 }
 
+.bg-theme {
+  background-color: hsl(194, 74%, 23%);
+}
+
+.form-container {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+}
+
 .scrollable{
   overflow: auto !important;
   padding: 20px;
@@ -153,8 +163,8 @@ img {
 }
 
 .index {
-  width: 64px;
-  height: 64px;
+  width: 100px;
+  height: 100px;
   flex: 0 0 auto;
   font-size: xx-large;
 }
@@ -168,8 +178,39 @@ img {
 .logo {
   width: 150px;
   height: 150px;
+  animation: rotate 4s linear infinite;
 }
 
+@keyframes rotate {
+  from {
+    transform: rotate(0deg); /* Start position */
+  }
+  to {
+    transform: rotate(360deg); /* Full rotation */
+  }
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tilted-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 36px;
+  font-weight: 600;
+  display: inline-block;
+  color: #333;
+}
+
+.logo-title {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  margin-left: -18px;
+}
+ 
 .auth-form {
   text-align: center;
   width: 400px;
@@ -181,6 +222,10 @@ img {
   right: 20px;
   cursor: pointer;
   border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
 }
 
 .rigid {

@@ -10,10 +10,6 @@ if (!$(editor).length) {
   console.error("Editor not found");
 }
 
-if (!$(fileSelector).length) {
-  console.error("File selector not found");
-}
-
 const imageViewer = (src, alt) =>
   $("<img>", {
     class: "image-viewer",

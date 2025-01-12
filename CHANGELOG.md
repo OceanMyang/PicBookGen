@@ -219,7 +219,7 @@ Published the app on picbookgen.com on December 20
 * Now the error handling in frontend is still pretty dry. Basicall an error html page is sent to the client everytime. A form will auto handle the response but ajax won't. I need to do more work on handling errors.
 * Anchor select all children triggers context menu first
 
-# January 12th
+# January 11th
 
 ## Major Updates
 
@@ -244,3 +244,14 @@ Email and Password: A letter and a number.
 * Displaying plaintext in html
 * Add demo files to new user
 * Fixed the bug that auth disturbed by multer
+
+# January 12th
+## Major UI Update
+Improved:
+* Logo
+* Title Font
+* Login / Reigster page
+* Index button
+
+## Minor Updates
+Solved the bug that handler receives undefined error.
