@@ -1,14 +1,15 @@
-<!-- Require (files: FileData[], scripts: string[]) -->
+<!-- Require (user: UserData, files: FileData[], scripts: string[]) -->
 
 <%- include("header") %>
 
 	<body>
 		<header>
 			<nav class="navbar navbar-expand">
-				<div class="d-inline-block index">
-					<img class="w-100 h-100 object-fit-fill" src="/res/PicBookGen.svg" alt="Logo">
+				<img class="index object-fit-fill" src="/res/PicBookGen.svg" alt="Index">
+				<h1 class="rigid">Picture Book Generator</h1>
+				<div class="index user-profile btn btn-light open-dialog">
+					<img class="avatar" src="/res/user.svg" alt="Avatar">
 				</div>
-				<h1>Picture Book Generator</h1>
 			</nav>
 			<nav class="navbar navbar-expand">
 				<form action="/new" method="post" class="d-inline">
@@ -41,11 +42,16 @@
 			</div>
 		</div>
 		<dialog class="dialog" style="display: none;">
-			<button class="btn btn-light close-dialog">Close</button>
-			<form>
-				<input type="file" class="d-inline" accept="text/plain" name="file" required>
-			</form>
+			<div class="close-dialog btn btn-light center">
+				<img src="/res/close.svg" alt="Close">	
+			</div>
+			<div class="dialog-content">
+				<h2 class="d-inline rigid"><%- user.email %></h2>
+				<button class="btn btn-lg btn-light logout">Logout</button>
+				<button class="btn btn-lg btn-danger delete-user">Delete Account</button>
+			</div>
 		</dialog>
+		<input type="file" name="file" class="d-none" accept="text/plain" required hidden>
 		<input id="file-id" type="hidden" class="d-none" name="fileid" value="">
 		<div id="context-menu" class="dropdown-menu">
 			<a class="dropdown-item read" href="/read">Read</a>

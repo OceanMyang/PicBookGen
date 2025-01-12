@@ -5,3 +5,10 @@ interface FileData {
   createdat: Date;
   deletedat: Date | null;
 }
+
+interface UserData {
+  userid: string;
+  email: string;
+  password_hash: string;
+  createdat: Date;
+}

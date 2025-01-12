@@ -1,0 +1,18 @@
+<%- include("header", { title: "Login" }) %>
+
+  <body class="center">
+    <form class="auth-form" action="/login" method="post">
+      <img class="logo object-fit-fill" src="/res/PicBookGen.svg" alt="Logo">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" name="email" value="" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" name="password" value="" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+      <a href="/register" class="btn btn-info">Switch to Register</a>
+    </form>
+  </body>
+  <%- include("footer") %>

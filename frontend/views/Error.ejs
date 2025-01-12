@@ -1,11 +1,17 @@
 <%- include("header", { title: "Error" }) %>
 
-  <body>
-    <header>
-      <h1>Error</h1>
-    </header>
-    <div id="editor">
-      <a class="view" href="/res/error.jpg"><%- locals?.message %></a>
+  <body class="center">
+    <div class="text-center">
+      <div class="alert alert-warning" role="alert">
+        <h2><strong><%- locals?.message %></strong></h2>
+      </div>
+      <div id="editor">
+        But no worries!
+        <a href="/res/cat.jpg" class="view text-primary fw-bold">
+          Hover over and this might cheer you up!
+        </a>
+      </div>
+      <button onclick="window.history.back()" class="btn btn-primary mt-3">Click Here to Go Back</button>
     </div>
     <div id="context-menu" class="dropdown-menu"></div>
   </body>

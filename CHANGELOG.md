@@ -152,20 +152,20 @@ Published the app on picbookgen.com on December 20
 
 # January 3
 
-# Major Updates
+## Major Updates
 
 * Fixed the bug in uploading image
   * upload image malfuncitons after first image upload
   * multiple images uploaded at the same time
 * Add menu option to delete Link
 
-# Minor Updates
+## Minor Updates
 
 * Change all components to string selectors
 * Add dialog to the pages
 * Add a button to delete all images at once
 
-# To Do
+## To Do
 
 * Solve the bug where selection inside of the anchor leads to multiple texts
 * Button to delete all files at once (by repeatedly fetching)
@@ -173,7 +173,7 @@ Published the app on picbookgen.com on December 20
 
 # Janurary 4th
 
-# Major Updates
+## Major Updates
 
 * Generate Image from pollinations.ai
 * Disable user from adding link if link is involved in selection
@@ -181,20 +181,20 @@ Published the app on picbookgen.com on December 20
 * Reader now doesn't need any components from editor
 * Changed img in Images page to object-fit: cover
 
-# Minor Updates
+## Minor Updates
 
 * Changed the image for loading and broken image
 * Centered the imageViewer
 * Add createWriteStream to System
 
-# TO DO
+## TO DO
 
 * Favicon (SVG)
 * enforce RLS
 
 # January 5th
 
-# Mobile Adaptations
+## Mobile Adaptations
 
 * Solved the bug: index button disappears due to inappropriate viewport
 * Title and navbar items fixed proportion and exceeds max viewport
@@ -203,18 +203,44 @@ Published the app on picbookgen.com on December 20
 * Renewed the logo
 * Fixed the scrolling problem on mobile devices
 
-# Styles
+## Styles
 
 * Editor now fits the whole rest of the page and has text cursor
 * Proper space between grid items
 * Deleted unused classes
 
-# Usage
+## Usage
 
 * Now user can upload svg files. Improved the upload process.
 
-# To Do
+## To Do
 
 * RLS enforced
 * Now the error handling in frontend is still pretty dry. Basicall an error html page is sent to the client everytime. A form will auto handle the response but ajax won't. I need to do more work on handling errors.
 * Anchor select all children triggers context menu first
+
+# January 12th
+
+## Major Updates
+
+### Add authentication system to the app.
+
+Email and Password: A letter and a number.
+
+* Add UserDatabase
+* Add User Interface to Database
+* Add User Interface to FileDatabase
+* Add Login & Register views
+* Add /login and /register routes
+* Add authentications
+
+### Add size limit via multer
+
+* Modified errorHandler to suit this effect
+
+## Minor Updates
+
+* Improved the Error page
+* Displaying plaintext in html
+* Add demo files to new user
+* Fixed the bug that auth disturbed by multer

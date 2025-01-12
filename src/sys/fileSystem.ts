@@ -9,6 +9,7 @@ import {
 	NotFoundException
 } from "../utils/error.util.js";
 import { uploadPath } from "../../uploads/upload.path.js";
+import { publicPath } from "frontend/public/public.path.js";
 
 export default class FileSystem {
 	static async accessFile(fileID: string, imageID?: string): Promise<string> {
@@ -62,6 +63,31 @@ export default class FileSystem {
 			const fd = await fsp.open(join(filesPath, fileID, "index.html"), fsp.constants.O_CREAT);
 			fd.close();
 			console.log(`File ${fileID} created on server.`);
+		} catch (err: any) {
+			console.log(err);
+			switch (err.code) {
+				case "EEXIST":
+					throw new ConflictException("File", fileID);
+				case "EACCES":
+					throw new AccessDeniedException(`no permission to create file ${fileID} on server`);
+				default:
+					throw new InternalServerException("creating the file on server");
+			}
+		}
+	};
+
+	static async createDemoFile(fileID: string) {
+		if (fileID.includes(".")) {
+			throw new InternalServerException("creating the file on server");
+		}
+
+		try {
+			await fsp.mkdir(join(filesPath, fileID));
+			await fsp.mkdir(join(filesPath, fileID, "images"));
+			const src = join(publicPath, "res", "index.html");
+			const dest = join(filesPath, fileID, "index.html");
+			await fsp.copyFile(src, dest);
+			console.log(`Demo file ${fileID} created on server.`);
 		} catch (err: any) {
 			console.log(err);
 			switch (err.code) {

@@ -4,6 +4,7 @@ export const required = {
         "fileUpload.js",
         "fileDump.js",
         "titleSave.js",
+        "userMenu.js",
     ],
     "Editor": [
         "fileSave.js",

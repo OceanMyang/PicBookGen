@@ -25,16 +25,12 @@ const imageViewer = (src, alt) =>
     "max-height": "50vh"
   });
 
-$(editor).on("mouseenter", "a", async (e) => {
+$(editor).on("mouseenter", "a.view", async (e) => {
   const anchor = e.target;
   try {
     const relhref = anchor.getAttribute("href");
     if (!relhref) {
       throw new Error("Anchor href not found");
-    }
-    const fileID = $(fileSelector).val();
-    if (!fileID) {
-      throw new Error("Invalid file ID");
     }
     const response = await fetch(anchor.href);
     if (!response.ok) {

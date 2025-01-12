@@ -50,7 +50,13 @@ export class FileNotFoundException extends NotFoundException {
 
 export class AccessDeniedException extends HttpException {
   constructor(message?: string) {
-    super(403, "Access Denied" + (message ? `: ${message}` : "!"));
+    super(403, message ? message : "Access denied.");
+  }
+}
+
+export class PayloadTooLargeException extends HttpException {
+  constructor(name: string) {
+    super(413, `Request for ${name} is too large.`);
   }
 }
 
@@ -66,4 +72,4 @@ export class GatewayTimeoutException extends HttpException {
   }
 }
 
-export type ExceptionObjectNames = "Page" | "File" | "Image" | "Script";
+export type ExceptionObjectNames = "Page" | "File" | "Image" | "Script" | "User";

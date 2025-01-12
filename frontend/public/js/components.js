@@ -16,10 +16,13 @@ export const renameFile = ".rename-file";
 export const toggle = ".toggle";
 export const title = ".title";
 export const dialog = ".dialog";
+export const openDialog = ".open-dialog";
 export const closeDialog = ".close-dialog";
 export const fileInput = "input[name=file]";
 export const imageInput = "input[name=image]";
 export const clearImages = ".clear-images";
+export const logout = ".logout";
+export const deleteUser = ".delete-user";
 
 $(window).on("load", () => {
   const isMobile =
@@ -33,6 +36,33 @@ $(window).on("load", () => {
   if ($("header").length && $(".scrollable").length) {
     $(".scrollable").css("height", `calc(100vh - ${$("header").height()}px)`);
   }
+});
+
+const fetchWithToken = async (url, options) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found");
+    return;
+  }
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  if (response.status === 401) {
+    window.location = "/login";
+  }
+  return response;
+};
+
+$(openDialog).on("click", () => {
+  document.querySelector(".dialog").showModal();
+});
+
+$(closeDialog).on("click", () => {
+  document.querySelector(".dialog").close();
 });
 
 export const deleteLink = (anchor) => {

@@ -26,13 +26,13 @@
 			</nav>
 		</header>
 		<div class="scrollable">
-			<div id="editor" class="toggleable" contenteditable="plaintext-only" autofocus style><%- fileContent -%></div>
+			<div id="editor" class="toggleable editor" contenteditable="plaintext-only" autofocus style><%- fileContent -%></div>
 			<div id="image-panel" class="toggleable hidden"></div>
 		</div>
 		<dialog class="dialog" style="display: none;">
 			<button class="btn btn-light close-dialog">Close</button>
-			<input type="file" name="file" class="d-inline" accept="text/plain" required>
 		</dialog>
+		<input type="file" name="file" class="d-none" accept="text/plain" required hidden>
 		<input id="file-id" type="hidden" class="d-none" name="fileid" value="<%= file.fileid %>">
 		<input id="image-id" type="hidden" class="d-none" name="fileid" value="">
 		<div id="context-menu" class="dropdown-menu"></div>

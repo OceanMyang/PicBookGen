@@ -27,11 +27,7 @@ body {
   gap: 5px;
 }
 
-.index {
-  font-size: xx-large;
-}
-
-#editor {
+.editor {
   flex: 1;
   overflow-y: auto;
   word-wrap: break-word;
@@ -43,8 +39,12 @@ body {
   border-radius: 5px;
 }
 
-#editor:focus {
+.editor:focus {
   outline: none;
+}
+
+.plaintext {
+  white-space: pre-wrap;
 }
 
 #image-viewer {
@@ -103,14 +103,37 @@ iframe {
 
 dialog {
   display: none;
+  border: none;
+  border-radius: 20px;
+  text-align: center;
+  width: 500px;
 }
 
 dialog[open] {
   display: block !important;
+  padding-inline: 60px;
+  padding-block: 40px;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.btn-lg {
+  display: block;
 }
 
 .close-dialog {
-  float: right;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  padding: 0px;
+  border-radius: 50%;
 }
 
 .hidden {
@@ -130,11 +153,39 @@ img {
 }
 
 .index {
-  width: 2em;
-  height: 2em;
+  width: 64px;
+  height: 64px;
   flex: 0 0 auto;
+  font-size: xx-large;
 }
 
-.index img {
-  border: none;
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 150px;
+  height: 150px;
+}
+
+.auth-form {
+  text-align: center;
+  width: 400px;
+}
+
+.user-profile {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.rigid {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
 }

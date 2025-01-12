@@ -1,7 +1,6 @@
 import {
   toggle,
   imagePanel,
-  editor,
   fileSelector,
   imageSelector,
 } from "./components.js";
@@ -14,10 +13,6 @@ if (!$(toggle).length) {
 
 if (!$(imagePanel).length) {
   console.error("Image Panel not found");
-}
-
-if (!$(editor).length) {
-  console.error("Editor not found");
 }
 
 if (!$(fileSelector).length) {

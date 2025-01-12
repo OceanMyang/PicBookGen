@@ -1,7 +1,5 @@
 import {
   contextMenu,
-  deleteLink,
-  editor,
   fileSelector,
   imageInput,
   imagePanel,
@@ -39,6 +37,7 @@ $(document).on("input", imageInput, async (e) => {
       method: "POST",
       body: formData,
     });
+    console.log(response.statusText);
     if (response.ok) {
       const imageID = await response.text();
       $("a.view.loading")
@@ -57,8 +56,7 @@ $(document).on("input", imageInput, async (e) => {
     if (response2.ok) {
       const html = await response2.text();
       $(imagePanel).html(html);
-    }
-    else {
+    } else {
       throw new Error(response.statusText);
     }
   } catch (error) {
@@ -68,9 +66,6 @@ $(document).on("input", imageInput, async (e) => {
 });
 
 const handleUploadImage = () => {
-  if (!textToLink("/res/loading.gif", "view loading")) {
-    return;
-  }
   $(input)
     .attr({
       name: "image",
@@ -86,5 +81,10 @@ export const uploadImageButton = () => {
   return $("<button>", {
     text: "Upload Image",
     class: "dropdown-item upload-image",
-  }).on("click", handleUploadImage);
+  }).on("click", () => {
+    if (!textToLink("/res/loading.gif", "view loading")) {
+      return;
+    }
+    handleUploadImage();
+  });
 };
