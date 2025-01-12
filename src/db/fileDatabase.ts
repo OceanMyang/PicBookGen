@@ -4,24 +4,8 @@ import {
   DeletedException,
   InternalServerException
 } from '../utils/error.util.js';
-import pg from 'pg';
-import dotenv from 'dotenv';
 import { filesTransformer, fileTransformer } from '../helpers/fileTransformer.js';
-
-dotenv.config();
-
-const { Pool } = pg;
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error(".env file is not found or DATABASE_URL is not set in .env file.");
-}
-
-const pool = new Pool({
-  connectionString,
-});
-
-pool.connect();
-console.log("Connected to database");
+import pool from './pool.js';
 
 export default class FileDatabase {
   static async listFiles(userID: string): Promise<FileData[]> {

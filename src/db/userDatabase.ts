@@ -1,19 +1,6 @@
-import dotenv from 'dotenv';
-import pg from 'pg';
 import { userTransformer } from 'src/helpers/userTransformer.js';
-import { InternalServerException, NotFoundException } from 'src/utils/error.util.js';
-const { Pool } = pg;
-
-dotenv.config();
-
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error(".env file is not found or DATABASE_URL is not set in .env file.");
-}
-
-const pool = new Pool({
-  connectionString,
-});
+import { InternalServerException } from 'src/utils/error.util.js';
+import pool from './pool.js';
 
 export default class UserDatabase {
   static async registerUser(userid: string, email: string, password_hash: string): Promise<void> {
@@ -43,7 +30,7 @@ export default class UserDatabase {
       })
       .catch((err) => {
         console.log(err);
-        return null;
+        throw new InternalServerException("getting the user");
       })
   }
 
@@ -57,7 +44,7 @@ export default class UserDatabase {
       })
       .catch((err) => {
         console.log(err);
-        return null;
+        throw new InternalServerException("getting the user");
       })
   }
 
