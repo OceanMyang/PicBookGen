@@ -18,38 +18,42 @@ const imageViewer = (src, alt) =>
     display: "block",
   }).css({
     "max-width": "50vw",
-    "max-height": "50vh"
+    "max-height": "50vh",
   });
 
-$(editor).on("mouseenter", "a.view", async (e) => {
-  const anchor = e.target;
-  try {
-    const relhref = anchor.getAttribute("href");
-    if (!relhref) {
-      throw new Error("Anchor href not found");
-    }
-    const response = await fetch(anchor.href);
-    if (!response.ok) {
-      throw new Error("Invalid anchor href");
-    } else {
-      const contentType = response.headers.get("Content-Type");
-      if (!contentType || !contentType.includes("image")) {
-        throw new Error("Invalid anchor href content type");
+$(editor)
+  .on("mouseenter", "a.view", async (e) => {
+    const anchor = e.target;
+    try {
+      const relhref = anchor.getAttribute("href");
+      if (!relhref) {
+        throw new Error("Anchor href not found");
       }
+      const response = await fetch(anchor.href);
+      if (!response.ok) {
+        throw new Error("Invalid anchor href");
+      } else {
+        const contentType = response.headers.get("Content-Type");
+        if (!contentType || !contentType.includes("image")) {
+          throw new Error("Invalid anchor href content type");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      anchor.href = "/res/broken-image.png";
+      anchor.alt = "Broken Link";
+      $(anchor).addClass("broken");
     }
-  } catch (error) {
-    console.error(error);
-    anchor.href = "/res/broken-image.png";
-    anchor.alt = "Broken Link";
-    $(anchor).addClass("broken");
-  }
-  clearMenu();
-  appendItem(imageViewer(anchor.href, anchor.alt));
-  const rect = anchor.getBoundingClientRect();
-  showMenuAtPos(rect, true);
-})
-.on("mouseleave", "a", () => {
-  if ($(contextMenu).is(".temp")) {
-    hideMenu();
-  }
-});
+    clearMenu();
+    appendItem(imageViewer(anchor.href, anchor.alt));
+    const rect = anchor.getBoundingClientRect();
+    showMenuAtPos(rect, true);
+  })
+  .on("mouseleave", "a", (e) => {
+    if ($(contextMenu).is(".temp")) {
+      hideMenu();
+    }
+  })
+  .on("click", "a.view", (e) => {
+    e.preventDefault();
+  });

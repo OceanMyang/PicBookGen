@@ -48,7 +48,7 @@ export const appendItem = ($item) => $(contextMenu).append($item);
 $(document).on("complete", hideMenu);
 
 $(document).on("mousedown", (e) => {
-  if (!$(e.target).closest(contextMenu).length) {
+  if (!$(e.target).closest(contextMenu).length && !$(e.target).closest("a.view").length) {
     hideMenu();
   }
 });

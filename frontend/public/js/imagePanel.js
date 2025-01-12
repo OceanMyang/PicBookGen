@@ -37,7 +37,13 @@ $(imagePanel)
       $(imagePanel).html(html);
     }
   })
-  .on("click contextmenu", (e) => {
+  .on("click", "img.view", (e) => {
+    e.preventDefault();
+    const src = e.target.src;
+    if (!src) return;
+    window.location = src;
+  })
+  .on("contextmenu", (e) => {
     e.preventDefault();
     const target = e.target.closest(".id-selectable");
     if (!target) return;

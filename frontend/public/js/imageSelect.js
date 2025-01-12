@@ -1,4 +1,4 @@
-import { contextMenu, editor, fileSelector } from "./components.js";
+import { contextMenu, fileSelector } from "./components.js";
 import { appendItem, clearMenu, showMenu } from "./contextMenu.js";
 import { textToLink } from "./editorSelect.js";
 import { saveFile } from "./fileSave.js";

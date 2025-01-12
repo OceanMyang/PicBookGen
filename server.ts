@@ -646,14 +646,18 @@ router.post("/generate/:fileID", authenticateToken, async (req: Request, res: Re
     const readStream = Readable.from(response.body);
     const writeStream = FileSystem.createWriteStream(fileID, imageID, extension);
     readStream.pipe(writeStream);
-    writeStream.on('finish', () => {
-      clearTimeout(timeout);
-      res.status(200).send(imageID + extension);
-    });
 
     writeStream.on('error', (error) => {
-      clearTimeout(timeout);
       next(error);
+    });
+
+    writeStream.on('finish', () => {
+      clearTimeout(timeout);
+      if (res.headersSent) {
+        console.log("Headers sent");
+        return;
+      }
+      res.status(200).send(imageID + extension);
     });
   }
   catch (err) {

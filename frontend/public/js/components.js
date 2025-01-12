@@ -38,25 +38,6 @@ $(window).on("load", () => {
   }
 });
 
-const fetchWithToken = async (url, options) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.error("No token found");
-    return;
-  }
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...options.headers,
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  if (response.status === 401) {
-    window.location = "/login";
-  }
-  return response;
-};
-
 $(openDialog).on("click", () => {
   document.querySelector(".dialog").showModal();
 });

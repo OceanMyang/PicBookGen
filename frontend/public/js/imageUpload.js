@@ -43,7 +43,8 @@ $(document).on("input", imageInput, async (e) => {
       $("a.view.loading")
         .attr("href", `/access/${fileID}/${imageID}`)
         .attr("alt", `/access/${fileID}/${imageID}`)
-        .removeClass("loading");
+        .removeClass("loading")
+        .trigger("mouseenter");
       saveFile();
     } else {
       alert(response.statusText);

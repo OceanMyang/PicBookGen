@@ -1,5 +1,4 @@
-import { contextMenu, fileSelector } from "./components.js";
-import { hideMenu, showMenu } from "./contextMenu.js";
+import { fileSelector } from "./components.js";
 import { textToLink } from "./editorSelect.js";
 import { saveFile } from "./fileSave.js";
 
@@ -21,10 +20,8 @@ const handleGenerateImage = async () => {
     $("a.view.loading")
       .attr("href", `/access/${fileID}/${imageID}`)
       .attr("alt", `/access/${fileID}/${imageID}`)
-      .removeClass("loading");
-    $(".image-viewer")
-      .attr("src", `/access/${fileID}/${imageID}`)
-      .attr("alt", `/access/${fileID}/${imageID}`);
+      .removeClass("loading")
+      .trigger("mouseenter");
     saveFile();
     alert("Image successfully generated!");
   } else {

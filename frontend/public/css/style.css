@@ -40,6 +40,7 @@ body {
 .editor {
   flex: 1;
   overflow-y: auto;
+  white-space: pre-wrap;
   word-wrap: break-word;
   box-sizing: border-box;
   width: 100%;
@@ -51,10 +52,6 @@ body {
 
 .editor:focus {
   outline: none;
-}
-
-.plaintext {
-  white-space: pre-wrap;
 }
 
 #image-viewer {
@@ -213,7 +210,6 @@ img {
  
 .auth-form {
   text-align: center;
-  width: 400px;
 }
 
 .user-profile {

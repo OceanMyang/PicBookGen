@@ -31,13 +31,14 @@ document.addEventListener("selectionchange", () => {
   showMenuAtPos(rect);
 });
 
-$(editor).on("contextmenu dblclick", "a", (e) => {
+$(editor).on("click contextmenu", "a", (e) => {
   e.preventDefault();
   const anchor = e.target;
   window.getSelection()?.selectAllChildren(anchor);
   clearMenu();
   appendItem(reselectImageButton(anchor));
   appendItem(deleteLinkButton(anchor));
+  $(contextMenu).removeClass("temp");
   const rect = anchor.getBoundingClientRect();
   showMenuAtPos(rect);
 });

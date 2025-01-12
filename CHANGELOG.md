@@ -252,6 +252,13 @@ Improved:
 * Title Font
 * Login / Reigster page
 * Index button
+* User experience on editor page
+  * Upload
+  * Generate
+* User experience on mobile
+  * Login UI
+  * See Images by finger
 
 ## Minor Updates
-Solved the bug that handler receives undefined error.
+* Solved the bug that handler receives undefined error.
+* Fixed the mobile application app

@@ -1,5 +1,5 @@
 import { contextMenu, trashPanel, fileSelector } from "./components.js";
-import { appendItem, clearMenu, showMenuAtPos } from "./contextMenu.js";
+import { showMenuAtPos } from "./contextMenu.js";
 
 if (!$(contextMenu).length) {
   console.error("Context menu not found");
