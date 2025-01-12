@@ -25,7 +25,7 @@ const handleGenerateImage = async () => {
     saveFile();
     alert("Image successfully generated!");
   } else {
-    throw new Error(response.statusText);
+    alert(await response.text());
   }
 };
 

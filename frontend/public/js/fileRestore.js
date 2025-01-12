@@ -14,6 +14,8 @@ const handleRestoreFile = async () => {
   console.log(response);
   if (response.ok) {
     if ($(`#${fileID}`).length) $(`#${fileID}`).remove();
+  } else {
+    alert(await response.text());
   }
   $(document).trigger("complete");
 };

@@ -31,8 +31,10 @@ $(document).on("input", fileInput, async (e) => {
   });
   $(this).val("");
   if (response.ok) {
-    if (response.url) {
+    if (response.redirected) {
       window.location = response.url;
     }
+  } else {
+    alert(await response.text());
   }
 });

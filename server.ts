@@ -16,7 +16,8 @@ import {
   GatewayTimeoutException,
   BadGatewayException,
   AccessDeniedException,
-  ConflictException
+  ConflictException,
+  InternalServerException
 } from "./src/utils/error.util.js";
 import { viewPath } from "./frontend/views/view.path.js";
 import { publicPath } from "./frontend/public/public.path.js";
@@ -72,14 +73,15 @@ const renderHandler = (res: Response, view: string, options: any, status: number
   res.render(view, options, (err, html) => {
     if (err) {
       console.log(err);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send("Error occurred while rendering the page.");
     }
     res.status(status).send(html);
   });
 }
 
-const errorRenderer: ErrorRequestHandler = (err, req: Request, res: Response, next: NextFunction) => {
-  console.log("Handler: " + err.code);
+const errorRenderer: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+  console.log("Handler: " + err);
+
   if (res.headersSent) {
     console.log("Headers sent");
     return;
@@ -96,7 +98,7 @@ const errorRenderer: ErrorRequestHandler = (err, req: Request, res: Response, ne
   return res.status(500).render("Error", { message: "Internal Server Error" });
 };
 
-const errorSender: ErrorRequestHandler = (err, req: Request, res: Response, next: NextFunction) => {
+const errorSender: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.log("Handler: " + err);
   if (res.headersSent) {
     console.log("Headers sent");
@@ -104,12 +106,12 @@ const errorSender: ErrorRequestHandler = (err, req: Request, res: Response, next
   }
 
   if (err.code === 'LIMIT_FILE_SIZE') {
-    res.status(413).json({ message: "The uploaded file exceeds the size limit of 1MB." });
+    res.status(413).send("The uploaded file exceeds the size limit of 1MB.");
     return;
   }
 
   if (err instanceof HttpException) {
-    res.status(err.status).json({ message: err.message });
+    res.status(err.status).send(err.message);
     return;
   }
 
@@ -332,7 +334,7 @@ router
     catch (err) {
       next(err);
     }
-  }, errorRenderer)
+  }, errorSender)
   .delete(authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userID = req.body.payload.userID;
@@ -348,7 +350,7 @@ router
     catch (err) {
       next(err);
     }
-  }, errorRenderer)
+  }, errorSender)
 
 router.get("/read/:fileID", authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -394,7 +396,7 @@ router.route("/access/:fileID")
     } catch (err) {
       next(err);
     }
-  }, errorRenderer);
+  }, errorSender);
 
 router.get("/access/:fileID/:imageID", authenticateToken,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -409,7 +411,7 @@ router.get("/access/:fileID/:imageID", authenticateToken,
     } catch (err) {
       next(err);
     }
-  }, errorRenderer);
+  }, errorSender);
 
 router.get("/trash", authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -475,7 +477,7 @@ router.post("/upload", upload.single("file"), authenticateToken, async (req: Req
     }
     next(err);
   }
-}, errorRenderer);
+}, errorSender);
 
 router.post("/upload/:fileID", upload.single("image"), authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -504,7 +506,7 @@ router.post("/upload/:fileID", upload.single("image"), authenticateToken, async 
     }
     next(err);
   }
-}, errorRenderer);
+}, errorSender);
 
 router.delete("/delete", authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -525,7 +527,7 @@ router.delete("/delete", authenticateToken, async (req: Request, res: Response, 
   } catch (err) {
     next(err);
   }
-}, errorRenderer);
+}, errorSender);
 
 router
   .route("/delete/:fileID")
@@ -544,7 +546,7 @@ router
     catch (err) {
       next(err);
     }
-  }, errorRenderer)
+  }, errorSender)
   .delete(authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userID = req.body.payload.userID;
@@ -561,7 +563,7 @@ router
     catch (err) {
       next(err);
     }
-  }, errorRenderer);
+  }, errorSender);
 
 router.delete("/delete/:fileID/all", authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -575,7 +577,7 @@ router.delete("/delete/:fileID/all", authenticateToken, async (req: Request, res
   } catch (err) {
     next(err);
   }
-}, errorRenderer);
+}, errorSender);
 
 router.delete("/delete/:fileID/:imageID", authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -589,7 +591,7 @@ router.delete("/delete/:fileID/:imageID", authenticateToken, async (req: Request
   } catch (err) {
     next(err);
   }
-}, errorRenderer);
+}, errorSender);
 
 router.post("/restore/:fileID", authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -612,7 +614,7 @@ router.post("/restore/:fileID", authenticateToken, async (req: Request, res: Res
   catch (err) {
     next(err);
   }
-}, errorRenderer);
+}, errorSender);
 
 router.post("/generate/:fileID", authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   const timeout = setTimeout(() => {
@@ -654,8 +656,7 @@ router.post("/generate/:fileID", authenticateToken, async (req: Request, res: Re
     writeStream.on('finish', () => {
       clearTimeout(timeout);
       if (res.headersSent) {
-        console.log("Headers sent");
-        return;
+        throw new InternalServerException("generating the image (headers sent)");
       }
       res.status(200).send(imageID + extension);
     });
@@ -664,7 +665,7 @@ router.post("/generate/:fileID", authenticateToken, async (req: Request, res: Re
     clearTimeout(timeout);
     next(err);
   }
-});
+}, errorSender);
 
 router.get(["/css/:file", "/js/:file", "/res/:file"], (req: Request, res: Response, next: NextFunction) => {
   const { file } = req.params;
@@ -696,7 +697,7 @@ router.get("/:fileID", authenticateToken, async (req: Request, res: Response, ne
   catch (err) {
     next(err);
   }
-}, errorRenderer);
+}, errorSender);
 
 router.get("*", (req: Request, res: Response, next: NextFunction) =>
   next(new NotFoundException("Page")),

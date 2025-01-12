@@ -37,7 +37,7 @@ $(document).on("input", imageInput, async (e) => {
       method: "POST",
       body: formData,
     });
-    console.log(response.statusText);
+    console.log(response);
     if (response.ok) {
       const imageID = await response.text();
       $("a.view.loading")
@@ -47,8 +47,7 @@ $(document).on("input", imageInput, async (e) => {
         .trigger("mouseenter");
       saveFile();
     } else {
-      alert(response.statusText);
-      throw new Error(response.statusText);
+      alert(await response.text());
     }
 
     $(this).val("");
@@ -58,7 +57,7 @@ $(document).on("input", imageInput, async (e) => {
       const html = await response2.text();
       $(imagePanel).html(html);
     } else {
-      throw new Error(response.statusText);
+      console.error(await response2.text());
     }
   } catch (error) {
     console.error(error);

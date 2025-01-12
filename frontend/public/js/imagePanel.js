@@ -35,6 +35,8 @@ $(imagePanel)
     if (response.ok) {
       const html = await response.text();
       $(imagePanel).html(html);
+    } else {
+      alert(await response.text());
     }
   })
   .on("click", "img.view", (e) => {

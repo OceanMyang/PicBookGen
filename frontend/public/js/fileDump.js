@@ -14,7 +14,11 @@ const handleDumpFile = async () => {
     const response = await fetch(`/delete/${fileID}`, { method: "POST" });
     console.log(response);
     if (response.ok) {
-      window.location.href = response.url;
+      if (response.redirected) {
+        window.location.href = response.url;
+      }
+    } else {
+      alert(await response.text());
     }
     $(document).trigger("complete");
   }
