@@ -31,7 +31,6 @@ import { convertCompilerOptionsFromJson } from "typescript";
 
 const router = express();
 const port = 3000;
-const api = "https://pollinations.ai/prompt/";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadPath);
@@ -60,13 +59,17 @@ router.set("view engine", "ejs");
 router.use("/", express.static(publicPath));
 
 function textToUrlSlug(text: string): string {
+  if (!/^[a-zA-Z0-9\s.,!?'"();:-]+$/.test(text)) {
+    throw new BadRequestException("Selected prompt must be valid English text.");
+  }
+
   return text
-    .toLowerCase()                 // Convert to lowercase
-    .trim()                        // Remove leading/trailing whitespace
-    .replace(/[^a-z0-9\s-]/g, '')  // Remove non-alphanumeric characters
-    .replace(/\s+/g, '-')          // Replace spaces with hyphens
-    .replace(/-+/g, '-')           // Remove multiple consecutive hyphens
-    .replace(/^-|-$/g, '');        // Trim leading/trailing hyphens
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '%20')
+    .replace(/-+/g, '%20')
+    .replace(/^-|-$/g, '');
 }
 
 const renderHandler = (res: Response, view: string, options: any, status: number = 200) => {
@@ -88,7 +91,7 @@ const errorRenderer: ErrorRequestHandler = (err: any, req: Request, res: Respons
   }
 
   if (err.code === 'LIMIT_FILE_SIZE') {
-    return renderHandler(res, "Error", { message: "The uploaded file exceeds the size limit of 1MB." }, 413);
+    return renderHandler(res, "Error", { message: "The uploaded file exceeds the size limit of 10MB." }, 413);
   }
 
   if (err instanceof HttpException) {
@@ -632,7 +635,13 @@ router.post("/generate/:fileID", authenticateToken, async (req: Request, res: Re
       throw new BadRequestException("Prompt not provided.");
     }
 
-    const response = await fetch(api + textToUrlSlug(prompt));
+    const slug = textToUrlSlug(prompt);
+    if (!slug) {
+      throw new BadRequestException("Selected prompt must be valid English text.");
+    }
+
+    const api = "https://pollinations.ai/prompt/";
+    const response = await fetch(api + slug);
     if (!response.ok || !response.body) {
       throw new BadGatewayException(`Failed to fetch image: ${response.statusText}`);
     }

@@ -17,9 +17,9 @@
 				<% for (file of files) {-%>
 					<div class="p-2 d-inline-block">
 						<div id="<%= file.fileid %>" class="card d-inline-flex hover-select id-selectable" href="#">
-							<img src="/res/book.svg" style="width: 300px; height: 150px;" alt="Book"></img>
+							<img src="/res/book.svg" class="frame" alt="Book"></img>
 							<span class="card-body text-center">
-								<h3 class="card-title text-center d-inline-flex">
+								<h3 class="card-title text-center rigid w-100">
 									<%= file.name %>
 								</h3>
 								<div>

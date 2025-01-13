@@ -1,4 +1,4 @@
-import { fileSelector } from "./components.js";
+import { deleteLink, deleteLinkByImage, fileSelector } from "./components.js";
 import { textToLink } from "./editorSelect.js";
 import { saveFile } from "./fileSave.js";
 
@@ -26,6 +26,9 @@ const handleGenerateImage = async () => {
     alert("Image successfully generated!");
   } else {
     alert(await response.text());
+    $("a.view.loading").each((index, ele) => {
+      deleteLink(ele);
+    });
   }
 };
 
